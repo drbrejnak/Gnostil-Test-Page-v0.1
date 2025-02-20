@@ -8,6 +8,9 @@ import Infamous from '../Maneuver_Properties/Infamous'
 import Heavy from '../Maneuver_Properties/Heavy'
 import Attack from '../Maneuver_Properties/Attack'
 import Rings from '../Maneuver_Properties/Rings'
+import Aura from '../Maneuver_Properties/Aura'
+import Reaction from '../Maneuver_Properties/Reaction'
+import Inciting from '../Maneuver_Properties/Inciting'
 
 function App() {
 
@@ -19,10 +22,13 @@ function App() {
       {/* <Narrative /> */}
       <Honorable />
       {/* <Infamous /> */}
-      {/* <Light /> */}
-      <Heavy />
+      <Light />
+      {/* <Heavy /> */}
+      {/* <Attack /> */}
+      {/* <Aura /> */}
+      <Inciting />
       {/* <Modify /> */}
-      <Attack />
+      {/* <Reaction /> */}
     </div>
     </>
   )
