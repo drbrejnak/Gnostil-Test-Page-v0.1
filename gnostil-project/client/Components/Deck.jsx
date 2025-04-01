@@ -1,64 +1,157 @@
 import * as React from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import { useEffect, useState } from "react";
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+const host = "http://localhost:3000"
 
 export default function Deck() {
+
+  const [auth, setAuth] = useState([]);
+  const [char, setChar] = useState([]);
+  const [deck, setDeck] = useState([]);
+
+  const login = async(credentials)=> {
+    try {
+      //CHANGE THIS LATER
+      const body = {
+        "username": "admin",
+        "password": "password"
+      }
+      const response = await fetch(`${host}/login`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+          'Content-Type':'application/json',
+        }
+      });
+      const json = await response.json();
+
+      if(response.ok){
+        window.localStorage.setItem('token', json.token);
+        attemptLoginWithToken();
+      }
+      else {
+        console.log(json);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+};
+
+useEffect(()=> {
+  login();},
+  []);
+
+  const attemptLoginWithToken = async()=> {
+    const token = window.localStorage.getItem('token');
+    if(token){
+      const response = await fetch(`${host}/me`, {
+        headers: {
+          authorization: token
+        }
+      });
+      const json = await response.json();
+      if(response.ok){
+        setAuth(json);
+      }
+      else {
+        window.localStorage.removeItem('token');
+      }
+    }
+  };
+
+  useEffect(()=> {
+    attemptLoginWithToken();
+  }, []);
+
+  useEffect(()=> {
+    const fetchCharacters = async()=> {
+      const response = await fetch(`${host}/users/${auth.id}/characters`, {
+        headers: {
+          authorization: window.localStorage.getItem('token')
+        }
+      });
+      const json = await response.json();
+      //MAKE THIS USABLE FOR MULTIPLE CHARACTERS
+      console.log(json[0]);
+      if(response.ok){
+        setChar(json[0]);
+      }
+    };
+    if(auth.id){
+      fetchCharacters();
+    }
+    else {
+      setChar([]);
+    }
+  }, [auth]);
+
+
+  useEffect(()=> {
+    const fetchCharDeck = async()=> {
+      const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
+        headers: {
+          authorization: window.localStorage.getItem('token')
+        }
+      });
+      const json = await response.json();
+      console.log(json);
+      if(response.ok){
+        setDeck(json);
+        console.log(deck)
+      }
+    };
+    if(auth.id){
+      fetchCharDeck();
+    }
+    else {
+      setDeck([]);
+    }
+  }, [char]);
+
+  const boxStyle = {
+    maxWidth: "30vw",
+    position: "absolute",
+    right: "50%",
+    top: "40%",
+    transform: "translate(-60%, -50%)",
+    height: "33vw",
+    backgroundColor: "white",
+    overflow: "auto"
+  }
+  console.log(auth)
+
   return (
-    <TableContainer
-      component={Paper}
-      sx={{
-        maxWidth: "30vw",
-        position: "absolute",
-        right: "50%",
-        top: "40%",
-        transform: "translate(-60%, -50%)",
-        height: "33vw",
-      }}
-    >
-      <Table size="small" aria-label="a dense table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Dessert (100g serving)</TableCell>
-            <TableCell align="right">Calories</TableCell>
-            <TableCell align="right">Fat&nbsp;(g)</TableCell>
-            <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-            <TableCell align="right">Protein&nbsp;(g)</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.calories}</TableCell>
-              <TableCell align="right">{row.fat}</TableCell>
-              <TableCell align="right">{row.carbs}</TableCell>
-              <TableCell align="right">{row.protein}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+      <div style={boxStyle}>
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Discipline</th>
+              <th>Type</th>
+              <th>Description</th>
+              <th>Ability</th>
+              <th>Toll</th>
+              <th>Yield</th>
+              <th>Weight</th>
+              <th>Paradigm</th>
+            </tr>
+          </thead>
+          <tbody>
+            {deck.map((maneuver, index) => (
+              <tr key={index}>
+                <td>{maneuver.maneuver_name}</td>
+                <td>{maneuver.discipline}</td>
+                <td>{maneuver.maneuver_type}</td>
+                <td>{maneuver.description}</td>
+                <td>{maneuver.ability}</td>
+                <td>{maneuver.toll}</td>
+                <td>{maneuver.yield}</td>
+                <td>{maneuver.weight}</td>
+                <td>{maneuver.paradigm}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
   );
 }

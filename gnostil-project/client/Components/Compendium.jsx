@@ -2,22 +2,14 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 
 export default function Compendium() {
-  const boxStyle = {
-      width: "30vw",
-      position: "absolute",
-      left: "50%",
-      top: "40%",
-      transform: "translate(60%, -50%)",
-      height: "33vw",
-      backgroundColor: "white",
-      overflow: "auto"
-  }
+
+  const [compendium, setCompendium] = useState([]);
 
   const getManeuvers = async () => {
     try {
-      const response = await fetch("/maneuvers");
+      const response = await fetch("http://localhost:3000/maneuvers");
       const maneuvers = await response.json();
-      console.log(maneuvers);
+      setCompendium(maneuvers);
     } catch (error) {
       console.error(error);
     }
@@ -26,6 +18,17 @@ export default function Compendium() {
   useEffect(() => {
     getManeuvers();
   }, []);
+
+  const boxStyle = {
+    width: "30vw",
+    position: "absolute",
+    left: "50%",
+    top: "40%",
+    transform: "translate(60%, -50%)",
+    height: "33vw",
+    backgroundColor: "white",
+    overflow: "auto"
+  }
 
   return (
       <div style={boxStyle}>
@@ -44,36 +47,19 @@ export default function Compendium() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Alfreds Futterkiste</td>
-              <td>Maria Anders</td>
-              <td>Germany</td>
-            </tr>
-            <tr>
-              <td>Centro comercial Moctezuma</td>
-              <td>Francisco Chang</td>
-              <td>Mexico</td>
-            </tr>
-            <tr>
-              <td>Ernst Handel</td>
-              <td>Roland Mendel</td>
-              <td>Austria</td>
-            </tr>
-            <tr>
-              <td>Island Trading</td>
-              <td>Helen Bennett</td>
-              <td>UK</td>
-            </tr>
-            <tr>
-              <td>Laughing Bacchus Winecellars</td>
-              <td>Yoshi Tannamuri</td>
-              <td>Canada</td>
-            </tr>
-            <tr>
-              <td>Magazzini Alimentari Riuniti</td>
-              <td>Giovanni Rovelli</td>
-              <td>Italy</td>
-            </tr>
+            {compendium.map((maneuver, index) => (
+              <tr key={index}>
+                <td>{maneuver.maneuver_name}</td>
+                <td>{maneuver.discipline}</td>
+                <td>{maneuver.maneuver_type}</td>
+                <td>{maneuver.description}</td>
+                <td>{maneuver.ability}</td>
+                <td>{maneuver.toll}</td>
+                <td>{maneuver.yield}</td>
+                <td>{maneuver.weight}</td>
+                <td>{maneuver.paradigm}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
