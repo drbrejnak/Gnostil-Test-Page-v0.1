@@ -3,65 +3,10 @@ import { useEffect, useState } from "react";
 
 const host = "http://localhost:3000"
 
-export default function Deck() {
+export default function Deck({ auth }) {
 
-  const [auth, setAuth] = useState([]);
   const [char, setChar] = useState([]);
   const [deck, setDeck] = useState([]);
-
-  const login = async(credentials)=> {
-    try {
-      //CHANGE THIS LATER
-      const body = {
-        "username": "admin",
-        "password": "password"
-      }
-      const response = await fetch(`${host}/login`, {
-        method: 'POST',
-        body: JSON.stringify(body),
-        headers: {
-          'Content-Type':'application/json',
-        }
-      });
-      const json = await response.json();
-
-      if(response.ok){
-        window.localStorage.setItem('token', json.token);
-        attemptLoginWithToken();
-      }
-      else {
-        console.log(json);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-};
-
-useEffect(()=> {
-  login();},
-  []);
-
-  const attemptLoginWithToken = async()=> {
-    const token = window.localStorage.getItem('token');
-    if(token){
-      const response = await fetch(`${host}/me`, {
-        headers: {
-          authorization: token
-        }
-      });
-      const json = await response.json();
-      if(response.ok){
-        setAuth(json);
-      }
-      else {
-        window.localStorage.removeItem('token');
-      }
-    }
-  };
-
-  useEffect(()=> {
-    attemptLoginWithToken();
-  }, []);
 
   useEffect(()=> {
     const fetchCharacters = async()=> {
@@ -85,7 +30,6 @@ useEffect(()=> {
     }
   }, [auth]);
 
-
   useEffect(()=> {
     const fetchCharDeck = async()=> {
       const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
@@ -100,13 +44,74 @@ useEffect(()=> {
         console.log(deck)
       }
     };
-    if(auth.id){
+    if(auth.id && char.id){
       fetchCharDeck();
     }
     else {
       setDeck([]);
     }
   }, [char]);
+
+  const addToDeck = async (maneuver_id) => {
+    const deck_id = char.deck_id;
+    const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: window.localStorage.getItem('token'),
+      },
+      body: JSON.stringify({ maneuver_id, deck_id }),
+    });
+
+    if (response.ok) {
+
+      // Refetch the deck to update the state
+      const fetchCharDeck = async () => {
+        const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
+          headers: {
+            authorization: window.localStorage.getItem('token'),
+          },
+        });
+        const json = await response.json();
+        if (response.ok) {
+          setDeck(json);
+        }
+      };
+
+      fetchCharDeck();
+    }
+  };
+
+  const removeFromDeck = async (maneuver_id) => {
+    console.log(maneuver_id);
+    const deck_id = char.deck_id;
+    const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: window.localStorage.getItem('token'),
+      },
+      body: JSON.stringify({ maneuver_id, deck_id }),
+    });
+
+    if (response.ok) {
+
+      // Refetch the deck to update the state
+      const fetchCharDeck = async () => {
+        const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
+          headers: {
+            authorization: window.localStorage.getItem('token'),
+          },
+        });
+        const json = await response.json();
+        if (response.ok) {
+          setDeck(json);
+        }
+      };
+
+      fetchCharDeck();
+    }
+  };
 
   const boxStyle = {
     maxWidth: "30vw",
@@ -118,13 +123,20 @@ useEffect(()=> {
     backgroundColor: "white",
     overflow: "auto"
   }
-  console.log(auth)
 
   return (
-      <div style={boxStyle}>
+      <div
+      style={boxStyle}
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        const data = e.dataTransfer.getData("text");
+        addToDeck(data);}}
+      >
         <table>
           <thead>
             <tr>
+              <th>Delete</th>
               <th>Name</th>
               <th>Discipline</th>
               <th>Type</th>
@@ -139,6 +151,7 @@ useEffect(()=> {
           <tbody>
             {deck.map((maneuver, index) => (
               <tr key={index}>
+                <button onClick={() => removeFromDeck(maneuver.id)}>Remove</button>
                 <td>{maneuver.maneuver_name}</td>
                 <td>{maneuver.discipline}</td>
                 <td>{maneuver.maneuver_type}</td>

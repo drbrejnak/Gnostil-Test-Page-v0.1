@@ -6,7 +6,9 @@ const {
   authenticate,
   findUserWithToken,
   fetchUsers,
-  fetchCharacters
+  fetchCharacters,
+  addToDeck,
+  removeFromDeck
 } = require('../db/db');
 const express = require('express');
 const cors = require('cors');
@@ -90,6 +92,34 @@ router.get('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, async(r
       throw error;
     }
     res.send(await fetchDeckManeuvers(await fetchDeck(req.params.deckId)))
+  } catch(err) {
+    next(err);
+  }
+});
+
+router.post('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, async(req, res, next)=> {
+  try {
+    if(req.params.userId !== req.user.id){
+      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
+      const error = Error('not authorized');
+      error.status = 401;
+      throw error;
+    }
+    res.send(await addToDeck(req.body));
+  } catch(err) {
+    next(err);
+  }
+});
+
+router.delete('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, async(req, res, next)=> {
+  try {
+    if(req.params.userId !== req.user.id){
+      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
+      const error = Error('not authorized');
+      error.status = 401;
+      throw error;
+    }
+    res.send(await removeFromDeck(req.body));
   } catch(err) {
     next(err);
   }

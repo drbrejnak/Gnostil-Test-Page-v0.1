@@ -45,21 +45,30 @@ const fetchDeckManeuvers = async(ids)=> {
 
 const addToDeck = async({maneuver_id, deck_id})=> {
   const SQL = `
-    INSERT INTO character_deck(maneuver_id, deck_id) VALUES ($1, $2)
+    INSERT INTO character_deck(maneuver_id, deck_id) VALUES ($1, $2) RETURNING maneuver_id
   `;
-  await client.query(SQL, [maneuver_id, deck_id]);
+  const response = await client.query(SQL, [maneuver_id, deck_id]);
+  return response.rows[0];
 }
 
 // addToDeck({maneuver_id: '7', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
 // addToDeck({maneuver_id: '9', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
 // addToDeck({maneuver_id: '102', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
 
-const removeFromDeck = async({deck_id, maneuver_id})=> {
+const removeFromDeck = async({maneuver_id, deck_id})=> {
   const SQL = `
-    DELETE FROM character_deck WHERE id = $1 AND maneuver_id = $2
+    DELETE FROM character_deck WHERE maneuver_id = $1 AND deck_id = $2
   `;
-  await client.query(SQL, [deck_id, maneuver_id]);
+  await client.query(SQL, [maneuver_id, deck_id]);
 }
+
+// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '5'});
+// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '2'});
+// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '3'});
+// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '6'});
+// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '7'});
+// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '90'});
+// removeFromDeck({deck_id: '161063af-ca6e-4701-a28c-4103753def14', maneuver_id: '90'});
 
 const createUser = async({ username, password })=> {
   const SQL = `
@@ -147,5 +156,7 @@ module.exports = {
   authenticate,
   findUserWithToken,
   fetchUsers,
-  fetchCharacters
+  fetchCharacters,
+  addToDeck,
+  removeFromDeck
 };

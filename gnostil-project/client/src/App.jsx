@@ -13,8 +13,12 @@ import Reaction from "../Maneuver_Properties/Reaction";
 import Inciting from "../Maneuver_Properties/Inciting";
 import Compendium from "../Components/Compendium";
 import Deck from "../Components/Deck";
+import { Login } from "../Components/Login";
+import { useState } from "react";
 
 function App() {
+  const [auth, setAuth] = useState({});
+
   return (
     <>
       <div className="container">
@@ -31,7 +35,8 @@ function App() {
         {/* <Modify /> */}
         {/* <Reaction /> */}
       </div>
-      <Deck />
+      <Login setAuth={setAuth} />
+      <Deck auth={auth} />
       <Compendium />
     </>
   );
