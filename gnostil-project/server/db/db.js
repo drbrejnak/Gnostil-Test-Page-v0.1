@@ -70,6 +70,14 @@ const removeFromDeck = async({maneuver_id, deck_id})=> {
 // removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '90'});
 // removeFromDeck({deck_id: '161063af-ca6e-4701-a28c-4103753def14', maneuver_id: '90'});
 
+const addToHand = async({maneuver_id, deck_id, hand_id, position, macro})=> {
+  const SQL = `
+    INSERT INTO character_hand(maneuver_id, deck_id, hand_id, position, macro) VALUES ($1, $2, $3, $4, $5) RETURNING maneuver_id
+  `;
+  const response = await client.query(SQL, [maneuver_id, deck_id, hand_id, position, macro]);
+  return response.rows[0];
+}
+
 const createUser = async({ username, password })=> {
   const SQL = `
     INSERT INTO users(id, username, password) VALUES($1, $2, $3) RETURNING *
@@ -78,15 +86,17 @@ const createUser = async({ username, password })=> {
   return response.rows[0];
 };
 
+// createUser({ username: 'test', password: 'test' });
+
 const createCharacter = async({ user_id })=> {
   const SQL = `
-    INSERT INTO characters(id, user_id, deck_id) VALUES($1, $2, $3) RETURNING *
+    INSERT INTO characters(id, user_id, deck_id, hand_id) VALUES($1, $2, $3, $4) RETURNING *
   `;
-  const response = await client.query(SQL, [uuid.v4(), user_id, uuid.v4()]);
+  const response = await client.query(SQL, [uuid.v4(), user_id, uuid.v4(), uuid.v4()]);
   return response.rows[0];
 };
 
-// createCharacter({ user_id: 'b493ebe6-2327-44e7-9437-782ae29ab93e' });
+// createCharacter({ user_id: '0127b82b-7603-493a-8ca1-f79cd9723b71' });
 
 const deleteCharacter = async({ id })=> {
   const SQL = `

@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 
 const host = "http://localhost:3000"
 
-export default function Deck({ auth }) {
+export default function Deck({ auth, deck, setDeck }) {
 
   const [char, setChar] = useState([]);
-  const [deck, setDeck] = useState([]);
 
   useEffect(()=> {
     const fetchCharacters = async()=> {

@@ -15,9 +15,11 @@ import Compendium from "../Components/Compendium";
 import Deck from "../Components/Deck";
 import { Login } from "../Components/Login";
 import { useState } from "react";
+import Hand from "../Components/Hand";
 
 function App() {
   const [auth, setAuth] = useState({});
+  const [deck, setDeck] = useState([]);
 
   return (
     <>
@@ -36,8 +38,9 @@ function App() {
         {/* <Reaction /> */}
       </div>
       <Login setAuth={setAuth} />
-      <Deck auth={auth} />
+      <Deck auth={auth} deck={deck} setDeck={setDeck} />
       <Compendium />
+      <Hand deck={deck} />
     </>
   );
 }
