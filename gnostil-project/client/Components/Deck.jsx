@@ -130,7 +130,8 @@ export default function Deck({ auth, deck, setDeck }) {
       onDrop={(e) => {
         e.preventDefault();
         const data = e.dataTransfer.getData("application/x-id");
-        addToDeck(data);}}
+        addToDeck(data);
+      }}
       >
         <table>
           <thead>
@@ -151,10 +152,15 @@ export default function Deck({ auth, deck, setDeck }) {
             {deck.map((maneuver, index) => (
               <tr
               key={index}
-              onDragStart={(e) => e.dataTransfer.setData("application/x-name", maneuver.maneuver_name)}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData("application/x-maneuver", JSON.stringify({ name: maneuver.maneuver_name, id: maneuver.id }));
+              }}
               style={{ cursor: "grab" }}
               >
-                <button onClick={() => removeFromDeck(maneuver.id)}>Remove</button>
+                <td>
+                  <button onClick={() => removeFromDeck(maneuver.id)}>Remove</button>
+                </td>
                 <td>{maneuver.maneuver_name}</td>
                 <td>{maneuver.discipline}</td>
                 <td>{maneuver.maneuver_type}</td>

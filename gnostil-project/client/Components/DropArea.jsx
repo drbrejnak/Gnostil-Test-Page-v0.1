@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 
-const DropArea = () => {
+const DropArea = ({onDrop}) => {
     const [showDrop, setShowDrop] = useState(false)
 
     const areaStyle = {
@@ -17,20 +17,38 @@ const DropArea = () => {
     }
 
     const hideDrop = {
-        width: "10px",
+        width: "25px",
         height: "50px",
         opacity: 0
     }
 
+
+
+
 return (
     <section
-        onDragEnter={() => setShowDrop(true)}
+        onDragEnter={(e) => {
+            if (e.dataTransfer.types.includes("text/plain") || e.dataTransfer.types.includes("application/x-maneuver")) {
+                setShowDrop(true);
+            }
+        }}
         onDragLeave={() => setShowDrop(false)}
-        style={showDrop ? areaStyle : hideDrop }
+        onDrop={(e) => {
+            if (e.dataTransfer.types.includes("text/plain")) {
+                const data = JSON.parse(e.dataTransfer.getData("text/plain"));
+                onDrop(data); // Pass the dragged data to the parent
+                setShowDrop(false);
+            } else if(e.dataTransfer.types.includes("application/x-maneuver")){
+                const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
+                    onDrop(data); // Pass the dragged data to the parent
+                    setShowDrop(false);
+            }
+        }}
+        style={showDrop ? areaStyle : hideDrop}
     >
         +
     </section>
-    )
+)
 }
 
 export default DropArea

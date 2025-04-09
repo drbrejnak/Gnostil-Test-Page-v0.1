@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Card({ name, index, setActiveCard }) {
+function Card({ card, index, setActiveCard }) {
 
     const cardStyle = {
         minWidth: "100px",
@@ -8,29 +8,33 @@ function Card({ name, index, setActiveCard }) {
         backgroundColor: "white",
         overflow: "auto",
         border: "1px solid black",
-        margin: "10px",
+        margin: "5px",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         cursor: "grab"
     }
 
-    const handleDragStart = () => {
-        // e.dataTransfer.setData("text", name)
+    const handleDragStart = (e) => {
+        e.dataTransfer.setData("text/plain", JSON.stringify(card))
         setActiveCard(index)
     }
 
-  return (
+if (!card.name || Object.keys(card).length === 0) {
+    return null;
+}
+
+return (
     <div
-    style={cardStyle}
-    draggable
-    key={index}
-    onDragStart={handleDragStart}
-    onDragEnd={() => setActiveCard(null)}
+            style={cardStyle}
+            draggable
+            key={index}
+            onDragStart={handleDragStart}
+            onDragEnd={() => setActiveCard(null)}
     >
-    {name}
+    {card.name}
     </div>
-  )
+)
 }
 
 export default Card
