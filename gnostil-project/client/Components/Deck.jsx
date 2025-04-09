@@ -129,7 +129,7 @@ export default function Deck({ auth, deck, setDeck }) {
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();
-        const data = e.dataTransfer.getData("text");
+        const data = e.dataTransfer.getData("application/x-id");
         addToDeck(data);}}
       >
         <table>
@@ -149,7 +149,11 @@ export default function Deck({ auth, deck, setDeck }) {
           </thead>
           <tbody>
             {deck.map((maneuver, index) => (
-              <tr key={index}>
+              <tr
+              key={index}
+              onDragStart={(e) => e.dataTransfer.setData("application/x-name", maneuver.maneuver_name)}
+              style={{ cursor: "grab" }}
+              >
                 <button onClick={() => removeFromDeck(maneuver.id)}>Remove</button>
                 <td>{maneuver.maneuver_name}</td>
                 <td>{maneuver.discipline}</td>

@@ -14,12 +14,21 @@ import Inciting from "../Maneuver_Properties/Inciting";
 import Compendium from "../Components/Compendium";
 import Deck from "../Components/Deck";
 import { Login } from "../Components/Login";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Hand from "../Components/Hand";
+
+const prevCards = localStorage.getItem("cards")
 
 function App() {
   const [auth, setAuth] = useState({});
   const [deck, setDeck] = useState([]);
+  const [cards, setCards] = useState(JSON.parse(prevCards) || []);
+  const [activeCard, setActiveCard] = useState(null)
+
+  useEffect(() => {
+    localStorage.setItem("cards", JSON.stringify(cards));
+  }, [cards]);
+  console.log(cards)
 
   return (
     <>
@@ -40,7 +49,7 @@ function App() {
       <Login setAuth={setAuth} />
       <Deck auth={auth} deck={deck} setDeck={setDeck} />
       <Compendium />
-      <Hand deck={deck} />
+      <Hand deck={deck} cards={cards} setCards={setCards} setActiveCard={setActiveCard} />
     </>
   );
 }
