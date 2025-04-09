@@ -45,7 +45,8 @@ export default function Hand({ auth, deck, cards, setCards, setActiveCard, onDro
             updatedCards.splice(position, 0, data);
 
             // Recalculate positions for all cards
-            return updatedCards.map((card, index) => ({
+            return updatedCards
+            .map((card, index) => ({
             ...card,
             position: index, // Assign the new index as the position
             }));
@@ -62,12 +63,7 @@ export default function Hand({ auth, deck, cards, setCards, setActiveCard, onDro
               e.preventDefault();
               if (e.dataTransfer.types.includes("application/x-maneuver")) {
                   const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
-                  setCards((prevCards) => {
-                      if (!prevCards.some(card => card.name === data.name)) {
-                          return [...prevCards, data];
-                      }
-                      return prevCards;
-                  });
+                  handleDrop(data, 0)
               }
             }}
         >
@@ -84,7 +80,9 @@ export default function Hand({ auth, deck, cards, setCards, setActiveCard, onDro
                 <div key={index} style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                     <Card index={index} card={card} setActiveCard={setActiveCard} />
                     <DropArea index={index} onDrop={(data) => {
-                        if(data.position === index || data.position - 1 === index) {
+                        if(data.position === undefined){
+                            handleDrop(data, index + 1)
+                        } else if(data.position === index || data.position - 1 === index) {
                             handleDrop(data, data.position);
                         } else if(index === 0) {
                             handleDrop(data, index + 1)

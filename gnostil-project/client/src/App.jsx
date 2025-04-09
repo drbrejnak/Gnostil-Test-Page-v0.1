@@ -22,7 +22,7 @@ const prevCards = localStorage.getItem("cards")
 function App() {
   const [auth, setAuth] = useState({});
   const [deck, setDeck] = useState([]);
-  const [cards, setCards] = useState(JSON.parse(prevCards)?.filter((card) => card.name && card.id) || [{}]);
+  const [cards, setCards] = useState(JSON.parse(prevCards)?.filter((card) => card.name && card.id) || []);
   const [activeCard, setActiveCard] = useState(null)
 
   // Update the `position` property for each card whenever `cards` changes
