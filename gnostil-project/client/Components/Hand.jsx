@@ -44,7 +44,11 @@ export default function Hand({ auth, deck, cards, setCards, setActiveCard, onDro
             // Insert the card at the new position
             updatedCards.splice(position, 0, data);
 
-            return updatedCards;
+            // Recalculate positions for all cards
+            return updatedCards.map((card, index) => ({
+            ...card,
+            position: index, // Assign the new index as the position
+            }));
         });
     };
 
@@ -79,7 +83,17 @@ export default function Hand({ auth, deck, cards, setCards, setActiveCard, onDro
             {cards.map((card, index) => (
                 <div key={index} style={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                     <Card index={index} card={card} setActiveCard={setActiveCard} />
-                    <DropArea onDrop={(data) => handleDrop(data, index + 1)} />
+                    <DropArea index={index} onDrop={(data) => {
+                        if(data.position === index || data.position - 1 === index) {
+                            handleDrop(data, data.position);
+                        } else if(index === 0) {
+                            handleDrop(data, index + 1)
+                        } else if(data.position > index){
+                            handleDrop(data, index + 1)
+                        } else {
+                            handleDrop(data, index)
+                        }
+                    }} />
                 </div>
             ))}
         </div>

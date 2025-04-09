@@ -26,17 +26,17 @@ function App() {
   const [activeCard, setActiveCard] = useState(null)
 
   // Update the `position` property for each card whenever `cards` changes
-  useEffect(() => {
-    const updatedCards = cards
-    .filter((card) => card.name && card.id)
-    .map((card, index) => ({
-      ...card,
-      position: index, // Assign the index as the position
-    }));
-    if (JSON.stringify(updatedCards) !== JSON.stringify(cards)) {
-      setCards(updatedCards);
-    }
-  }, [cards]);
+  // useEffect(() => {
+  //   const updatedCards = cards
+  //   .filter((card) => card.name && card.id)
+  //   .map((card, index) => ({
+  //     ...card,
+  //     position: index, // Assign the index as the position
+  //   }));
+  //   if (JSON.stringify(updatedCards) !== JSON.stringify(cards)) {
+  //     setCards(updatedCards);
+  //   }
+  // }, [cards]);
 
   useEffect(() => {
     localStorage.setItem("cards", JSON.stringify(cards.filter((card) => card.name && card.id)));

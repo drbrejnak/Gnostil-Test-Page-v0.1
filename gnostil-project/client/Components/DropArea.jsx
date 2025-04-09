@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState } from 'react'
 
-const DropArea = ({onDrop}) => {
+const DropArea = ({onDrop, index}) => {
     const [showDrop, setShowDrop] = useState(false)
 
     const areaStyle = {
@@ -46,7 +46,7 @@ return (
         }}
         style={showDrop ? areaStyle : hideDrop}
     >
-        +
+        {index}
     </section>
 )
 }
