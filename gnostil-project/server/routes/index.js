@@ -8,7 +8,10 @@ const {
   fetchUsers,
   fetchCharacters,
   addToDeck,
-  removeFromDeck
+  removeFromDeck,
+  addToHand,
+  fetchHand,
+  removeFromHand
 } = require('../db/db');
 const express = require('express');
 const cors = require('cors');
@@ -120,6 +123,48 @@ router.delete('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, asyn
       throw error;
     }
     res.send(await removeFromDeck(req.body));
+  } catch(err) {
+    next(err);
+  }
+});
+
+router.get('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
+  try {
+    if(req.params.userId !== req.user.id){
+      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
+      const error = Error('not authorized');
+      error.status = 401;
+      throw error;
+    }
+    res.send(await fetchDeckManeuvers(await fetchHand(req.params.handId)))
+  } catch(err) {
+    next(err);
+  }
+});
+
+router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
+  try {
+    if(req.params.userId !== req.user.id){
+      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
+      const error = Error('not authorized');
+      error.status = 401;
+      throw error;
+    }
+    res.send(await addToHand(req.body));
+  } catch(err) {
+    next(err);
+  }
+});
+
+router.delete('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
+  try {
+    if(req.params.userId !== req.user.id){
+      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
+      const error = Error('not authorized');
+      error.status = 401;
+      throw error;
+    }
+    res.send(await removeFromHand(req.body));
   } catch(err) {
     next(err);
   }

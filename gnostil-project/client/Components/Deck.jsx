@@ -82,7 +82,6 @@ export default function Deck({ auth, deck, setDeck }) {
   };
 
   const removeFromDeck = async (maneuver_id) => {
-    console.log(maneuver_id);
     const deck_id = char.deck_id;
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
       method: 'DELETE',
@@ -129,8 +128,8 @@ export default function Deck({ auth, deck, setDeck }) {
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
         e.preventDefault();
-        const data = e.dataTransfer.getData("application/x-id");
-        addToDeck(data);
+        const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
+        addToDeck(data.id);
       }}
       >
         <table>

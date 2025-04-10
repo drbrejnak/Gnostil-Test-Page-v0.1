@@ -39,6 +39,15 @@ const fetchDeckManeuvers = async(ids)=> {
   return response.rows;
 }
 
+const fetchHand = async(id) => {
+  const SQL = `
+    SELECT maneuver_id FROM character_hand WHERE hand_id = $1
+  `;
+  const response = await client.query(SQL, [id]);
+  const ids = response.rows.map(row => row.maneuver_id);
+  return ids;
+}
+
 // (async () => {
 //   await fetchDeckManeuvers(await fetchDeck('161063af-ca6e-4701-a28c-4103753def14'));
 // })();
@@ -76,6 +85,13 @@ const addToHand = async({maneuver_id, deck_id, hand_id, position, macro})=> {
   `;
   const response = await client.query(SQL, [maneuver_id, deck_id, hand_id, position, macro]);
   return response.rows[0];
+}
+
+const removeFromHand = async({maneuver_id, hand_id})=> {
+  const SQL = `
+    DELETE FROM character_hand WHERE maneuver_id = $1 AND hand_id = $2
+  `;
+  await client.query(SQL, [maneuver_id, hand_id]);
 }
 
 const createUser = async({ username, password })=> {
@@ -168,5 +184,8 @@ module.exports = {
   fetchUsers,
   fetchCharacters,
   addToDeck,
-  removeFromDeck
+  removeFromDeck,
+  addToHand,
+  fetchHand,
+  removeFromHand
 };

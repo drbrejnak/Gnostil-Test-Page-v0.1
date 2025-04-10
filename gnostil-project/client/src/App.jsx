@@ -25,36 +25,11 @@ function App() {
   const [cards, setCards] = useState(JSON.parse(prevCards)?.filter((card) => card.name && card.id) || []);
   const [activeCard, setActiveCard] = useState(null)
 
-  // Update the `position` property for each card whenever `cards` changes
-  // useEffect(() => {
-  //   const updatedCards = cards
-  //   .filter((card) => card.name && card.id)
-  //   .map((card, index) => ({
-  //     ...card,
-  //     position: index, // Assign the index as the position
-  //   }));
-  //   if (JSON.stringify(updatedCards) !== JSON.stringify(cards)) {
-  //     setCards(updatedCards);
-  //   }
-  // }, [cards]);
-
   useEffect(() => {
     localStorage.setItem("cards", JSON.stringify(cards.filter((card) => card.name && card.id)));
   }, [cards]);
 
   console.log(cards)
-
-  // const onDrop = (position) => {
-  //   console.log(`${activeCard} is going into position ${position}`)
-
-  //   if(activeCard === null || activeCard === undefined) return;
-  //   const cardToMove = cards[activeCard];
-  //   const updatedCards = cards.filter((card, index) => index !== activeCard)
-
-  //   updatedCards.splice(position, 0, cardToMove)
-
-  //   setCards(updatedCards)
-  // }
 
   return (
     <>
@@ -76,11 +51,11 @@ function App() {
       <Deck auth={auth} deck={deck} setDeck={setDeck} />
       <Compendium />
       <Hand
+      auth={auth}
       deck={deck}
       cards={cards}
       setCards={setCards}
       setActiveCard={setActiveCard}
-      // onDrop={onDrop}
       />
     </>
   );
