@@ -16,11 +16,13 @@ import Deck from "../Components/Deck";
 import { Login } from "../Components/Login";
 import { useState, useEffect } from "react";
 import Hand from "../Components/Hand";
+import CharSelect from "../Components/CharSelect";
 
 const prevCards = localStorage.getItem("cards")
 
 function App() {
   const [auth, setAuth] = useState({});
+  const [char, setChar] = useState([]);
   const [deck, setDeck] = useState([]);
   const [cards, setCards] = useState(JSON.parse(prevCards)?.filter((card) => card.name && card.id) || []);
   const [activeCard, setActiveCard] = useState(null)
@@ -29,18 +31,20 @@ function App() {
     localStorage.setItem("cards", JSON.stringify(cards.filter((card) => card.name && card.id)));
   }, [cards]);
 
-  console.log(cards)
+  console.log(char)
+  console.log(deck)
+  // console.log(cards)
 
   return (
     <>
       <div className="container">
         <Rings />
         <Combat />
-        {/* <Narrative /> */}
-        <Honorable />
-        {/* <Infamous /> */}
-        <Light />
-        {/* <Heavy /> */}
+        <Narrative />
+        {/* <Honorable /> */}
+        <Infamous />
+        {/* <Light /> */}
+        <Heavy />
         {/* <Attack /> */}
         {/* <Aura /> */}
         <Inciting />
@@ -48,14 +52,26 @@ function App() {
         {/* <Reaction /> */}
       </div>
       <Login setAuth={setAuth} />
-      <Deck auth={auth} deck={deck} setDeck={setDeck} />
+      <CharSelect
+        auth={auth}
+        char={char}
+        setChar={setChar}
+      />
+      <Deck
+        auth={auth}
+        char={char}
+        setChar={setChar}
+        deck={deck}
+        setDeck={setDeck}
+      />
       <Compendium />
       <Hand
-      auth={auth}
-      deck={deck}
-      cards={cards}
-      setCards={setCards}
-      setActiveCard={setActiveCard}
+        auth={auth}
+        deck={deck}
+        char={char}
+        cards={cards}
+        setCards={setCards}
+        setActiveCard={setActiveCard}
       />
     </>
   );

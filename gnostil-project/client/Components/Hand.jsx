@@ -6,30 +6,7 @@ import DropArea from "./DropArea";
 
 const host = "http://localhost:3000"
 
-export default function Hand({ auth, deck, cards, setCards, setActiveCard, onDrop }) {
-
-      const [char, setChar] = useState([]);
-
-      useEffect(()=> {
-        const fetchCharacters = async()=> {
-          const response = await fetch(`${host}/users/${auth.id}/characters`, {
-            headers: {
-              authorization: window.localStorage.getItem('token')
-            }
-          });
-          const json = await response.json();
-          //MAKE THIS USABLE FOR MULTIPLE CHARACTERS
-          if(response.ok){
-            setChar(json[0]);
-          }
-        };
-        if(auth.id){
-          fetchCharacters();
-        }
-        else {
-          setChar([]);
-        }
-      }, [auth]);
+export default function Hand({ auth, deck, char, cards, setCards, setActiveCard, onDrop }) {
 
     const [macro, setMacro] = useState(1);
 

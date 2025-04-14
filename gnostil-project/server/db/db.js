@@ -104,15 +104,17 @@ const createUser = async({ username, password })=> {
 
 // createUser({ username: 'test', password: 'test' });
 
-const createCharacter = async({ user_id })=> {
+const createCharacter = async({ user_id, char_name })=> {
   const SQL = `
-    INSERT INTO characters(id, user_id, deck_id, hand_id) VALUES($1, $2, $3, $4) RETURNING *
+    INSERT INTO characters(id, user_id, deck_id, hand_id, char_name) VALUES($1, $2, $3, $4, $5) RETURNING *
   `;
-  const response = await client.query(SQL, [uuid.v4(), user_id, uuid.v4(), uuid.v4()]);
+  const response = await client.query(SQL, [uuid.v4(), user_id, uuid.v4(), uuid.v4(), char_name]);
   return response.rows[0];
 };
 
 // createCharacter({ user_id: '0127b82b-7603-493a-8ca1-f79cd9723b71' });
+// createCharacter({ user_id: '0127b82b-7603-493a-8ca1-f79cd9723b71', char_name: "test2" });
+
 
 const deleteCharacter = async({ id })=> {
   const SQL = `

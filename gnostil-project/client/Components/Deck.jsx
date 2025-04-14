@@ -3,9 +3,7 @@ import { useEffect, useState } from "react";
 
 const host = "http://localhost:3000"
 
-export default function Deck({ auth, deck, setDeck }) {
-
-  const [char, setChar] = useState([]);
+export default function Deck({ auth, char, setChar, deck, setDeck }) {
 
   useEffect(()=> {
     const fetchCharacters = async()=> {
@@ -16,9 +14,9 @@ export default function Deck({ auth, deck, setDeck }) {
       });
       const json = await response.json();
       //MAKE THIS USABLE FOR MULTIPLE CHARACTERS
-      console.log(json[0]);
+      // console.log(json);
       if(response.ok){
-        setChar(json[0]);
+        setChar(Array.isArray(json) ? json : []);
       }
     };
     if(auth.id){
@@ -28,7 +26,10 @@ export default function Deck({ auth, deck, setDeck }) {
       setChar([]);
     }
   }, [auth]);
-
+  console.log(host)
+  console.log(auth.id)
+  console.log(char.id)
+  console.log(char.deck_id)
   useEffect(()=> {
     const fetchCharDeck = async()=> {
       const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
@@ -40,7 +41,7 @@ export default function Deck({ auth, deck, setDeck }) {
       console.log(json);
       if(response.ok){
         setDeck(json);
-        console.log(deck)
+        // console.log(deck)
       }
     };
     if(auth.id && char.id){
