@@ -31,10 +31,6 @@ function App() {
     localStorage.setItem("cards", JSON.stringify(cards.filter((card) => card.name && card.id)));
   }, [cards]);
 
-  console.log(char)
-  console.log(deck)
-  // console.log(cards)
-
   return (
     <>
       <div className="container">
@@ -60,7 +56,6 @@ function App() {
       <Deck
         auth={auth}
         char={char}
-        setChar={setChar}
         deck={deck}
         setDeck={setDeck}
       />

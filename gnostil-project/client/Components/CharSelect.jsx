@@ -1,28 +1,14 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-
-const host = "http://localhost:3000"
+import { fetchCharacters } from '.';
 
 const CharSelect = ({auth, char, setChar}) => {
 
 const [characters, setCharacters] = useState([])
 
   useEffect(()=> {
-    const fetchCharacters = async()=> {
-      const response = await fetch(`${host}/users/${auth.id}/characters`, {
-        headers: {
-          authorization: window.localStorage.getItem('token')
-        }
-      });
-      const json = await response.json();
-      //MAKE THIS USABLE FOR MULTIPLE CHARACTERS
-      console.log(json);
-      if(response.ok){
-        setCharacters(Array.isArray(json) ? json : []);
-      }
-    };
     if(auth.id){
-      fetchCharacters();
+      fetchCharacters(auth, setCharacters);
     }
     else {
       setCharacters([]);

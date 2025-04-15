@@ -1,62 +1,22 @@
 import { useState, useEffect } from 'react'
 const host = "http://localhost:3000"
+import { login, attemptLoginWithToken } from '.';
 
 export const Login = ({ setAuth })=> {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-    const login = async(credentials)=> {
-        try {
-            const response = await fetch(`${host}/login`, {
-            method: 'POST',
-            body: JSON.stringify(credentials),
-            headers: {
-                'Content-Type':'application/json',
-            }
-            });
-            const json = await response.json();
-
-            if(response.ok){
-            window.localStorage.setItem('token', json.token);
-            attemptLoginWithToken();
-            }
-            else {
-            console.log(json);
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
     useEffect(()=> {
-        login();},
+        login(setAuth, credentials);},
         []);
 
-    const attemptLoginWithToken = async()=> {
-        const token = window.localStorage.getItem('token');
-            if(token){
-            const response = await fetch(`${host}/me`, {
-                headers: {
-                authorization: token
-                }
-            });
-        const json = await response.json();
-            if(response.ok){
-                setAuth(json);
-            }
-            else {
-                window.localStorage.removeItem('token');
-            }
-        }
-    };
-
     useEffect(()=> {
-        attemptLoginWithToken();
+        attemptLoginWithToken(setAuth);
     }, []);
 
     const submit = ev => {
         ev.preventDefault();
-        login({ username, password });
+        login(setAuth, { username, password });
     }
 
     const logout = ev => {

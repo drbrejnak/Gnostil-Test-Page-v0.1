@@ -22,9 +22,6 @@ const DropArea = ({onDrop, index}) => {
         opacity: 0
     }
 
-
-
-
 return (
     <section
         onDragEnter={(e) => {

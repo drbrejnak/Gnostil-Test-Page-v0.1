@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import '../src/App.css'
 import Card from "./Card";
 import DropArea from "./DropArea";
+import { addToHand } from ".";
 
-const host = "http://localhost:3000"
-
-export default function Hand({ auth, deck, char, cards, setCards, setActiveCard, onDrop }) {
+export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
 
     const [macro, setMacro] = useState(1);
 
@@ -28,40 +27,6 @@ export default function Hand({ auth, deck, char, cards, setCards, setActiveCard,
         width: "100%",
         height: "100px"
     };
-
-    const addToHand = async (maneuver_id, position, macro) => {
-        const deck_id = char.deck_id;
-        const hand_id = char.hand_id;
-        console.log(maneuver_id)
-        console.log(position)
-        console.log(macro)
-        const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            authorization: window.localStorage.getItem('token'),
-          },
-          body: JSON.stringify({maneuver_id, deck_id, hand_id, position, macro}),
-        })
-
-        if (response.ok) {
-
-            // Refetch the hand to update the state
-            const fetchCharHand = async () => {
-              const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
-                headers: {
-                  authorization: window.localStorage.getItem('token'),
-                },
-              });
-              const json = await response.json();
-              if (response.ok) {
-                console.log('ok', json)
-              }
-            };
-
-            fetchCharHand();
-          }
-        };
 
     const handleDrop = (data, position, macro) => {
         setCards((prevCards) => {
@@ -86,10 +51,8 @@ export default function Hand({ auth, deck, char, cards, setCards, setActiveCard,
             macro: macro
             }));
         });
-        addToHand(data.id, position, macro)
+        addToHand(auth, char, data.id, position, macro)
     };
-
-    // localStorage.clear();
 
     return (
         <div
