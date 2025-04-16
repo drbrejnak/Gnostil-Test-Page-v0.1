@@ -21,7 +21,7 @@ export const Login = ({ setAuth })=> {
 
     const logout = ev => {
         ev.preventDefault();
-        window.localStorage.removeItem('token');
+        localStorage.clear();
         setAuth({});
     };
 
