@@ -20,7 +20,7 @@ function Card({ card, index, setActiveCard }) {
         setActiveCard(index)
     }
 
-if (!card.name || Object.keys(card).length === 0) {
+if (!card.maneuver_name || Object.keys(card).length === 0) {
     return null;
 }
 
@@ -32,7 +32,7 @@ return (
             onDragStart={handleDragStart}
             onDragEnd={() => setActiveCard(null)}
     >
-    {card.name}
+    {card.maneuver_name}
     </div>
 )
 }

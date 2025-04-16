@@ -48,7 +48,17 @@ export default function Compendium() {
           </thead>
           <tbody>
             {compendium.map((maneuver, index) => (
-              <tr key={index} draggable onDragStart={(e) => e.dataTransfer.setData("application/x-maneuver", JSON.stringify({ name: maneuver.maneuver_name, id: maneuver.id }))}>
+              <tr key={index} draggable onDragStart={(e) => e.dataTransfer.setData("application/x-maneuver", JSON.stringify({
+                id: maneuver.id,
+                maneuver_name: maneuver.maneuver_name,
+                discipline: maneuver.discipline,
+                maneuver_type: maneuver.maneuver_type,
+                description: maneuver.description,
+                ability: maneuver.ability,
+                toll: maneuver.toll,
+                yield: maneuver.yield,
+                weight: maneuver.weight,
+                paradigm: maneuver.paradigm}))}>
                 <td>{maneuver.maneuver_name}</td>
                 <td>{maneuver.discipline}</td>
                 <td>{maneuver.maneuver_type}</td>

@@ -18,18 +18,12 @@ import { useState, useEffect } from "react";
 import Hand from "../Components/Hand";
 import CharSelect from "../Components/CharSelect";
 
-const prevCards = localStorage.getItem("cards")
-
 function App() {
   const [auth, setAuth] = useState({});
   const [char, setChar] = useState([]);
   const [deck, setDeck] = useState([]);
-  const [cards, setCards] = useState(JSON.parse(prevCards)?.filter((card) => card.name && card.id) || []);
+  const [cards, setCards] = useState([]);
   const [activeCard, setActiveCard] = useState(null)
-
-  useEffect(() => {
-    localStorage.setItem("cards", JSON.stringify(cards.filter((card) => card.name && card.id)));
-  }, [cards]);
 
   return (
     <>

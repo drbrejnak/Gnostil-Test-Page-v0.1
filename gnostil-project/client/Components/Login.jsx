@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-const host = "http://localhost:3000"
 import { login, attemptLoginWithToken } from '.';
 
 export const Login = ({ setAuth })=> {
@@ -7,8 +6,9 @@ export const Login = ({ setAuth })=> {
   const [password, setPassword] = useState('');
 
     useEffect(()=> {
-        login(setAuth, credentials);},
-        []);
+        const credentials = { username, password };
+        login(setAuth, credentials);
+    },[]);
 
     useEffect(()=> {
         attemptLoginWithToken(setAuth);

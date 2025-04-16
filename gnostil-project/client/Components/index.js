@@ -1,4 +1,3 @@
-
 const host = "http://localhost:3000"
 
 export const login = async(setAuth, credentials)=> {
@@ -101,9 +100,7 @@ export const removeFromDeck = async (auth, char, setDeck, maneuver_id) => {
     }
 };
 
-export const fetchCharHand = async (auth, char) => {
-    console.log(auth)
-    console.log(char)
+export const fetchCharHand = async (auth, char, setCards) => {
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
       headers: {
         authorization: window.localStorage.getItem('token'),
@@ -111,11 +108,11 @@ export const fetchCharHand = async (auth, char) => {
     });
     const json = await response.json();
     if (response.ok) {
-      console.log('ok', json)
+      setCards(json)
     }
 };
 
-export const addToHand = async (auth, char, maneuver_id, position, macro) => {
+export const addToHand = async (auth, char, setCards, maneuver_id, position, macro) => {
     const deck_id = char.deck_id;
     const hand_id = char.hand_id;
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
@@ -128,6 +125,6 @@ export const addToHand = async (auth, char, maneuver_id, position, macro) => {
     })
     if (response.ok) {
         // Refetch the hand to update the state
-        fetchCharHand(auth, char);
+        fetchCharHand(auth, char, setCards);
     }
 };
