@@ -17,7 +17,7 @@ const DropArea = ({onDrop, index}) => {
     }
 
     const hideDrop = {
-        width: "25px",
+        width: "5px",
         height: "50px",
         opacity: 0
     }
@@ -25,7 +25,7 @@ const DropArea = ({onDrop, index}) => {
 return (
     <section
         onDragEnter={(e) => {
-            if (e.dataTransfer.types.includes("text/plain") || e.dataTransfer.types.includes("application/x-maneuver")) {
+            if (e.dataTransfer.types.includes("text/plain")) {
                 setShowDrop(true);
             }
         }}

@@ -13,6 +13,7 @@ export default function Deck({ auth, char, deck, setDeck }) {
     const [filterParadigm, setFilterParadigm] = useState("");
     const [showFilters, setShowFilters] = useState(false); // State to toggle filters
     const [sortConfig, setSortConfig] = useState({ key: null, direction: null }); // Sorting state
+    const [isDragging, setIsDragging] = useState(false); // State to track if a card is being dragged over the deck area
 
   const deckToRender = auth.id ? deck : localDeck; // Use the appropriate deck based on authentication
 
@@ -41,6 +42,7 @@ export default function Deck({ auth, char, deck, setDeck }) {
 
   const handleDrop = (e) => {
     e.preventDefault();
+    setIsDragging(false); // Hide the drop area after dropping
     const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
 
     if (auth.id) {
@@ -141,12 +143,29 @@ const handleSort = (key) => {
     overflow: "auto",
   };
 
+  const dropAreaStyle = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(0, 0, 0, 0.2)", // Semi-transparent black
+    display: isDragging ? "block" : "none", // Show only when dragging
+    zIndex: 1,
+  };
+
   return (
     <div
       style={boxStyle}
-      onDragOver={(e) => e.preventDefault()}
+      onDragOver={(e) => {
+        e.preventDefault();
+        setIsDragging(true)
+      }}
+      onDragLeave={() => setIsDragging(false)} // Hide the drop area when dragging out
       onDrop={handleDrop}
     >
+    {/* Drop Area Overlay */}
+    <div style={dropAreaStyle}></div>
     {/* Search Bar */}
     <div style={{ marginBottom: "10px", padding: "10px" }}>
       <input
