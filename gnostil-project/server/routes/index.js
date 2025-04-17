@@ -11,7 +11,8 @@ const {
   removeFromDeck,
   addToHand,
   fetchHand,
-  removeFromHand
+  removeFromHand,
+  updateCardsInHand
 } = require('../db/db');
 const express = require('express');
 const cors = require('cors');
@@ -136,7 +137,7 @@ router.get('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLogg
       error.status = 401;
       throw error;
     }
-    res.send(await fetchDeckManeuvers(await fetchHand(req.params.handId)))
+    res.send(await fetchHand(req.params.handId))
   } catch(err) {
     next(err);
   }
@@ -151,6 +152,21 @@ router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLog
       throw error;
     }
     res.send(await addToHand(req.body));
+  } catch(err) {
+    next(err);
+  }
+});
+
+router.put('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
+  try {
+    if(req.params.userId !== req.user.id){
+      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
+      const error = Error('not authorized');
+      error.status = 401;
+      throw error;
+    }
+    console.log(req.body);
+    res.send(await updateCardsInHand({hand_id: req.params.handId, cards: req.body}));
   } catch(err) {
     next(err);
   }

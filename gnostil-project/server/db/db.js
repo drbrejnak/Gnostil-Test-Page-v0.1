@@ -39,14 +39,25 @@ const fetchDeckManeuvers = async(ids)=> {
   return response.rows;
 }
 
-const fetchHand = async(id) => {
+const fetchHand = async (hand_id) => {
   const SQL = `
-    SELECT maneuver_id FROM character_hand WHERE hand_id = $1
+    SELECT
+      character_hand.maneuver_id,
+      character_hand.position,
+      character_hand.macro,
+      maneuvers.*
+    FROM
+      character_hand
+    JOIN
+      maneuvers
+    ON
+      character_hand.maneuver_id = maneuvers.id
+    WHERE
+      character_hand.hand_id = $1
   `;
-  const response = await client.query(SQL, [id]);
-  const ids = response.rows.map(row => row.maneuver_id);
-  return ids;
-}
+  const response = await client.query(SQL, [hand_id]);
+  return response.rows; // Return all rows with maneuver, position, and macro data
+};
 
 // (async () => {
 //   await fetchDeckManeuvers(await fetchDeck('161063af-ca6e-4701-a28c-4103753def14'));
@@ -93,6 +104,20 @@ const removeFromHand = async({maneuver_id, hand_id})=> {
   `;
   await client.query(SQL, [maneuver_id, hand_id]);
 }
+
+const updateCardsInHand = async ({ hand_id, cards }) => {
+  for (const card of cards) {
+    console.log("Processing card:", card); // Debugging
+    const SQL = `
+      UPDATE character_hand
+      SET position = $1
+      WHERE hand_id = $2 AND maneuver_id = $3
+      RETURNING maneuver_id;
+    `;
+    const response = await client.query(SQL, [card.position, hand_id, card.id]);
+    console.log("Updated card:", response.rows[0]); // Debugging
+  }
+};
 
 const createUser = async({ username, password })=> {
   const SQL = `
@@ -189,5 +214,6 @@ module.exports = {
   removeFromDeck,
   addToHand,
   fetchHand,
-  removeFromHand
+  removeFromHand,
+  updateCardsInHand
 };

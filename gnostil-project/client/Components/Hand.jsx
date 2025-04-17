@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import "../src/App.css";
 import Card from "./Card";
 import DropArea from "./DropArea";
-import { fetchCharHand, addToHand } from ".";
+import { fetchCharHand, addToHand, updateCardsInHand } from ".";
 
 export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
   const [localCards, setLocalCards] = useState([]); // Local cards state for unauthenticated users
@@ -62,34 +62,40 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
     display: isDragging ? "block" : "none", // Show only when dragging
     zIndex: 1,
   };
-
+  console.log(cards)
   const handleDrop = (data, position, macro) => {
     setIsDragging(false); // Hide the drop area after dropping
     if (auth.id) {
-      setCards((prevCards) => {
-        const updatedCards = [...prevCards];
+    setCards((prevCards) => {
+      const updatedCards = [...prevCards];
 
-        // Check if the card is already in the hand
-        const existingIndex = updatedCards.findIndex(
-          (card) => card.maneuver_name === data.maneuver_name
-        );
+      // Check if the card is already in the hand
+      const existingIndex = updatedCards.findIndex(
+        (card) => card.maneuver_name === data.maneuver_name
+      );
 
-        if (existingIndex !== -1) {
-          // Remove the card from its original position
-          updatedCards.splice(existingIndex, 1);
-        }
+      if (existingIndex !== -1) {
+        // Remove the card from its original position
+        updatedCards.splice(existingIndex, 1);
+      }
 
-        // Insert the card at the new position
-        updatedCards.splice(position, 0, data);
+      // Insert the card at the new position
+      updatedCards.splice(position, 0, data);
 
-        // Recalculate positions for all cards
-        return updatedCards.map((card, index) => ({
-          ...card,
-          position: index, // Assign the new index as the position
-          macro: macro,
-        }));
-      });
-      addToHand(auth, char, setCards, data.id, position, macro);
+      // Recalculate positions for all cards
+      const newCards = updatedCards.map((card, index) => ({
+        ...card,
+        position: index, // Assign the new index as the position
+        macro: macro,
+      }));
+
+      updateCardsInHand(auth, char, newCards, setCards);
+      return newCards;
+    });
+      const cardExists = cards.some((card) => card.maneuver_name === data.maneuver_name);
+      if (!cardExists) {
+          addToHand(auth, char, setCards, data.id, position, macro);
+      }
     } else {
       setLocalCards((prevCards) => {
         const updatedCards = [...prevCards];
@@ -117,14 +123,23 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
     }
   };
 
+// useEffect(() => {
+//     if (auth.id) {
+//         updateCardsInHand(auth, char, cards, setCards);
+//     }
+// }, [auth]);
+
   const handToRender = auth.id ? cards : localCards;
+  const sortedHandToRender = [...handToRender].sort((a, b) => a.position - b.position);
 
   return (
     <div
       style={{ ...boxStyle, display: "flex", flexDirection: "row", alignItems: "center" }}
       onDragOver={(e) => {
         e.preventDefault();
-        setIsDragging(true); // Show the drop area when dragging over
+        if(e.dataTransfer.types.includes("application/x-maneuver")) {
+            setIsDragging(true); // Show the drop area when dragging over
+        }
       }}
       onDragLeave={() => setIsDragging(false)} // Hide the drop area when dragging out
       onDrop={(e) => {
@@ -149,7 +164,7 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
         <option value={3}>3</option>
       </select>
       <DropArea onDrop={(data) => handleDrop(data, 0, macro)} />
-      {handToRender.map((card, index) => (
+      {sortedHandToRender.map((card, index) => (
         <div
           key={index}
           style={{ display: "flex", flexDirection: "row", alignItems: "center" }}

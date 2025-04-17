@@ -128,3 +128,18 @@ export const addToHand = async (auth, char, setCards, maneuver_id, position, mac
         fetchCharHand(auth, char, setCards);
     }
 };
+
+export const updateCardsInHand = async (auth, char, cards, setCards) => {
+  const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
+    method: 'PUT',
+    headers: {
+    'Content-Type': 'application/json',
+    authorization: window.localStorage.getItem('token'),
+    },
+    body: JSON.stringify(cards),
+  });
+  // if (response.ok) {
+  //   // Refetch the hand to update the state
+  //   await fetchCharHand(auth, char, setCards);
+  // }
+}
