@@ -17,6 +17,7 @@ import { Login } from "../Components/Login";
 import { useState, useEffect } from "react";
 import Hand from "../Components/Hand";
 import CharSelect from "../Components/CharSelect";
+import ExaminationArea from "../Components/ExaminationArea";
 
 function App() {
   const [auth, setAuth] = useState({});
@@ -27,20 +28,7 @@ function App() {
 
   return (
     <>
-      <div className="container">
-        <Rings />
-        <Combat />
-        <Narrative />
-        {/* <Honorable /> */}
-        <Infamous />
-        {/* <Light /> */}
-        <Heavy />
-        {/* <Attack /> */}
-        {/* <Aura /> */}
-        <Inciting />
-        {/* <Modify /> */}
-        {/* <Reaction /> */}
-      </div>
+      <ExaminationArea />
       <Login setAuth={setAuth} />
       <CharSelect
         auth={auth}
