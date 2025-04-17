@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import "../src/App.css";
-import Card from "./Card";
+import Card from "./HandCard";
 import DropArea from "./DropArea";
 import { fetchCharHand, addToHand, updateCardsInHand } from ".";
 
@@ -47,9 +47,9 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
     justifyContent: "center",
     alignItems: "flex-end",
     position: "absolute",
-    bottom: 50,
+    bottom: 10,
     width: "100%",
-    height: "100px",
+    height: "25%",
   };
 
   const dropAreaStyle = {
@@ -167,7 +167,7 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
       {sortedHandToRender.map((card, index) => (
         <div
           key={index}
-          style={{ display: "flex", flexDirection: "row", alignItems: "center" }}
+          style={{ display: "flex", flexDirection: "row", alignItems: "center", height: "66%" }}
         >
           <Card index={index} card={card} setActiveCard={setActiveCard} />
           <DropArea
