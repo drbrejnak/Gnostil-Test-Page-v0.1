@@ -142,31 +142,43 @@ const ExaminationArea = () => {
       {/* Group 2: Honorable & Infamous */}
         <div
           style={{
-            opacity: fade3 ? 1 : 0,
+            opacity: fade2 ? 1 : 0,
             transition: "opacity 0.5s ease-in-out", // Fade effect
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            animation: "spinClockwise 60s linear infinite", // Clockwise rotation
           }}
         >
-          {SelectedSVG3 && <SelectedSVG3 />}
+          {SelectedSVG2 && <SelectedSVG2 />}
       </div>
 
       {/* Group 3: Light & Heavy */}
         <div
           style={{
-            opacity: fade4 ? 1 : 0,
+            opacity: fade3 ? 1 : 0,
             transition: "opacity 0.5s ease-in-out", // Fade effect
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            animation: "spinCounterClockwise 30s linear infinite", // Clockwise rotation
           }}
         >
-          {SelectedSVG4 && <SelectedSVG4 />}
+          {SelectedSVG3 && <SelectedSVG3 />}
         </div>
 
       {/* Group 4: Attack & Others */}
         <div
           style={{
-            opacity: fade2 ? 1 : 0,
+            opacity: fade4 ? 1 : 0,
             transition: "opacity 0.5s ease-in-out", // Fade effect
+            position: "absolute",
+            width: "100%",
+            height: "100%",
+            animation: "spinClockwise 25s linear infinite", // Clockwise rotation
           }}
         >
-          {SelectedSVG2 && <SelectedSVG2 />}
+          {SelectedSVG4 && <SelectedSVG4 />}
       </div>
     </div>
   );
