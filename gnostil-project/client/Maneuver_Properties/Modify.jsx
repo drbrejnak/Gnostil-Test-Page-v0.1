@@ -16,7 +16,7 @@ const Modify = (props) => (
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{
-        duration: 5,
+        duration: props.animate === 0 ? 0 : 5,
         ease: "linear",
         repeat: 0,
         }}

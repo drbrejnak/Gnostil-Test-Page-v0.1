@@ -16,7 +16,7 @@ const Infamous = (props) => (
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{
-        duration: 4.9,
+        duration: props.animate === 0 ? 0 : 4.9,
         ease: "linear",
         repeat: 0,
         }}

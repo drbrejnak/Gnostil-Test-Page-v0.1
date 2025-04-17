@@ -16,7 +16,7 @@ const Reaction = (props) => (
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{
-        duration: 15,
+        duration: props.animate === 0 ? 0 : 15,
         ease: "linear",
         repeat: 0,
         }}

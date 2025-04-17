@@ -16,7 +16,7 @@ const Heavy = (props) => (
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{
-        duration: 4.90,
+        duration: props.animate === 0 ? 0 : 4.9,
         ease: "linear",
         repeat: 0,
         }}

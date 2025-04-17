@@ -39,17 +39,16 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
 
   const boxStyle = {
     backgroundColor: "#dadada",
-    margin: 10,
     display: "flex",
     flexGrow: 0,
     flexShrink: 1,
     flexBasis: "96vw",
     justifyContent: "center",
-    alignItems: "flex-end",
+    alignItems: "center",
     position: "absolute",
     bottom: 10,
     width: "100%",
-    height: "25%",
+    height: "30%",
   };
 
   const dropAreaStyle = {
@@ -167,7 +166,7 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
       {sortedHandToRender.map((card, index) => (
         <div
           key={index}
-          style={{ display: "flex", flexDirection: "row", alignItems: "center", height: "66%" }}
+          style={{ display: "flex", flexDirection: "row", alignItems: "center", height: "85%" }}
         >
           <Card index={index} card={card} setActiveCard={setActiveCard} />
           <DropArea

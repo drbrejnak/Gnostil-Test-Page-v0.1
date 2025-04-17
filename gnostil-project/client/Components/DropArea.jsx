@@ -6,7 +6,8 @@ const DropArea = ({onDrop, index}) => {
 
     const areaStyle = {
         width: "100px",
-        height: "50px",
+        height: "100%",
+        margin: "0 5px",
         overflow: "auto",
         border: "1px solid black",
         display: "flex",
@@ -18,7 +19,7 @@ const DropArea = ({onDrop, index}) => {
 
     const hideDrop = {
         width: "5px",
-        height: "50px",
+        height: "100%",
         opacity: 0
     }
 
@@ -43,7 +44,7 @@ return (
         }}
         style={showDrop ? areaStyle : hideDrop}
     >
-        {index}
+        +
     </section>
 )
 }

@@ -16,7 +16,7 @@ const Attack = (props) => (
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{
-        duration: 2.5,
+        duration: props.animate === 0 ? 0 : 2.5,
         ease: "linear",
         repeat: 0,
         }}

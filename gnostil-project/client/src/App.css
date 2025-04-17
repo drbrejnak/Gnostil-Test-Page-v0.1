@@ -17,15 +17,15 @@ svg {
 
 .thumbnail {
   position: relative; /* Ensure the thumbnail div is a positioning context */
-  width: 100px;
-  height: 70px;
+  width: 90%;
+  height: 90%;
 }
 
 .thumbnail svg {
   position: absolute; /* Position the SVG relative to the thumbnail */
-  top: 50%; /* Move the SVG's center to the middle of the container */
+  top: 45%; /* Move the SVG's center to the middle of the container */
   left: 50%; /* Move the SVG's center to the middle of the container */
-  transform: translate(-35%, -50%); /* Center the SVG by shifting it back by half its width and height */
+  transform: translate(-50%, -50%); /* Center the SVG by shifting it back by half its width and height */
 }
 
 @keyframes spinClockwise {

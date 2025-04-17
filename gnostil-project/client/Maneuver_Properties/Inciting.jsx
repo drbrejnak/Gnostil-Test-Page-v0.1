@@ -16,7 +16,7 @@ const Inciting = (props) => (
         initial={{ pathLength: 0 }}
         animate={{ pathLength: 1 }}
         transition={{
-        duration: 9.5,
+        duration: props.animate === 0 ? 0 : 9.5,
         ease: "linear",
         repeat: 0,
         }}

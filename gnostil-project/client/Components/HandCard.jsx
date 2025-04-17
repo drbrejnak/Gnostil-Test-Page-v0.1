@@ -1,5 +1,12 @@
 import React from 'react'
 import "../src/App.css";
+import Rings from "../Maneuver_Properties/Rings";
+import Combat from "../Maneuver_Properties/Combat";
+import Narrative from "../Maneuver_Properties/Narrative";
+import Honorable from "../Maneuver_Properties/Honorable";
+import Infamous from "../Maneuver_Properties/Infamous";
+import Light from "../Maneuver_Properties/Light";
+import Heavy from "../Maneuver_Properties/Heavy";
 import Attack from '../Maneuver_Properties/Attack';
 import Aura from '../Maneuver_Properties/Aura';
 import Inciting from '../Maneuver_Properties/Inciting';
@@ -16,13 +23,12 @@ function Card({ card, index, setActiveCard }) {
         backgroundColor: "white",
         overflow: "hidden",
         border: "2px solid black",
-        margin: "10px",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "flex-start",
         cursor: "grab",
-        padding: "10px",
+        padding: "5px",
         boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
     };
 
@@ -33,8 +39,8 @@ function Card({ card, index, setActiveCard }) {
     };
 
     const svgContainerStyle = {
-        width: "100%",
-        height: "100px",
+        width: "105%",
+        height: "100%",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -42,28 +48,49 @@ function Card({ card, index, setActiveCard }) {
         backgroundColor: "black",
       };
 
-    const svgStyle = {
-    width: "100%",
-    height: "100%",
+    const renderCombatNarrativeSVG = () => {
+        if (card.maneuver_type === "Party Narrative Maneuver") {
+            return <Narrative />;
+        } else {
+            return <Combat />;
+        }
     };
 
-    const renderSVG = () => {
-        switch (card.maneuver_type) {
-          case "Attack Maneuver":
-            return <Attack style={svgStyle} />;
-          case "Aura Maneuver":
-            return <Aura />;
-          case "Inciting Maneuver":
-            return <Inciting />;
-          case "Modify Maneuver":
-            return <Modify />;
-          case "Reaction Maneuver":
-            return <Reaction />;
+    const renderParadigmSVG = () => {
+        switch (card.paradigm) {
+          case "Honorable":
+            return <Honorable animate={0} />;
+          case "Infamous":
+            return <Infamous animate={0} />;
           default:
             return null; // Return null if no matching type is found
         }
     };
 
+    const renderWeightSVG = () => {
+        if (card.weight === "X") {
+            return <Light animate={0} />;
+        } else {
+            return <Heavy animate={0} />;
+        }
+    };
+
+    const renderTypeSVG = () => {
+        switch (card.maneuver_type) {
+          case "Attack Maneuver":
+            return <Attack animate={0} />;
+          case "Aura Maneuver":
+            return <Aura animate={0} />;
+          case "Inciting Maneuver":
+            return <Inciting animate={0} />;
+          case "Modify Maneuver":
+            return <Modify animate={0} />;
+          case "Reaction Maneuver":
+            return <Reaction animate={0} />;
+          default:
+            return null; // Return null if no matching type is found
+        }
+    };
 
     const handleDragStart = (e) => {
         e.dataTransfer.setData("text/plain", JSON.stringify(card))
@@ -88,7 +115,11 @@ return (
         {/* SVG Image */}
         <div style={svgContainerStyle}>
             <div className='thumbnail'>
-                {renderSVG()}
+                <Rings />
+                {renderCombatNarrativeSVG()}
+                {renderParadigmSVG()}
+                {renderWeightSVG()}
+                {renderTypeSVG()}
             </div>
         </div>
     </div>
