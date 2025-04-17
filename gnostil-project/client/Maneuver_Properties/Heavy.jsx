@@ -14,7 +14,7 @@ const Heavy = (props) => (
         repeat: 0,
         }}
         fill="none"
-        stroke="yellow"
+        stroke="white"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeMiterlimit={10}
@@ -36,7 +36,7 @@ const Heavy = (props) => (
         repeat: 0,
         }}
         fill="none"
-        stroke="yellow"
+        stroke="white"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeMiterlimit={10}
@@ -58,7 +58,7 @@ const Heavy = (props) => (
         repeat: 0,
         }}
         fill="none"
-        stroke="yellow"
+        stroke="white"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeMiterlimit={10}

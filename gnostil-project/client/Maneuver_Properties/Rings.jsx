@@ -7,7 +7,7 @@ const Rings = (props) => (
       <title>{"Expression 1"}</title>
       <motion.path
         fill="none"
-        stroke="yellow"
+        stroke="white"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeMiterlimit={10}
