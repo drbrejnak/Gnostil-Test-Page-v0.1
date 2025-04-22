@@ -14,11 +14,14 @@ const DropArea = ({onDrop, index}) => {
         alignItems: "center",
         justifyContent: "center",
         opacity: 1,
-        transition: "all 0.2s ease-in-out"
+        transition: "all 0.2s ease-in-out",
+        backgroundColor: showDrop ? "rgba(255, 255, 255, 0.2)" : "transparent",
+        borderRadius: "4px",
     }
 
     const hideDrop = {
-        width: "5px",
+        margin: "0 5px",
+        width: "10px",
         height: "100%",
         opacity: 0
     }

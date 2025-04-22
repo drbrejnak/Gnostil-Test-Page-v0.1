@@ -4,39 +4,52 @@ import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modi
 import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCaller, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
 function Card({ card, index, setActiveCard }) {
-    console.log(card)
+  const cardStyle = {
+    minWidth: "90px",  // Reduced from 100px
+    maxWidth: "90px",  // Reduced from 100px
+    height: "140px",   // Fixed height for consistent card size
+    backgroundColor: "#1a1a1a", // Match dark theme
+    overflow: "hidden",
+    border: "1px solid #333",   // Thinner border with theme color
+    borderRadius: "8px",        // Rounded corners
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    cursor: "grab",
+    padding: "4px",             // Reduced padding
+    boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
+    transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    "&:hover": {
+        transform: "translateY(-2px)",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+    },
+};
 
-    const cardStyle = {
-        minWidth: "100px",
-        maxWidth: "100px",
-        height: "100%",
-        backgroundColor: "white",
-        overflow: "hidden",
-        border: "2px solid black",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "flex-start",
-        cursor: "grab",
-        padding: "5px",
-        boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
-    };
+  const maneuverNameStyle = {
+      fontSize: "16px",
+      fontWeight: "bold",         // Make text more readable
+      marginBottom: "2px",        // Reduced margin
+      textAlign: "center",
+      color: "white",             // Match theme
+      padding: "2px 4px",
+      width: "100%",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",   // Handle long names gracefully
+  };
 
-    const maneuverNameStyle = {
-        fontSize: "16px",
-        marginBottom: "5px",
-        textAlign: "center",
-    };
-
-    const svgContainerStyle = {
-        width: "105%",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        overflow: "hidden",
-        backgroundColor: "black",
-      };
+  const svgContainerStyle = {
+      width: "100%",              // Fill available space
+      height: "calc(100% - 20px)", // Account for name height
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      overflow: "hidden",
+      backgroundColor: "black",
+      borderRadius: "4px",        // Slightly rounded corners
+      position: "relative",       // For stacking SVGs
+  };
 
     const renderCombatNarrativeSVG = () => {
         if (card.maneuver_type === "Party Narrative Maneuver") {
