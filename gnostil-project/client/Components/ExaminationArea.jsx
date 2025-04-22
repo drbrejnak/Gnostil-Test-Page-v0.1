@@ -14,6 +14,20 @@ import Aura from "../Maneuver_Properties/Aura";
 import Inciting from "../Maneuver_Properties/Inciting";
 import Modify from "../Maneuver_Properties/Modify";
 import Reaction from "../Maneuver_Properties/Reaction";
+import Elementalist from "../Maneuver_Disciplines/Elementalist";
+import Metapsychiral from "../Maneuver_Disciplines/Metapsychiral";
+import WildWhisperer from "../Maneuver_Disciplines/WildWhisperer";
+import GeistCaller from "../Maneuver_Disciplines/GeistCaller";
+import FleshShaper from "../Maneuver_Disciplines/FleshShaper";
+import Gloommantle from "../Maneuver_Disciplines/Gloommantle";
+import FleethandJaeger from "../Maneuver_Disciplines/FleethandJaeger";
+import Ironhanded from "../Maneuver_Disciplines/Ironhanded";
+import Shieldbearer from "../Maneuver_Disciplines/Shieldbearer";
+import Euclidinst from "../Maneuver_Disciplines/Euclidinst";
+import ParagonPopuli from "../Maneuver_Disciplines/ParagonPopuli";
+import NoblesNail from "../Maneuver_Disciplines/NoblesNail";
+import YieldlessGoliath from "../Maneuver_Disciplines/YieldlessGoliath";
+import Aiontropier from "../Maneuver_Disciplines/Aiontropier";
 
 const ExaminationArea = () => {
 
@@ -49,6 +63,24 @@ const ExaminationArea = () => {
     { name: "Reaction", Component: Reaction },
   ];
 
+  // Group 5: Disciplines
+  const svgGroup5 = [
+    { name: "Elementalist", Component: Elementalist },
+    { name: "Metapsychiral", Component: Metapsychiral },
+    { name: "Wild Whisperer", Component: WildWhisperer },
+    { name: "Geist Caller", Component: GeistCaller },
+    { name: "Flesh Shaper", Component: FleshShaper },
+    { name: "Gloommantle", Component: Gloommantle },
+    { name: "Fleethand Jaeger", Component: FleethandJaeger },
+    { name: "Ironhanded", Component: Ironhanded },
+    { name: "Shieldbearer", Component: Shieldbearer },
+    { name: "Euclidinst", Component: Euclidinst },
+    { name: "Paragon Populi", Component: ParagonPopuli },
+    { name: "Nobles Nail", Component: NoblesNail },
+    { name: "Yieldless Goliath", Component: YieldlessGoliath },
+    { name: "Aiontropier", Component: Aiontropier },
+  ];
+
   // State for Group 1
   const [currentIndex1, setCurrentIndex1] = useState(0);
   const [fade1, setFade1] = useState(true);
@@ -64,6 +96,10 @@ const ExaminationArea = () => {
   // State for Group 4
   const [currentIndex4, setCurrentIndex4] = useState(0);
   const [fade4, setFade4] = useState(true);
+
+  // State for Group 5
+  const [currentIndex5, setCurrentIndex5] = useState(0);
+  const [fade5, setFade5] = useState(true);
 
   // Cycle through Group 1 SVGs
   useEffect(() => {
@@ -117,11 +153,25 @@ const ExaminationArea = () => {
     return () => clearInterval(interval4); // Clean up interval on unmount
   }, [svgGroup4.length]);
 
+  // Cycle through Group 5 SVGs
+  useEffect(() => {
+    const interval5 = setInterval(() => {
+      setFade5(false); // Start fade-out
+      setTimeout(() => {
+        setCurrentIndex5((prevIndex) => (prevIndex + 1) % svgGroup5.length); // Move to the next SVG
+        setFade5(true); // Start fade-in
+      }, 500); // Match the fade-out duration
+    }, 5000); // Change SVG every 5 seconds
+
+    return () => clearInterval(interval5); // Clean up interval on unmount
+  }, [svgGroup5.length]);
+
   const { Component: SelectedSVG0 } = svgGroup0[0]; // Always show Rings
   const { Component: SelectedSVG1 } = svgGroup1[currentIndex1];
   const { Component: SelectedSVG2 } = svgGroup2[currentIndex2];
   const { Component: SelectedSVG3 } = svgGroup3[currentIndex3];
   const { Component: SelectedSVG4 } = svgGroup4[currentIndex4];
+  const { Component: SelectedSVG5 } = svgGroup5[currentIndex5];
 
   return (
     <div className="container">
@@ -179,6 +229,18 @@ const ExaminationArea = () => {
           }}
         >
           {SelectedSVG4 && <SelectedSVG4 />}
+      </div>
+
+      {/* Group 5: Disciplines */}
+      <div
+          style={{
+            opacity: fade5 ? 1 : 0,
+            transition: "opacity 0.5s ease-in-out", // Fade effect
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {SelectedSVG5 && <SelectedSVG5 />}
       </div>
     </div>
   );
