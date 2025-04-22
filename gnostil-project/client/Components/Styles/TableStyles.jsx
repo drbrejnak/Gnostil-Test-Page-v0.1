@@ -19,7 +19,6 @@ export const tableStyles = {
     headerButton: {
       background: "none",
       border: "none",
-      color: "#888",
       fontSize: "13px",
       fontWeight: "bold",
       cursor: "pointer",
@@ -42,14 +41,43 @@ export const tableStyles = {
     },
     container: {
       backgroundColor: "#1a1a1a",
-      borderRadius: "15px",
+      borderRadius: "5px",
       boxShadow: "0 4px 8px rgba(0,0,0,0.5)",
       overflow: "hidden",
+      display: "flex",
+      flexDirection: "column",
+    },
+    tableContainer: {
+      overflow: "auto",
+      scrollbarColor: "#333 #1a1a1a",
+      padding: "0 0 8px 0",
+      "&::-webkit-scrollbar": {
+        width: "8px",
+        height: "8px",
+      },
+      "&::-webkit-scrollbar-track": {
+        background: "#1a1a1a",
+        borderRadius: "4px",
+      },
+      "&::-webkit-scrollbar-thumb": {
+        background: "#333",
+        borderRadius: "4px",
+        "&:hover": {
+          background: "#444",
+        },
+      },
     },
     filters: {
       padding: "15px",
       backgroundColor: "#252525",
       borderBottom: "1px solid #333",
+    },
+    filterContainer: {
+      display: "grid",
+      gridTemplateColumns: "repeat(2, 1fr)",
+      gap: "8px",
+      padding: "8px 0 0",
+      width: "100%",
     },
     select: {
       backgroundColor: "#1a1a1a",
@@ -57,9 +85,11 @@ export const tableStyles = {
       border: "1px solid #333",
       borderRadius: "4px",
       padding: "6px",
-      margin: "4px",
+      margin: "0",
       cursor: "pointer",
       fontSize: "12px",
+      width: "100%",
+      minWidth: "100px",
     },
     searchInput: {
       backgroundColor: "#1a1a1a",
@@ -67,9 +97,10 @@ export const tableStyles = {
       border: "1px solid #333",
       borderRadius: "4px",
       padding: "6px",
-      width: "100%",
-      marginBottom: "8px",
+      width: "calc(100% - 12px)",
       fontSize: "12px",
+      boxSizing: "border-box",
+      marginBottom: "8px",
     },
     button: {
       backgroundColor: "#333",

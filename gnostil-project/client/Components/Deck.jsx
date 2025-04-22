@@ -165,10 +165,22 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
       style={boxStyle}
       onDragOver={(e) => {
         e.preventDefault();
+        e.stopPropagation(); // Prevent event bubbling
         setIsDragging(true);
       }}
-      onDragLeave={() => setIsDragging(false)} // Hide the drop area when dragging out
-      onDrop={handleDrop}
+      onDragLeave={(e) => {
+        // Only trigger if leaving the main container
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          setIsDragging(false);
+        }
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation(); // Prevent event bubbling
+        setIsDragging(false);
+        const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
+        handleDrop(e);
+      }}
     >
       {/* Drop Area Overlay */}
       <div style={dropAreaStyle}></div>
@@ -179,13 +191,13 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
           placeholder="Search by name..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          style={{ ...tableStyles.searchInput, marginBottom: "10px" }}
+          style={tableStyles.searchInput}
         />
 
         {/* Toggle Filters Button */}
         <button
           onClick={() => setShowFilters(!showFilters)}
-          style={{ ...tableStyles.button, marginBottom: "10px" }}
+          style={tableStyles.button}
         >
           {showFilters ? "Hide Filters" : "Show Filters"}
         </button>
@@ -285,112 +297,124 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
           </div>
         )}
       </div>
-      <table style={tableStyles.table}>
-        <thead style={tableStyles.tableHeader}>
-          <tr>
-            <th style={tableStyles.headerCell}>Delete</th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("maneuver_name")}
-                style={tableStyles.headerButton}
-              >
-                Name{getSortArrow("maneuver_name")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("discipline")}
-                style={tableStyles.headerButton}
-              >
-                Discipline{getSortArrow("discipline")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("maneuver_type")}
-                style={tableStyles.headerButton}
-              >
-                Type{getSortArrow("maneuver_type")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("toll")}
-                style={tableStyles.headerButton}
-              >
-                Toll{getSortArrow("toll")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("yield")}
-                style={tableStyles.headerButton}
-              >
-                Yield{getSortArrow("yield")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("weight")}
-                style={tableStyles.headerButton}
-              >
-                Weight{getSortArrow("weight")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("paradigm")}
-                style={tableStyles.headerButton}
-              >
-                Paradigm{getSortArrow("paradigm")}
-              </button>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredDeck.map((maneuver, index) => (
-            <tr
-              key={index}
-              style={tableStyles.row}
-              draggable
-              onClick={() => handleRowClick(maneuver)}
-              onDragStart={(e) => {
-                e.dataTransfer.setData(
-                  "application/x-maneuver",
-                  JSON.stringify({
-                    id: maneuver.id,
-                    maneuver_name: maneuver.maneuver_name,
-                    discipline: maneuver.discipline,
-                    maneuver_type: maneuver.maneuver_type,
-                    description: maneuver.description,
-                    ability: maneuver.ability,
-                    toll: maneuver.toll,
-                    yield: maneuver.yield,
-                    weight: maneuver.weight,
-                    paradigm: maneuver.paradigm,
-                  })
-                );
-              }}
-            >
-              <td style={tableStyles.cell}>
+      <div style={tableStyles.tableContainer}>
+        <table style={tableStyles.table}>
+          <thead style={tableStyles.tableHeader}>
+            <tr>
+              <th style={tableStyles.headerCell}>
                 <button
-                  onClick={() => handleRemove(maneuver.id)}
-                  style={{ ...tableStyles.button, padding: "4px 8px" }}
+                  style={{...tableStyles.headerButton, cursor: "default"}}
+                  disabled
                 >
-                  Remove
+                  Delete
                 </button>
-              </td>
-              <td style={tableStyles.cell}>{maneuver.maneuver_name}</td>
-              <td style={tableStyles.cell}>{maneuver.discipline}</td>
-              <td style={tableStyles.cell}>{maneuver.maneuver_type}</td>
-              <td style={tableStyles.cell}>{maneuver.toll}</td>
-              <td style={tableStyles.cell}>{maneuver.yield}</td>
-              <td style={tableStyles.cell}>{maneuver.weight}</td>
-              <td style={tableStyles.cell}>{maneuver.paradigm}</td>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("maneuver_name")}
+                  style={tableStyles.headerButton}
+                >
+                  Name{getSortArrow("maneuver_name")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("discipline")}
+                  style={tableStyles.headerButton}
+                >
+                  Discipline{getSortArrow("discipline")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("maneuver_type")}
+                  style={tableStyles.headerButton}
+                >
+                  Type{getSortArrow("maneuver_type")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("toll")}
+                  style={tableStyles.headerButton}
+                >
+                  Toll{getSortArrow("toll")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("yield")}
+                  style={tableStyles.headerButton}
+                >
+                  Yield{getSortArrow("yield")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("weight")}
+                  style={tableStyles.headerButton}
+                >
+                  Weight{getSortArrow("weight")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("paradigm")}
+                  style={tableStyles.headerButton}
+                >
+                  Paradigm{getSortArrow("paradigm")}
+                </button>
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredDeck.map((maneuver, index) => (
+              <tr
+                key={index}
+                style={tableStyles.row}
+                draggable
+                onClick={() => handleRowClick(maneuver)}
+                onDragStart={(e) => {
+                  e.dataTransfer.setData(
+                    "application/x-maneuver",
+                    JSON.stringify({
+                      id: maneuver.id,
+                      maneuver_name: maneuver.maneuver_name,
+                      discipline: maneuver.discipline,
+                      maneuver_type: maneuver.maneuver_type,
+                      description: maneuver.description,
+                      ability: maneuver.ability,
+                      toll: maneuver.toll,
+                      yield: maneuver.yield,
+                      weight: maneuver.weight,
+                      paradigm: maneuver.paradigm,
+                    })
+                  );
+                }}
+              >
+                <td style={tableStyles.cell}>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation(); // Prevent event from bubbling up to the row
+                      handleRemove(maneuver.id);
+                    }}
+                    style={{ ...tableStyles.button, padding: "4px 8px" }}
+                  >
+                    Remove
+                  </button>
+                </td>
+                <td style={tableStyles.cell}>{maneuver.maneuver_name}</td>
+                <td style={tableStyles.cell}>{maneuver.discipline}</td>
+                <td style={tableStyles.cell}>{maneuver.maneuver_type}</td>
+                <td style={tableStyles.cell}>{maneuver.toll}</td>
+                <td style={tableStyles.cell}>{maneuver.yield}</td>
+                <td style={tableStyles.cell}>{maneuver.weight}</td>
+                <td style={tableStyles.cell}>{maneuver.paradigm}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

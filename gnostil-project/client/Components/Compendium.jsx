@@ -106,7 +106,6 @@ export default function Compendium({ setSelectedManeuver }) {
 
   return (
     <div style={boxStyle}>
-      {/* Search Bar */}
       <div style={tableStyles.filters}>
         <input
           type="text"
@@ -126,7 +125,7 @@ export default function Compendium({ setSelectedManeuver }) {
 
         {/* Filters */}
         {showFilters && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+          <div style={tableStyles.filterContainer}>
             <select
               value={filterDiscipline}
               onChange={(e) => setFilterDiscipline(e.target.value)}
@@ -219,105 +218,105 @@ export default function Compendium({ setSelectedManeuver }) {
           </div>
         )}
       </div>
-
-      {/* Table */}
-      <table style={tableStyles.table}>
-        <thead style={tableStyles.tableHeader}>
-          <tr>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("maneuver_name")}
-                style={tableStyles.headerButton}
-              >
-                Name{getSortArrow("maneuver_name")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("discipline")}
-                style={tableStyles.headerButton}
-              >
-                Discipline{getSortArrow("discipline")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("maneuver_type")}
-                style={tableStyles.headerButton}
-              >
-                Type{getSortArrow("maneuver_type")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("toll")}
-                style={tableStyles.headerButton}
-              >
-                Toll{getSortArrow("toll")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("yield")}
-                style={tableStyles.headerButton}
-              >
-                Yield{getSortArrow("yield")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("weight")}
-                style={tableStyles.headerButton}
-              >
-                Weight{getSortArrow("weight")}
-              </button>
-            </th>
-            <th style={tableStyles.headerCell}>
-              <button
-                onClick={() => handleSort("paradigm")}
-                style={tableStyles.headerButton}
-              >
-                Paradigm{getSortArrow("paradigm")}
-              </button>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredCompendium.map((maneuver, index) => (
-            <tr
-              key={index}
-              style={tableStyles.row}
-              draggable
-              onClick={() => handleRowClick(maneuver)}
-              onDragStart={(e) =>
-                e.dataTransfer.setData(
-                  "application/x-maneuver",
-                  JSON.stringify({
-                    id: maneuver.id,
-                    maneuver_name: maneuver.maneuver_name,
-                    discipline: maneuver.discipline,
-                    maneuver_type: maneuver.maneuver_type,
-                    description: maneuver.description,
-                    ability: maneuver.ability,
-                    toll: maneuver.toll,
-                    yield: maneuver.yield,
-                    weight: maneuver.weight,
-                    paradigm: maneuver.paradigm,
-                  })
-                )
-              }
-            >
-              <td style={tableStyles.cell}>{maneuver.maneuver_name}</td>
-              <td style={tableStyles.cell}>{maneuver.discipline}</td>
-              <td style={tableStyles.cell}>{maneuver.maneuver_type}</td>
-              <td style={tableStyles.cell}>{maneuver.toll}</td>
-              <td style={tableStyles.cell}>{maneuver.yield}</td>
-              <td style={tableStyles.cell}>{maneuver.weight}</td>
-              <td style={tableStyles.cell}>{maneuver.paradigm}</td>
+      <div style={tableStyles.tableContainer}>
+        <table style={tableStyles.table}>
+          <thead style={tableStyles.tableHeader}>
+            <tr>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("maneuver_name")}
+                  style={tableStyles.headerButton}
+                >
+                  Name{getSortArrow("maneuver_name")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("discipline")}
+                  style={tableStyles.headerButton}
+                >
+                  Discipline{getSortArrow("discipline")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("maneuver_type")}
+                  style={tableStyles.headerButton}
+                >
+                  Type{getSortArrow("maneuver_type")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("toll")}
+                  style={tableStyles.headerButton}
+                >
+                  Toll{getSortArrow("toll")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("yield")}
+                  style={tableStyles.headerButton}
+                >
+                  Yield{getSortArrow("yield")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("weight")}
+                  style={tableStyles.headerButton}
+                >
+                  Weight{getSortArrow("weight")}
+                </button>
+              </th>
+              <th style={tableStyles.headerCell}>
+                <button
+                  onClick={() => handleSort("paradigm")}
+                  style={tableStyles.headerButton}
+                >
+                  Paradigm{getSortArrow("paradigm")}
+                </button>
+              </th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredCompendium.map((maneuver, index) => (
+              <tr
+                key={index}
+                style={tableStyles.row}
+                draggable
+                onClick={() => handleRowClick(maneuver)}
+                onDragStart={(e) =>
+                  e.dataTransfer.setData(
+                    "application/x-maneuver",
+                    JSON.stringify({
+                      id: maneuver.id,
+                      maneuver_name: maneuver.maneuver_name,
+                      discipline: maneuver.discipline,
+                      maneuver_type: maneuver.maneuver_type,
+                      description: maneuver.description,
+                      ability: maneuver.ability,
+                      toll: maneuver.toll,
+                      yield: maneuver.yield,
+                      weight: maneuver.weight,
+                      paradigm: maneuver.paradigm,
+                    })
+                  )
+                }
+              >
+                <td style={tableStyles.cell}>{maneuver.maneuver_name}</td>
+                <td style={tableStyles.cell}>{maneuver.discipline}</td>
+                <td style={tableStyles.cell}>{maneuver.maneuver_type}</td>
+                <td style={tableStyles.cell}>{maneuver.toll}</td>
+                <td style={tableStyles.cell}>{maneuver.yield}</td>
+                <td style={tableStyles.cell}>{maneuver.weight}</td>
+                <td style={tableStyles.cell}>{maneuver.paradigm}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
