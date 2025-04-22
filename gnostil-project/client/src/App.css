@@ -45,3 +45,15 @@ svg {
     transform: rotate(-360deg);
   }
 }
+
+.iris {
+  background: black;
+  animation: iris-transition 3s ease-out infinite;
+  height: 200px;
+  width: 200px;
+}
+
+@keyframes iris-transition {
+  0% { clip-path: circle(0%); }
+  100% { clip-path: circle(29.15%); }
+}

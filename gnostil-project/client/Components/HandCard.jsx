@@ -1,17 +1,7 @@
 import React from 'react'
 import "../src/App.css";
-import Rings from "../Maneuver_Properties/Rings";
-import Combat from "../Maneuver_Properties/Combat";
-import Narrative from "../Maneuver_Properties/Narrative";
-import Honorable from "../Maneuver_Properties/Honorable";
-import Infamous from "../Maneuver_Properties/Infamous";
-import Light from "../Maneuver_Properties/Light";
-import Heavy from "../Maneuver_Properties/Heavy";
-import Attack from '../Maneuver_Properties/Attack';
-import Aura from '../Maneuver_Properties/Aura';
-import Inciting from '../Maneuver_Properties/Inciting';
-import Modify from '../Maneuver_Properties/Modify';
-import Reaction from '../Maneuver_Properties/Reaction';
+import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modify, Narrative, Reaction, Rings } from "../Maneuver_Properties/PropertyIndex.js";
+import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCaller, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
 function Card({ card, index, setActiveCard }) {
     console.log(card)
@@ -92,6 +82,41 @@ function Card({ card, index, setActiveCard }) {
         }
     };
 
+    const renderDisciplineSVG = () => {
+        switch (card.discipline) {
+          case "Aiontropier":
+            return <Aiontropier animate={0} />;
+          case "Elementalist":
+            return <Elementalist animate={0} />;
+          case "Euclidinst":
+            return <Euclidinst animate={0} />;
+          case "Fleethand Jaeger":
+            return <FleethandJaeger animate={0} />;
+          case "Flesh Shaper":
+            return <FleshShaper animate={0} />;
+          case "Gloommantle":
+            return <Gloommantle animate={0} />;
+          case "Geist Caller":
+            return <GeistCaller animate={0} />;
+          case "Ironhanded":
+            return <Ironhanded animate={0} />;
+          case "Metapsychiral":
+            return <Metapsychiral animate={0} />;
+          case "Nobles Nail":
+            return <NoblesNail animate={0} />;
+          case "Paragon Populi":
+            return <ParagonPopuli animate={0} />;
+          case "Shieldbearer":
+            return <Shieldbearer animate={0} />;
+          case "Wild Whisperer":
+            return <WildWhisperer animate={0} />;
+          case "Yieldless Goliath":
+            return <YieldlessGoliath animate={0} />;
+          default:
+            return null; // Return null if no matching type is found
+        }
+    }
+
     const handleDragStart = (e) => {
         e.dataTransfer.setData("text/plain", JSON.stringify(card))
         setActiveCard(index)
@@ -120,6 +145,7 @@ return (
                 {renderParadigmSVG()}
                 {renderWeightSVG()}
                 {renderTypeSVG()}
+                {renderDisciplineSVG()}
             </div>
         </div>
     </div>

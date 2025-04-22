@@ -2,32 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../src/App.css";
 
 // Import all SVG components
-import Rings from "../Maneuver_Properties/Rings";
-import Combat from "../Maneuver_Properties/Combat";
-import Narrative from "../Maneuver_Properties/Narrative";
-import Honorable from "../Maneuver_Properties/Honorable";
-import Infamous from "../Maneuver_Properties/Infamous";
-import Light from "../Maneuver_Properties/Light";
-import Heavy from "../Maneuver_Properties/Heavy";
-import Attack from "../Maneuver_Properties/Attack";
-import Aura from "../Maneuver_Properties/Aura";
-import Inciting from "../Maneuver_Properties/Inciting";
-import Modify from "../Maneuver_Properties/Modify";
-import Reaction from "../Maneuver_Properties/Reaction";
-import Elementalist from "../Maneuver_Disciplines/Elementalist";
-import Metapsychiral from "../Maneuver_Disciplines/Metapsychiral";
-import WildWhisperer from "../Maneuver_Disciplines/WildWhisperer";
-import GeistCaller from "../Maneuver_Disciplines/GeistCaller";
-import FleshShaper from "../Maneuver_Disciplines/FleshShaper";
-import Gloommantle from "../Maneuver_Disciplines/Gloommantle";
-import FleethandJaeger from "../Maneuver_Disciplines/FleethandJaeger";
-import Ironhanded from "../Maneuver_Disciplines/Ironhanded";
-import Shieldbearer from "../Maneuver_Disciplines/Shieldbearer";
-import Euclidinst from "../Maneuver_Disciplines/Euclidinst";
-import ParagonPopuli from "../Maneuver_Disciplines/ParagonPopuli";
-import NoblesNail from "../Maneuver_Disciplines/NoblesNail";
-import YieldlessGoliath from "../Maneuver_Disciplines/YieldlessGoliath";
-import Aiontropier from "../Maneuver_Disciplines/Aiontropier";
+import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modify, Narrative, Reaction, Rings } from "../Maneuver_Properties/PropertyIndex.js";
+import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCaller, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
 const ExaminationArea = () => {
 
@@ -161,7 +137,7 @@ const ExaminationArea = () => {
         setCurrentIndex5((prevIndex) => (prevIndex + 1) % svgGroup5.length); // Move to the next SVG
         setFade5(true); // Start fade-in
       }, 500); // Match the fade-out duration
-    }, 5000); // Change SVG every 5 seconds
+    }, 3000); // Change SVG every 3 seconds
 
     return () => clearInterval(interval5); // Clean up interval on unmount
   }, [svgGroup5.length]);
@@ -232,16 +208,16 @@ const ExaminationArea = () => {
       </div>
 
       {/* Group 5: Disciplines */}
-      <div
-          style={{
-            opacity: fade5 ? 1 : 0,
-            transition: "opacity 0.5s ease-in-out", // Fade effect
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          {SelectedSVG5 && <SelectedSVG5 />}
-      </div>
+        <div
+            style={{
+              // opacity: fade5 ? 1 : 0,
+              // transition: "opacity 0.5s ease-in-out", // Fade effect
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            {SelectedSVG5 && <SelectedSVG5 className="iris" />}
+        </div>
     </div>
   );
 };
