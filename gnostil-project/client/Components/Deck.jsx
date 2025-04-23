@@ -14,6 +14,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
   const [showFilters, setShowFilters] = useState(false); // State to toggle filters
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null }); // Sorting state
   const [isDragging, setIsDragging] = useState(false); // State to track if a card is being dragged over the deck area
+  const [checkedManeuvers, setCheckedManeuvers] = useState(new Set());
 
   const deckToRender = auth.id ? deck : localDeck; // Use the appropriate deck based on authentication
 
@@ -67,6 +68,37 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
         return prevDeck.filter((card) => card.id !== maneuverId);
       });
     }
+  };
+
+  const handleCheck = (maneuverId) => {
+    setCheckedManeuvers(prev => {
+      const next = new Set(prev);
+      if (next.has(maneuverId)) {
+        next.delete(maneuverId);
+      } else {
+        next.add(maneuverId);
+      }
+      return next;
+    });
+  };
+
+  const handleDeleteSelected = async () => {
+    for (const maneuverId of checkedManeuvers) {
+      if (auth.id) {
+        const success = await removeFromDeck(auth, char, setDeck, maneuverId);
+        if (success) {
+          await removeFromHand(auth, char, setCards, maneuverId);
+        }
+      } else {
+        setLocalDeck(prevDeck =>
+          prevDeck.filter(card => card.id !== maneuverId)
+        );
+        setLocalCards(prevCards =>
+          prevCards.filter(card => card.id !== maneuverId)
+        );
+      }
+    }
+    setCheckedManeuvers(new Set()); // Clear selections after deletion
   };
 
   // Filtered and searched data
@@ -315,8 +347,13 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
             <tr>
               <th style={tableStyles.headerCell}>
                 <button
-                  style={{...tableStyles.headerButton, cursor: "default"}}
-                  disabled
+                  onClick={handleDeleteSelected}
+                  style={{
+                    ...tableStyles.headerButton,
+                    cursor: checkedManeuvers.size > 0 ? "pointer" : "default",
+                    opacity: checkedManeuvers.size > 0 ? 1 : 0.5
+                  }}
+                  disabled={checkedManeuvers.size === 0}
                 >
                   Delete
                 </button>
@@ -405,15 +442,17 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
                 }}
               >
                 <td style={tableStyles.cell}>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation(); // Prevent event from bubbling up to the row
-                      handleRemove(maneuver.id);
+                  <input
+                    type="checkbox"
+                    checked={checkedManeuvers.has(maneuver.id)}
+                    onChange={() => handleCheck(maneuver.id)}
+                    onClick={(e) => e.stopPropagation()}
+                    style={{
+                      cursor: 'pointer',
+                      width: '16px',
+                      height: '16px'
                     }}
-                    style={{ ...tableStyles.button, padding: "4px 8px" }}
-                  >
-                    Remove
-                  </button>
+                  />
                 </td>
                 <td style={tableStyles.cell}>{maneuver.maneuver_name}</td>
                 <td style={tableStyles.cell}>{maneuver.discipline}</td>
