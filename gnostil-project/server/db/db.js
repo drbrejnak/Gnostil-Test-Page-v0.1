@@ -120,11 +120,20 @@ const updateCardsInHand = async ({ hand_id, cards }) => {
 };
 
 const createUser = async({ username, password })=> {
-  const SQL = `
-    INSERT INTO users(id, username, password) VALUES($1, $2, $3) RETURNING *
-  `;
-  const response = await client.query(SQL, [uuid.v4(), username, await bcrypt.hash(password, 5)]);
-  return response.rows[0];
+  try {
+    const SQL = `
+      INSERT INTO users(id, username, password) VALUES($1, $2, $3) RETURNING *
+    `;
+    const response = await client.query(SQL, [uuid.v4(), username, await bcrypt.hash(password, 5)]);
+    return response.rows[0];
+  } catch (error) {
+    if (error.code === '23505') { // PostgreSQL unique violation error code
+      const customError = new Error('Username already exists. Please try again.');
+      customError.status = 400;
+      throw customError;
+    }
+    throw error;
+  }
 };
 
 // createUser({ username: 'test', password: 'test' });
@@ -215,5 +224,6 @@ module.exports = {
   addToHand,
   fetchHand,
   removeFromHand,
-  updateCardsInHand
+  updateCardsInHand,
+  createUser
 };

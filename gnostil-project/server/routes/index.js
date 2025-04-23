@@ -12,7 +12,8 @@ const {
   addToHand,
   fetchHand,
   removeFromHand,
-  updateCardsInHand
+  updateCardsInHand,
+  createUser
 } = require('../db/db');
 const express = require('express');
 const cors = require('cors');
@@ -37,6 +38,21 @@ const isLoggedIn = async(req, res, next)=> {
     next(ex);
   }
 };
+
+router.post('/register', async(req, res, next)=> {
+  try {
+    const user = await createUser(req.body);
+    if (!user) {
+      return res.status(400).json({
+        error: 'Username already exists. Please try again.'
+      });
+    }
+    res.send(user);
+  }
+  catch(ex){
+    next(ex);
+  }
+});
 
 router.post('/login', async(req, res, next)=> {
   try {

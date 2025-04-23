@@ -1,5 +1,35 @@
 const host = "http://localhost:3000"
 
+export const register = async(setAuth, credentials)=> {
+    try {
+        const response = await fetch(`${host}/register`, {
+            method: 'POST',
+            body: JSON.stringify(credentials),
+            headers: {
+                'Content-Type':'application/json',
+            }
+        });
+        const json = await response.json();
+
+        if(response.ok){
+            window.localStorage.setItem('token', json.token);
+            attemptLoginWithToken(setAuth);
+            return { success: true };
+        } else {
+            return {
+                success: false,
+                error: json.error || 'Registration failed. Please try again.'
+            };
+        }
+    } catch (error) {
+        console.error(error);
+        return {
+            success: false,
+            error: 'An unexpected error occurred. Please try again.'
+        };
+    }
+}
+
 export const login = async(setAuth, credentials)=> {
     try {
         const response = await fetch(`${host}/login`, {
@@ -14,6 +44,7 @@ export const login = async(setAuth, credentials)=> {
         if(response.ok){
             window.localStorage.setItem('token', json.token);
             attemptLoginWithToken(setAuth);
+            return true;
         }
         else {
             console.log(json);
