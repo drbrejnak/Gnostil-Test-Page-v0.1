@@ -104,7 +104,9 @@ function App() {
         <div style={{
               flex: '1 1 0',
               minWidth: 0,
-              width: '33.333%'
+              width: '33.333%',
+              height: '100%', // Ensure full height
+              position: 'relative' // Add this for proper child positioning
             }}>
           {selectedManeuver ? (
             <Card maneuver={selectedManeuver} setSelectedManeuver={setSelectedManeuver} />

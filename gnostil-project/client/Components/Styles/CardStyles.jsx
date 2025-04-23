@@ -1,11 +1,6 @@
 export const cardStyles = {
     container: {
-        position: 'absolute',
-        left: '50%',
-        top: '40%',
-        height: '33vw',
-        width: '30vw',
-        transform: "translate(-50%, -50%)",
+        position: 'relative', // Change from absolute to relative
         backgroundColor: '#1a1a1a',
         borderRadius: '15px',
         color: 'white',
@@ -13,20 +8,23 @@ export const cardStyles = {
         padding: '15px',
         overflow: 'hidden',
         display: 'grid',
-        gridTemplateRows: 'auto 1fr 1fr 1fr', // Header, Properties, Description, Ability
+        gridTemplateRows: 'auto auto 1fr 1fr', // Header, Properties, Description, Ability
         gap: '15px',
+        height: '100%', // Take full height of parent container
+        width: '100%', // Take full width of parent container
+        boxSizing: 'border-box',
     },
     header: {
         borderBottom: '2px solid #333',
         paddingBottom: '10px',
     },
     title: {
-        fontSize: '2vw',
+        fontSize: '1.2rem', // Use rem instead of vw
         fontWeight: 'bold',
         marginBottom: '5px',
     },
     subtitle: {
-        fontSize: '1.2vw',
+        fontSize: '1rem', // Use rem instead of vw
         color: '#888',
     },
     propertyGrid: {
@@ -36,8 +34,8 @@ export const cardStyles = {
         padding: '12px',
         backgroundColor: '#252525',
         borderRadius: '8px',
-        fontSize: '1.1vw',
-        alignSelf: 'stretch', // Fill the grid cell height
+        fontSize: '0.9rem', // Use rem instead of vw
+        alignSelf: 'stretch',
     },
     property: {
         display: 'flex',
@@ -45,20 +43,19 @@ export const cardStyles = {
         gap: '4px',
     },
     propertyLabel: {
-        fontSize: '1vw',
+        fontSize: '0.8rem', // Use rem instead of vw
         color: '#888',
     },
     propertyValue: {
-        fontSize: '1.1vw',
+        fontSize: '0.9rem', // Use rem instead of vw
         color: '#fff',
     },
     wording: {
         padding: '12px',
         backgroundColor: '#252525',
         borderRadius: '8px',
-        fontSize: '1vw',           // Match other font sizes for consistency
+        fontSize: '0.8rem', // Use rem instead of vw
         overflow: 'auto',
-        height: 'auto',
         display: 'flex',
         flexDirection: 'column',
         gap: '8px',
