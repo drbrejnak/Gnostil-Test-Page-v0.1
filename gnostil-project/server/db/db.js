@@ -139,6 +139,20 @@ const createUser = async({ username, password })=> {
 // createUser({ username: 'test', password: 'test' });
 
 const createCharacter = async({ user_id, char_name })=> {
+
+  // First check if name already exists for this user
+  const checkSQL = `
+    SELECT * FROM characters
+    WHERE user_id = $1 AND char_name = $2
+    `;
+  const checkResult = await client.query(checkSQL, [user_id, char_name]);
+
+  if (checkResult.rows.length > 0) {
+    const error = new Error('Character name already exists.');
+    error.status = 400;
+    throw error;
+  }
+
   const SQL = `
     INSERT INTO characters(id, user_id, deck_id, hand_id, char_name) VALUES($1, $2, $3, $4, $5) RETURNING *
   `;
@@ -151,13 +165,45 @@ const createCharacter = async({ user_id, char_name })=> {
 
 
 const deleteCharacter = async({ id })=> {
-  const SQL = `
-    DELETE FROM characters WHERE id = $1
-  `;
-  await client.query(SQL, [id]);
+  try {
+    // First, get the deck_id and hand_id for this character
+    const getIdsSQL = `
+      SELECT deck_id, hand_id FROM characters WHERE id = $1
+    `;
+    const idsResult = await client.query(getIdsSQL, [id]);
+
+    if (idsResult.rows.length > 0) {
+      const { deck_id, hand_id } = idsResult.rows[0];
+
+      // Delete records from character_deck if they exist
+      if (deck_id) {
+        const deleteDeckSQL = `
+          DELETE FROM character_deck WHERE deck_id = $1
+        `;
+        await client.query(deleteDeckSQL, [deck_id]);
+      }
+
+      // Delete records from character_hand if they exist
+      if (hand_id) {
+        const deleteHandSQL = `
+          DELETE FROM character_hand WHERE hand_id = $1
+        `;
+        await client.query(deleteHandSQL, [hand_id]);
+      }
+    }
+
+    // Finally, delete the character
+    const deleteCharSQL = `
+      DELETE FROM characters WHERE id = $1
+    `;
+    await client.query(deleteCharSQL, [id]);
+  } catch (error) {
+    console.error('Error deleting character:', error);
+    throw error;
+  }
 };
 
-// deleteCharacter({id: 'c6e443bd-1b98-44a9-841f-345c55d78254'})
+// deleteCharacter({id: '38d23ae9-9af6-4e2a-ad11-dbbfb9c46a9a'})
 
 const editCharName = async({ id, char_name, user_id })=> {
   // First check if name already exists for this user
@@ -250,5 +296,6 @@ module.exports = {
   updateCardsInHand,
   createUser,
   createCharacter,
+  deleteCharacter,
   editCharName
 };

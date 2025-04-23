@@ -86,18 +86,32 @@ export const fetchCharacters = async(auth, setCharacters)=> {
 };
 
 export const createCharacter = async(auth, newCharacter, setCharacters)=> {
-  const response = await fetch(`${host}/users/${auth.id}/characters/`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: window.localStorage.getItem('token'),
-    },
-    body: JSON.stringify({ newCharacter }),
-  });
-  const json = await response.json();
-  if(response.ok){
-    setCharacters(Array.isArray(json) ? json : []);
-  }
+  try{
+      const response = await fetch(`${host}/users/${auth.id}/characters/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            authorization: window.localStorage.getItem('token'),
+          },
+          body: JSON.stringify({newCharacter}),
+        });
+        const json = await response.json();
+
+        if (!response.ok) {
+          throw new Error(json.error || 'Failed to create character');
+        }
+
+        setCharacters(json.characters);
+        return {
+          success: true,
+          character: json.newCharacter
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message || 'Failed to create character'
+        };
+    };
 };
 
 export const editCharName = async(auth, char, newName, setCharacters)=> {
@@ -113,7 +127,7 @@ export const editCharName = async(auth, char, newName, setCharacters)=> {
         const json = await response.json();
 
         if (!response.ok) {
-            throw new Error(json.error || 'Failed to update character name');
+            throw new Error(json.error || 'Failed to create character');
         }
 
         setCharacters(json);
@@ -121,7 +135,32 @@ export const editCharName = async(auth, char, newName, setCharacters)=> {
     } catch (error) {
         return {
             success: false,
-            error: error.message || 'Failed to update character name'
+            error: error.message || 'Failed to create character'
+        };
+    }
+};
+
+export const deleteCharacter = async(auth, char, setCharacters)=> {
+    try{
+      const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}`, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            authorization: window.localStorage.getItem('token'),
+        },
+    });
+    const json = await response.json();
+
+        if (!response.ok) {
+            throw new Error(json.error || 'Failed to delete character');
+        }
+
+        setCharacters(json);
+        return { success: true };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message || 'Failed to delete character'
         };
     }
 };

@@ -59,7 +59,12 @@ export const Login = ({ setAuth }) => {
   // Show username and logout option when logged in
   if (currentUser) {
     return (
-      <div style={loginStyles.loginButtonContainer}>
+      <div style={{
+        ...loginStyles.loginButtonContainer,
+        flexDirection: 'row', // Change to horizontal layout
+        gap: '10px', // Add space between buttons
+        alignItems: 'center' // Center buttons vertically
+      }}>
         <button
           onClick={() => setShowLogout(!showLogout)}
           style={loginStyles.loginButton}
@@ -69,23 +74,9 @@ export const Login = ({ setAuth }) => {
         {showLogout && (
           <button
             onClick={handleLogout}
-            style={{
-              ...loginStyles.loginButton,
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              right: 0,
-              marginTop: '4px',
-              backgroundColor: 'rgba(255, 99, 99, 0.9)', // Reddish tint for logout
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              '&:hover': {
-                backgroundColor: 'rgba(255, 77, 77, 0.9)',
-              }
-            }}
+            style={loginStyles.logoutButton}
           >
-            Logout?
+            Logout
           </button>
         )}
       </div>

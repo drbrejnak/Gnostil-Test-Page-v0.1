@@ -10,7 +10,7 @@ import Card from "../Components/Card";
 
 function App() {
   const [auth, setAuth] = useState({});
-  const [char, setChar] = useState([]);
+  const [char, setChar] = useState({});
   const [deck, setDeck] = useState([]);
   const [cards, setCards] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
@@ -20,6 +20,7 @@ function App() {
     // Clear token on page load/refresh
     localStorage.clear();
     setAuth({});
+    setChar({});
   }, []);
 
   return (
