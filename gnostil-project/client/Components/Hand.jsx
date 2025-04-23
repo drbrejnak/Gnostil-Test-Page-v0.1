@@ -6,7 +6,18 @@ import DropArea from "./DropArea";
 import { fetchCharHand, addToHand, updateCardsInHand, addToDeck } from ".";
 import { handStyles } from "./Styles/HandStyles";
 
-export default function Hand({ auth, char, cards, setCards, setActiveCard, localCards, setLocalCards, setDeck, setLocalDeck }) {
+export default function Hand({
+  auth,
+  char,
+  cards,
+  setCards,
+  setActiveCard,
+  localCards,
+  setLocalCards,
+  setDeck,
+  setLocalDeck,
+  setSelectedManeuver
+}) {
   const [isDragging, setIsDragging] = useState(false); // State to track if a card is being dragged over the hand area
 
   useEffect(() => {
@@ -142,7 +153,12 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
               height: "100%",
             }}
           >
-            <HandCard index={index} card={card} setActiveCard={setActiveCard} />
+            <HandCard
+              index={index}
+              card={card}
+              setActiveCard={setActiveCard}
+              setSelectedManeuver={setSelectedManeuver}  // Pass to HandCard
+            />
             <DropArea
               index={index}
               onDrop={(data) => {

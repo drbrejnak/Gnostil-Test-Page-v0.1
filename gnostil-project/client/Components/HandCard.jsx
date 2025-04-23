@@ -3,7 +3,7 @@ import "../src/App.css";
 import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modify, Narrative, Reaction, Rings } from "../Maneuver_Properties/PropertyIndex.js";
 import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCaller, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
-function HandCard({ card, index, setActiveCard }) {
+const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
   const cardStyle = {
     minWidth: "90px",
     maxWidth: "90px",
@@ -146,6 +146,7 @@ return (
         style={cardStyle}
         draggable
         key={index}
+        onClick={() => setSelectedManeuver(card)}
         onDragStart={handleDragStart}
         onDragEnd={() => setActiveCard(null)}
     >

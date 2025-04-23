@@ -182,6 +182,7 @@ function App() {
           localCards={localCards}
           setLocalCards={setLocalCards}
           setActiveCard={setActiveCard}
+          setSelectedManeuver={setSelectedManeuver} // Add this prop
         />
       </div>
     </>

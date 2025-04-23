@@ -68,7 +68,6 @@ export const Login = ({ setAuth }) => {
         gap: '10px',
         alignItems: 'center'
       }}>
-        {showSettings &&
         <button
         onClick={() => setIsSettingsVisible(true)}
         style={{
@@ -78,28 +77,22 @@ export const Login = ({ setAuth }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: '1.2rem'     // Slightly larger font for the gear icon
+          fontSize: '1.2rem'
         }}
         >
         ⚙
-        </button>}
+        </button>
         <button
-        onClick={() => {
-          setShowLogout(!showLogout);
-          setShowSettings(!showSettings);
-        }}
-        style={loginStyles.loginButton}
+        style={{...loginStyles.loginButton, cursor: 'default'}}
         >
         {currentUser}
         </button>
-        {showLogout && (
         <button
-          onClick={handleLogout}
-          style={loginStyles.logoutButton}
+        onClick={handleLogout}
+        style={loginStyles.logoutButton}
         >
-          Logout
+        Logout
         </button>
-        )}
       </div>
 
       {/* Settings Modal */}
@@ -139,7 +132,7 @@ export const Login = ({ setAuth }) => {
           onClick={() => setIsLoginVisible(true)}
           style={loginStyles.loginButton}
         >
-          Login
+          Login / Register
         </button>
       </div>
     );

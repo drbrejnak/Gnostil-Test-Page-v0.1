@@ -23,7 +23,7 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
         &times;
       </button>
 
-      {/* Header Section */}
+    {/* Header Section */}
       <div style={cardStyles.header}>
         <div style={cardStyles.title}>{maneuver?.maneuver_name || 'Maneuver Name'}</div>
         <div style={cardStyles.subtitle}>{maneuver?.discipline || 'Discipline'}</div>
@@ -59,17 +59,18 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
           </div>
         </div>
 
-        {/* Description Section */}
-      <div style={cardStyles.wording}>
-        <div style={cardStyles.propertyLabel}>Description</div>
-        {maneuver?.description || 'Maneuver description goes here...'}
-      </div>
-
       {/* Ability Section */}
-      <div style={cardStyles.wording}>
-        <div style={cardStyles.propertyLabel}>Ability</div>
-        {maneuver?.ability || 'Ability description goes here...'}
-      </div>
+        <div style={cardStyles.wording}>
+            <div style={cardStyles.propertyLabel}>Ability</div>
+            {maneuver?.ability || 'Ability description goes here...'}
+        </div>
+
+    {/* Description Section */}
+        <div style={cardStyles.wording}>
+            <div style={cardStyles.propertyLabel}>Description</div>
+            {maneuver?.description || 'Maneuver description goes here...'}
+        </div>
+
     </div>
   );
 };
