@@ -158,18 +158,26 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
     left: 0,
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.2)", // Semi-transparent black
-    display: isDragging ? "block" : "none", // Show only when dragging
-    zIndex: 1,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    display: isDragging ? "flex" : "none",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+    color: "white",
+    fontSize: "1.5rem",
+    fontWeight: "bold",
   };
 
   return (
     <div
       style={boxStyle}
       onDragOver={(e) => {
-        e.preventDefault();
-        e.stopPropagation(); // Prevent event bubbling
-        setIsDragging(true);
+        // Only show drop area for application/x-maneuver data
+        if (e.dataTransfer.types.includes("application/x-maneuver")) {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsDragging(true);
+        }
       }}
       onDragLeave={(e) => {
         // Only trigger if leaving the main container
@@ -179,14 +187,17 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
       }}
       onDrop={(e) => {
         e.preventDefault();
-        e.stopPropagation(); // Prevent event bubbling
+        e.stopPropagation();
         setIsDragging(false);
-        const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
-        handleDrop(e);
+
+        if (e.dataTransfer.types.includes("application/x-maneuver")) {
+          const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
+          handleDrop(e);
+        }
       }}
     >
       {/* Drop Area Overlay */}
-      <div style={dropAreaStyle}></div>
+      <div style={dropAreaStyle}>Add to Deck</div>
       {/* Search Bar */}
       <div style={tableStyles.filters}>
         <input

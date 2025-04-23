@@ -1,8 +1,9 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { tableStyles } from "./Styles/TableStyles";
+import { removeFromHand } from ".";
 
-export default function Compendium({ setSelectedManeuver }) {
+export default function Compendium({ setSelectedManeuver, auth, char, setCards }) {
   const [compendium, setCompendium] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("");
@@ -13,6 +14,7 @@ export default function Compendium({ setSelectedManeuver }) {
   const [filterParadigm, setFilterParadigm] = useState("");
   const [showFilters, setShowFilters] = useState(false); // State to toggle filters
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null }); // Sorting state
+  const [isDragging, setIsDragging] = useState(false);
 
   const getManeuvers = async () => {
     try {
@@ -104,8 +106,66 @@ export default function Compendium({ setSelectedManeuver }) {
     overflow: "auto",
   };
 
+  const dropAreaStyle = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(255, 99, 71, 0.2)", // Semi-transparent red to indicate discard
+    display: isDragging ? "flex" : "none",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1000,
+    color: "white",
+    fontSize: "1.5rem",
+    fontWeight: "bold",
+  };
+
   return (
-    <div style={boxStyle}>
+    <div
+      style={boxStyle}
+      onDragOver={(e) => {
+        // Only show drop area for application/x-card data (from hand)
+        if (e.dataTransfer.types.includes("application/x-card")) {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsDragging(true);
+        }
+      }}
+      onDragLeave={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          setIsDragging(false);
+        }
+      }}
+      onDrop={async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+
+        if (e.dataTransfer.types.includes("application/x-card")) {
+          try {
+            const maneuverData = e.dataTransfer.getData("application/x-card");
+            const maneuver = JSON.parse(maneuverData);
+            console.log('Dropped maneuver:', maneuver); // Debug log
+
+            if (auth?.id && char?.id && maneuver?.id) {
+              const success = await removeFromHand(auth, char, setCards, maneuver.id);
+              if (!success) {
+                console.error('Failed to remove card from hand');
+              }
+            } else {
+              console.error('Missing required data:', { auth, char, maneuver });
+            }
+          } catch (error) {
+            console.error("Error processing dropped card:", error);
+          }
+        }
+      }}
+    >
+      {/* Drop Area Overlay */}
+      <div style={dropAreaStyle}>Discard</div>
+
       <div style={tableStyles.filters}>
         <input
           type="text"

@@ -99,10 +99,18 @@ const addToHand = async({maneuver_id, deck_id, hand_id, position, macro})=> {
 }
 
 const removeFromHand = async({maneuver_id, hand_id})=> {
-  const SQL = `
-    DELETE FROM character_hand WHERE maneuver_id = $1 AND hand_id = $2
-  `;
-  await client.query(SQL, [maneuver_id, hand_id]);
+  try {
+    console.log('Removing maneuver:', maneuver_id, 'from hand:', hand_id); // Debug log
+    const SQL = `
+      DELETE FROM character_hand WHERE maneuver_id = $1 AND hand_id = $2 RETURNING *
+    `;
+    const result = await client.query(SQL, [maneuver_id, hand_id]);
+    console.log('Delete result:', result.rows); // Debug log
+    return result.rows[0];
+  } catch (error) {
+    console.error('Error in removeFromHand:', error);
+    throw error;
+  }
 }
 
 const updateCardsInHand = async ({ hand_id, cards }) => {

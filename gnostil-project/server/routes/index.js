@@ -16,7 +16,8 @@ const {
   createUser,
   createCharacter,
   deleteCharacter,
-  editCharName
+  editCharName,
+  fetchCharHand
 } = require('../db/db');
 const express = require('express');
 const cors = require('cors');
@@ -248,12 +249,17 @@ router.put('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLogg
 router.delete('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
     }
-    res.send(await removeFromHand(req.body));
+
+    const result = await removeFromHand({
+      maneuver_id: req.body.maneuver_id,
+      hand_id: req.params.handId
+    });
+
+    res.json({ success: true, result });
   } catch(err) {
     next(err);
   }

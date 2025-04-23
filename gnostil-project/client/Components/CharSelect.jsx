@@ -12,7 +12,6 @@ const CharSelect = ({auth, char, setChar}) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState('');
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  console.log(char)
 
   const refreshCharacterList = () => {
     setRefreshTrigger(prev => prev + 1);

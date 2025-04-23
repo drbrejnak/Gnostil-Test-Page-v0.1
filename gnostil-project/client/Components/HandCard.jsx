@@ -131,7 +131,7 @@ function Card({ card, index, setActiveCard }) {
     }
 
     const handleDragStart = (e) => {
-        e.dataTransfer.setData("text/plain", JSON.stringify(card))
+        e.dataTransfer.setData("application/x-card", JSON.stringify(card))
         setActiveCard(index)
     }
 

@@ -249,8 +249,44 @@ export const updateCardsInHand = async (auth, char, cards, setCards) => {
     },
     body: JSON.stringify(cards),
   });
-  // if (response.ok) {
-  //   // Refetch the hand to update the state
-  //   await fetchCharHand(auth, char, setCards);
-  // }
 }
+
+export const removeFromHand = async (auth, char, setCards, maneuver_id) => {
+  try {
+    console.log('RemoveFromHand params:', {
+      authId: auth?.id,
+      charId: char?.id,
+      deckId: char?.deck_id,
+      handId: char?.hand_id,
+      maneuver_id
+    });
+
+    if (!auth?.id || !char?.id || !char?.deck_id || !char?.hand_id || !maneuver_id) {
+      throw new Error('Missing required parameters');
+    }
+
+    const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: window.localStorage.getItem('token'),
+      },
+      body: JSON.stringify({ maneuver_id }),
+    });
+
+    const data = await response.json().catch(() => null);
+    console.log('Server response:', { status: response.status, data });
+
+    if (!response.ok) {
+      throw new Error(`Failed to remove card: ${data?.error || response.statusText}`);
+    }
+
+    // Refresh the hand data
+    await fetchCharHand(auth, char, setCards);
+    return true;
+  } catch (error) {
+    console.error('Error removing card:', error.message);
+    console.error('Error details:', error);
+    return false;
+  }
+};

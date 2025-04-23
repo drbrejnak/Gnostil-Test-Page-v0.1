@@ -91,7 +91,12 @@ function App() {
         setDeck={setDeck}
         setSelectedManeuver={setSelectedManeuver}
       />
-      <Compendium setSelectedManeuver={setSelectedManeuver} />
+      <Compendium
+      setSelectedManeuver={setSelectedManeuver}
+      auth={auth}
+      char={char}
+      setCards={setCards}
+      />
       <Hand
         auth={auth}
         deck={deck}
