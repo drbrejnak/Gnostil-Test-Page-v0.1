@@ -9,7 +9,7 @@ export const cardStyles = {
         overflow: 'hidden',
         display: 'grid',
         gridTemplateRows: 'auto auto 1fr 1fr', // Header, Properties, Description, Ability
-        gap: '15px',
+        gap: '5px',
         height: '100%', // Take full height of parent container
         width: '100%', // Take full width of parent container
         boxSizing: 'border-box',
@@ -29,26 +29,31 @@ export const cardStyles = {
     },
     propertyGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
+        gridTemplateColumns: 'repeat(4, 1fr)', // Changed from 2 to 4 columns
         gap: '8px',
-        padding: '12px',
+        padding: '8px 12px', // Reduced vertical padding
         backgroundColor: '#252525',
         borderRadius: '8px',
-        fontSize: '0.9rem', // Use rem instead of vw
+        fontSize: '0.9rem',
         alignSelf: 'stretch',
+        minHeight: 'fit-content', // Ensure it only takes needed space
     },
     property: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '4px',
+        gap: '2px', // Reduced gap
+        alignItems: 'center', // Center align content
+        textAlign: 'center', // Center align text
     },
     propertyLabel: {
-        fontSize: '0.8rem', // Use rem instead of vw
+        fontSize: '0.75rem', // Slightly smaller font
         color: '#888',
+        textTransform: 'capitalize', // Capitalize property names
     },
     propertyValue: {
-        fontSize: '0.9rem', // Use rem instead of vw
+        fontSize: '0.85rem', // Slightly smaller font
         color: '#fff',
+        fontWeight: '500', // Medium weight for better readability
     },
     wording: {
         padding: '12px',

@@ -136,7 +136,7 @@ function App() {
           {selectedManeuver ? (
             <Card maneuver={selectedManeuver} setSelectedManeuver={setSelectedManeuver} />
           ) : (
-            <ExaminationArea />
+            <ExaminationArea setSelectedManeuver={setSelectedManeuver} />
           )}
         </div>
 

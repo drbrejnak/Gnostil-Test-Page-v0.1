@@ -5,7 +5,7 @@ import "../src/App.css";
 import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modify, Narrative, Reaction, Rings } from "../Maneuver_Properties/PropertyIndex.js";
 import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCaller, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
-const ExaminationArea = () => {
+const ExaminationArea = ({ setSelectedManeuver }) => {
 
   // Group 0: Rings
   const svgGroup0 = [
@@ -76,6 +76,8 @@ const ExaminationArea = () => {
   // State for Group 5
   const [currentIndex5, setCurrentIndex5] = useState(0);
   const [fade5, setFade5] = useState(true);
+
+  const [isDragging, setIsDragging] = useState(false);
 
   // Cycle through Group 1 SVGs
   useEffect(() => {
@@ -150,7 +152,41 @@ const ExaminationArea = () => {
   const { Component: SelectedSVG5 } = svgGroup5[currentIndex5];
 
   return (
-    <div className="container">
+    <div
+      className="container"
+      style={{
+        ...(isDragging ? {
+          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          transition: 'background-color 0.2s ease',
+        } : {})
+      }}
+      onDragOver={(e) => {
+        if (e.dataTransfer.types.includes("application/x-maneuver") ||
+            e.dataTransfer.types.includes("application/x-card")) {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsDragging(true);
+        }
+      }}
+      onDragLeave={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          setIsDragging(false);
+        }
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setIsDragging(false);
+
+        const maneuverData = e.dataTransfer.getData("application/x-maneuver") ||
+                           e.dataTransfer.getData("application/x-card");
+
+        if (maneuverData) {
+          const maneuver = JSON.parse(maneuverData);
+          setSelectedManeuver(maneuver);
+        }
+      }}
+    >
         <div>
            {SelectedSVG0 && <SelectedSVG0 />}
        </div>
