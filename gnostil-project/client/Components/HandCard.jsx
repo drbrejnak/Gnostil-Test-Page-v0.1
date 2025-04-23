@@ -3,28 +3,30 @@ import "../src/App.css";
 import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modify, Narrative, Reaction, Rings } from "../Maneuver_Properties/PropertyIndex.js";
 import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCaller, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
-function Card({ card, index, setActiveCard }) {
+function HandCard({ card, index, setActiveCard }) {
   const cardStyle = {
-    minWidth: "90px",  // Reduced from 100px
-    maxWidth: "90px",  // Reduced from 100px
-    height: "140px",   // Fixed height for consistent card size
-    backgroundColor: "#1a1a1a", // Match dark theme
+    minWidth: "90px",
+    maxWidth: "90px",
+    height: "calc(100% - 20px)", // Leave 10px padding top and bottom
+    backgroundColor: "#1a1a1a",
     overflow: "hidden",
-    border: "1px solid #333",   // Thinner border with theme color
-    borderRadius: "8px",        // Rounded corners
+    border: "1px solid #333",
+    borderRadius: "8px",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "flex-start",
     cursor: "grab",
-    padding: "4px",             // Reduced padding
+    padding: "4px",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.2)",
     transition: "transform 0.2s ease, box-shadow 0.2s ease",
+    boxSizing: "border-box",
+    margin: "10px 0",
     "&:hover": {
-        transform: "translateY(-2px)",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
+      transform: "translateY(-2px)",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.3)",
     },
-};
+  };
 
   const maneuverNameStyle = {
       fontSize: "16px",
@@ -165,4 +167,4 @@ return (
 );
 }
 
-export default Card
+export default HandCard

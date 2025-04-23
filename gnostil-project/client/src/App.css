@@ -3,13 +3,28 @@
 .container {
   position: absolute;
   left: 50%;
-  top: 40%;
-  height: 33vw;
-  width: 33vw;
+  top: 50%;
+  height: 29vw;
+  width: 29vw;
   /* max-height: 33vh;
   max-width: 33vh; */
   transform: translate(-50%, -50%);
 }
+
+/* container: {
+  backgroundColor: "#1a1a1a",
+  display: "flex",
+  flexGrow: 0,
+  flexShrink: 1,
+  flexBasis: "96vw",
+  justifyContent: "center",
+  alignItems: "center",
+  position: "absolute",
+  bottom: 10,
+  width: "100%",
+  borderRadius: "15px",
+  boxShadow: "0 4px 8px rgba(0,0,0,0.5)",
+}, */
 
 svg {
   position: absolute;
@@ -28,9 +43,9 @@ svg {
 
 .thumbnail svg {
   position: absolute; /* Position the SVG relative to the thumbnail */
-  top: 45%;
+  top: 50%;
   left: 50%;
-  transform: translate(-50%, -55%);
+  transform: translate(-45%, -50%);
 }
 
 @keyframes spinClockwise {

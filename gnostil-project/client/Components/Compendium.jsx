@@ -96,17 +96,6 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
     setSelectedManeuver(maneuver);
   };
 
-  const boxStyle = {
-    ...tableStyles.container,
-    width: "30vw",
-    position: "absolute",
-    left: "50%",
-    top: "40%",
-    transform: "translate(60%, -50%)",
-    height: "33vw",
-    overflow: "auto",
-  };
-
   const dropAreaStyle = {
     position: "absolute",
     top: 0,
@@ -125,7 +114,7 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
 
   return (
     <div
-      style={boxStyle}
+      style={tableStyles.container}
       onDragOver={(e) => {
         // Only show drop area for application/x-card data (from hand)
         if (e.dataTransfer.types.includes("application/x-card")) {

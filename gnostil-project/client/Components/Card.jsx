@@ -29,52 +29,46 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
         <div style={cardStyles.subtitle}>{maneuver?.discipline || 'Discipline'}</div>
       </div>
 
-      {/* Properties Section */}
-      <div style={cardStyles.section}>
-        <div style={cardStyles.propertyGrid}>
-          <div style={cardStyles.property}>
-            <span style={cardStyles.propertyLabel}>Type</span>
-            <span style={cardStyles.propertyValue}>
-              {maneuver?.maneuver_type || 'Type'}
-            </span>
-          </div>
-          <div style={cardStyles.property}>
-            <span style={cardStyles.propertyLabel}>
-              {maneuver?.toll !== null ? 'Toll' : maneuver?.yield !== null ? 'Yield' : 'Toll/Yield'}
-            </span>
-            <span style={cardStyles.propertyValue}>
-              {maneuver?.toll !== null ? maneuver.toll : maneuver?.yield !== null ? maneuver.yield : 'Toll/Yield'}
-            </span>
-          </div>
-          <div style={cardStyles.property}>
-            <span style={cardStyles.propertyLabel}>Weight</span>
-            <span style={cardStyles.propertyValue}>
-              {maneuver?.weight || 'Weight'}
-            </span>
-          </div>
-          <div style={cardStyles.property}>
-            <span style={cardStyles.propertyLabel}>Paradigm</span>
-            <span style={cardStyles.propertyValue}>
-              {maneuver?.paradigm || 'Paradigm'}
-            </span>
-          </div>
+      {/* Properties Grid */}
+      <div style={cardStyles.propertyGrid}>
+        <div style={cardStyles.property}>
+          <span style={cardStyles.propertyLabel}>Type</span>
+          <span style={cardStyles.propertyValue}>
+            {maneuver?.maneuver_type || 'Type'}
+          </span>
+        </div>
+        <div style={cardStyles.property}>
+          <span style={cardStyles.propertyLabel}>
+            {maneuver?.toll !== null ? 'Toll' : maneuver?.yield !== null ? 'Yield' : 'Toll/Yield'}
+          </span>
+          <span style={cardStyles.propertyValue}>
+            {maneuver?.toll !== null ? maneuver.toll : maneuver?.yield !== null ? maneuver.yield : 'Toll/Yield'}
+          </span>
+        </div>
+        <div style={cardStyles.property}>
+          <span style={cardStyles.propertyLabel}>Weight</span>
+          <span style={cardStyles.propertyValue}>
+            {maneuver?.weight || 'Weight'}
+          </span>
+        </div>
+        <div style={cardStyles.property}>
+          <span style={cardStyles.propertyLabel}>Paradigm</span>
+          <span style={cardStyles.propertyValue}>
+            {maneuver?.paradigm || 'Paradigm'}
+          </span>
         </div>
       </div>
 
       {/* Description Section */}
-      <div style={cardStyles.section}>
-        <div style={cardStyles.wording}>
-          <div style={cardStyles.propertyLabel}>Description</div>
-          {maneuver?.description || 'Maneuver description goes here...'}
-        </div>
+      <div style={cardStyles.wording}>
+        <div style={cardStyles.propertyLabel}>Description</div>
+        {maneuver?.description || 'Maneuver description goes here...'}
       </div>
 
       {/* Ability Section */}
-      <div style={cardStyles.section}>
-        <div style={cardStyles.wording}>
-          <div style={cardStyles.propertyLabel}>Ability</div>
-          {maneuver?.ability || 'Ability description goes here...'}
-        </div>
+      <div style={cardStyles.wording}>
+        <div style={cardStyles.propertyLabel}>Ability</div>
+        {maneuver?.ability || 'Ability description goes here...'}
       </div>
     </div>
   );

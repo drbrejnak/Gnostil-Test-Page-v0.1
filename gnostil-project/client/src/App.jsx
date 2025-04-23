@@ -39,6 +39,7 @@ function App() {
 
   return (
     <>
+      {/* Header Section */}
       <div style={{
         position: 'fixed',
         top: '20px',
@@ -72,42 +73,83 @@ function App() {
         </div>
       </div>
 
-      <div>
-        {selectedManeuver ? (
-          <div>
+      {/* Middle Section Container */}
+      <div style={{
+        position: 'fixed',
+        top: '80px', // Leave space for header
+        left: 0,
+        right: 0,
+        bottom: '150px', // Leave space for Hand component
+        display: 'flex',
+        justifyContent: 'space-between',
+        padding: '0 20px',
+        gap: '20px',
+      }}>
+        {/* Left Component - Deck */}
+        <div style={{
+              flex: '1 1 0',
+              minWidth: 0,
+              width: '33.333%'
+            }}>
+          <Deck
+            auth={auth}
+            char={char}
+            deck={deck}
+            setDeck={setDeck}
+            setSelectedManeuver={setSelectedManeuver}
+          />
+        </div>
+
+        {/* Middle Component - Card/ExaminationArea */}
+        <div style={{
+              flex: '1 1 0',
+              minWidth: 0,
+              width: '33.333%'
+            }}>
+          {selectedManeuver ? (
             <Card maneuver={selectedManeuver} setSelectedManeuver={setSelectedManeuver} />
-          </div>
-        ) : (
-          <ExaminationArea />
-        )}
+          ) : (
+            <ExaminationArea />
+          )}
+        </div>
+
+        {/* Right Component - Compendium */}
+        <div style={{
+              flex: '1 1 0',
+              minWidth: 0,
+              width: '33.333%'
+            }}>
+          <Compendium
+            setSelectedManeuver={setSelectedManeuver}
+            auth={auth}
+            char={char}
+            cards={cards}
+            setCards={setCards}
+            localCards={localCards}
+            setLocalCards={setLocalCards}
+          />
+        </div>
       </div>
 
-      <Deck
-        auth={auth}
-        char={char}
-        deck={deck}
-        setDeck={setDeck}
-        setSelectedManeuver={setSelectedManeuver}
-      />
-      <Compendium
-      setSelectedManeuver={setSelectedManeuver}
-      auth={auth}
-      char={char}
-      cards={cards}
-      setCards={setCards}
-      localCards={localCards}
-      setLocalCards={setLocalCards}
-      />
-      <Hand
-        auth={auth}
-        deck={deck}
-        char={char}
-        cards={cards}
-        setCards={setCards}
-        localCards={localCards}
-        setLocalCards={setLocalCards}
-        setActiveCard={setActiveCard}
-      />
+      {/* Hand Component */}
+      <div style={{
+        position: 'fixed',
+        bottom: 5,
+        left: 0,
+        right: 0,
+        height: '22.5%', // Fixed height for Hand component
+      }}>
+        <Hand
+          auth={auth}
+          deck={deck}
+          char={char}
+          cards={cards}
+          setCards={setCards}
+          localCards={localCards}
+          setLocalCards={setLocalCards}
+          setActiveCard={setActiveCard}
+        />
+      </div>
     </>
   );
 }

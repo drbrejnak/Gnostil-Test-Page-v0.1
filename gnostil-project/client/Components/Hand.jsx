@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import "../src/App.css";
-import Card from "./HandCard";
+import HandCard from "./HandCard";
 import DropArea from "./DropArea";
 import { fetchCharHand, addToHand, updateCardsInHand } from ".";
 import { handStyles } from "./Styles/HandStyles";
@@ -104,7 +104,12 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
           setIsDragging(true);
         }
       }}
-      onDragLeave={() => setIsDragging(false)}
+      onDragLeave={(e) => {
+        // Only trigger if leaving the main container
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+          setIsDragging(false);
+        }
+      }}
       onDrop={(e) => {
         e.preventDefault();
         setIsDragging(false);
@@ -144,7 +149,7 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
               height: "100%",
             }}
           >
-            <Card index={index} card={card} setActiveCard={setActiveCard} />
+            <HandCard index={index} card={card} setActiveCard={setActiveCard} />
             <DropArea
               index={index}
               onDrop={(data) => {

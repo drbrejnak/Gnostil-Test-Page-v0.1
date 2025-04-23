@@ -141,23 +141,12 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
     return ""; // No arrow for original order
   };
 
-  const boxStyle = {
-    ...tableStyles.container,
-    maxWidth: "30vw",
-    position: "absolute",
-    right: "50%",
-    top: "40%",
-    transform: "translate(-60%, -50%)",
-    height: "33vw",
-    overflow: "auto",
-  };
-
   const dropAreaStyle = {
-    position: "absolute",
+    position: 'absolute',
     top: 0,
     left: 0,
-    width: "100%",
-    height: "100%",
+    right: 0, // Use right instead of width
+    bottom: 0, // Use bottom instead of height
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     display: isDragging ? "flex" : "none",
     justifyContent: "center",
@@ -170,7 +159,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
 
   return (
     <div
-      style={boxStyle}
+      style={tableStyles.container}
       onDragOver={(e) => {
         // Only show drop area for application/x-maneuver data
         if (e.dataTransfer.types.includes("application/x-maneuver")) {

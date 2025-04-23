@@ -15,6 +15,7 @@ export const tableStyles = {
       padding: "8px",
       borderBottom: "2px solid #333",
       fontSize: "13px",
+      whiteSpace: "nowrap", // Prevent header text wrapping
     },
     headerButton: {
       background: "none",
@@ -38,23 +39,29 @@ export const tableStyles = {
       padding: "6px 8px",
       borderBottom: "1px solid #333",
       fontSize: "12px",
+      whiteSpace: "nowrap", // Prevent cell content wrapping
     },
     container: {
+      position: "relative", // Add this to make it the positioning context
       backgroundColor: "#1a1a1a",
       borderRadius: "5px",
       boxShadow: "0 4px 8px rgba(0,0,0,0.5)",
       overflow: "hidden",
       display: "flex",
       flexDirection: "column",
-      height: "calc(100vh - 200px)", // Set fixed height
+      height: "100%",
+      width: "100%",
+      minWidth: 0, // Allow container to shrink
+      maxWidth: "100%", // Prevent container from exceeding parent width
     },
     tableContainer: {
       position: "relative",
       overflow: "auto",
       scrollbarColor: "#333 #1a1a1a",
       flex: 1,
-      display: "flex",
-      flexDirection: "column",
+      width: "100%",
+      minWidth: 0, // Allow container to shrink
+      maxWidth: "100%", // Prevent container from exceeding parent width
       "&::-webkit-scrollbar": {
         width: "8px",
         height: "8px",
@@ -62,14 +69,10 @@ export const tableStyles = {
       "&::-webkit-scrollbar-track": {
         background: "#1a1a1a",
         borderRadius: "4px",
-        marginBottom: "0",
       },
       "&::-webkit-scrollbar-thumb": {
         background: "#333",
         borderRadius: "4px",
-        "&:hover": {
-          background: "#444",
-        },
       },
       "& table": {
         flex: "1 1 auto",
@@ -80,6 +83,7 @@ export const tableStyles = {
       padding: "15px",
       backgroundColor: "#252525",
       borderBottom: "1px solid #333",
+      overflow: "hidden",
     },
     filterContainer: {
       display: "grid",
