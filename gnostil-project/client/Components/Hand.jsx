@@ -34,7 +34,14 @@ export default function Hand({
     if (auth.id && (!char || !char.id)) {
       return;
     }
-    setIsDragging(false); // Hide the drop area after dropping
+    setIsDragging(false);
+
+    // Check for 9 card limit
+    const currentCards = auth.id ? cards : localCards;
+    if (currentCards.length >= 9) {
+      return; // Do nothing if trying to add a 10th card
+    }
+
     if (auth.id) {
       setCards((prevCards) => {
         const updatedCards = [...prevCards];
@@ -52,41 +59,41 @@ export default function Hand({
         // Insert the card at the new position
         updatedCards.splice(position, 0, data);
 
-        // Recalculate positions for all cards
+        // Recalculate positions
         const newCards = updatedCards.map((card, index) => ({
           ...card,
-          position: index, // Assign the new index as the position
+          position: index,
         }));
 
         updateCardsInHand(auth, char, newCards, setCards);
         return newCards;
       });
+
       const success = await addToHand(auth, char, setCards, data.id, position);
       if (success) {
-        // Also add to deck
         await addToDeck(auth, char, setDeck, data.id);
       }
     } else {
       setLocalCards((prevCards) => {
-        const updatedCards = [...prevCards];
+        // Check if adding would exceed 9 cards
+        if (prevCards.length >= 9) {
+          return prevCards;
+        }
 
-        // Check if the card is already in the hand
+        const updatedCards = [...prevCards];
         const existingIndex = updatedCards.findIndex(
           (card) => card.maneuver_name === data.maneuver_name
         );
 
         if (existingIndex !== -1) {
-          // Remove the card from its original position
           updatedCards.splice(existingIndex, 1);
         }
 
-        // Insert the card at the new position
         updatedCards.splice(position, 0, data);
 
-        // Recalculate positions for all cards
         const newCards = updatedCards.map((card, index) => ({
           ...card,
-          position: index, // Assign the new index as the position
+          position: index,
         }));
 
         setLocalDeck((prevDeck) => {

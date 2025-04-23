@@ -32,26 +32,16 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
     if (auth.id && (!char || !char.id)) {
       return;
     }
-    setIsDragging(false); // Hide the drop area after dropping
+    setIsDragging(false);
+
     const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
 
     if (auth.id) {
-      // Add to deck via DB
-      const success = await addToDeck(auth, char, setDeck, data.id);
-      if (success) {
-        // Also add to hand
-        await addToHand(auth, char, setCards, data.id, 0);
-      }
+      // Only add to deck via DB
+      await addToDeck(auth, char, setDeck, data.id);
     } else {
       setLocalDeck((prevDeck) => {
         if (!prevDeck.some((card) => card.id === data.id)) {
-          // Also add to local hand
-          setLocalCards((prevCards) => {
-            if (!prevCards.some((card) => card.id === data.id)) {
-              return [...prevCards, { ...data, position: 0 }];
-            }
-            return prevCards;
-          });
           return [...prevDeck, data];
         }
         return prevDeck;
