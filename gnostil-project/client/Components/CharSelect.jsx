@@ -123,7 +123,7 @@ const CharSelect = ({auth, char, setChar}) => {
                 padding: "8px 12px",
               }}
             >
-              <option value={JSON.stringify({})}>Select Character</option>
+              <option value={JSON.stringify({})} disabled>Select Character</option>
               {[...characters]
                 .sort((a, b) => a.char_name.localeCompare(b.char_name))
                 .map((character) => (

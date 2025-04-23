@@ -9,7 +9,9 @@ export const Login = ({ setAuth }) => {
   const [isRegisterVisible, setIsRegisterVisible] = useState(false);
   const [error, setError] = useState('');
   const [showLogout, setShowLogout] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
+  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
 
   useEffect(() => {
     attemptLoginWithToken(setAuth);
@@ -59,27 +61,74 @@ export const Login = ({ setAuth }) => {
   // Show username and logout option when logged in
   if (currentUser) {
     return (
+      <>
       <div style={{
         ...loginStyles.loginButtonContainer,
-        flexDirection: 'row', // Change to horizontal layout
-        gap: '10px', // Add space between buttons
-        alignItems: 'center' // Center buttons vertically
+        flexDirection: 'row',
+        gap: '10px',
+        alignItems: 'center'
       }}>
+        {showSettings &&
         <button
-          onClick={() => setShowLogout(!showLogout)}
-          style={loginStyles.loginButton}
+        onClick={() => setIsSettingsVisible(true)}
+        style={{
+          ...loginStyles.loginButton,
+          width: '36px',
+          height: '37.33px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '1.2rem'     // Slightly larger font for the gear icon
+        }}
         >
-          {currentUser}
+        ⚙
+        </button>}
+        <button
+        onClick={() => {
+          setShowLogout(!showLogout);
+          setShowSettings(!showSettings);
+        }}
+        style={loginStyles.loginButton}
+        >
+        {currentUser}
         </button>
         {showLogout && (
-          <button
-            onClick={handleLogout}
-            style={loginStyles.logoutButton}
-          >
-            Logout
-          </button>
+        <button
+          onClick={handleLogout}
+          style={loginStyles.logoutButton}
+        >
+          Logout
+        </button>
         )}
       </div>
+
+      {/* Settings Modal */}
+      {isSettingsVisible && (
+        <div style={loginStyles.loginOverlay}>
+        <div style={loginStyles.loginContainer}>
+          <button
+          onClick={() => setIsSettingsVisible(false)}
+          style={{
+            ...loginStyles.closeButton,
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            background: 'transparent',
+            border: 'none',
+            fontSize: '1.5rem',
+            color: 'white',
+            cursor: 'pointer',
+          }}
+          >
+          &times;
+          </button>
+          <h2 style={{ color: 'white', margin: 0, textAlign: 'center' }}>
+          Settings
+          </h2>
+        </div>
+        </div>
+      )}
+      </>
     );
   }
 
