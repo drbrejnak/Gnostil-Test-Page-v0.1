@@ -122,8 +122,9 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
     <div
       style={tableStyles.container}
       onDragOver={(e) => {
-        // Only show drop area for application/x-card data (from hand)
-        if (e.dataTransfer.types.includes("application/x-card")) {
+        // Accept both hand and deck cards
+        if (e.dataTransfer.types.includes("application/x-card") ||
+            e.dataTransfer.types.includes("application/x-maneuver")) {
           e.preventDefault();
           e.stopPropagation();
           setIsDragging(true);
@@ -139,34 +140,35 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
         e.stopPropagation();
         setIsDragging(false);
 
-        if (e.dataTransfer.types.includes("application/x-card")) {
-          try {
-            const maneuverData = e.dataTransfer.getData("application/x-card");
-            const maneuver = JSON.parse(maneuverData);
-
-            if (auth?.id && char?.id && maneuver?.id) {
-              // Remove from hand via DB
-              const success = await removeFromHand(auth, char, setCards, maneuver.id);
-              if (success) {
-                // Also remove from deck
-                await removeFromDeck(auth, char, setDeck, maneuver.id);
-              }
-            } else {
-              // Remove from local hand
-              setLocalCards(prevCards => {
-                // Also remove from local deck
-                setLocalDeck(prevDeck => prevDeck.filter(card => card.id !== maneuver.id));
-                return prevCards.filter(card => card.id !== maneuver.id);
-              });
-            }
-          } catch (error) {
-            console.error("Error processing dropped card:", error);
+        try {
+          let maneuver;
+          // Handle both types of dragged items
+          if (e.dataTransfer.types.includes("application/x-card")) {
+            maneuver = JSON.parse(e.dataTransfer.getData("application/x-card"));
+          } else if (e.dataTransfer.types.includes("application/x-maneuver")) {
+            maneuver = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
           }
+
+          if (!maneuver) return;
+
+          if (auth?.id && char?.id && maneuver?.id) {
+            // Remove from deck
+            await removeFromDeck(auth, char, setDeck, maneuver.id);
+            // Also try to remove from hand if it exists there
+            await removeFromHand(auth, char, setCards, maneuver.id);
+          } else {
+            // Remove from local deck
+            setLocalDeck(prevDeck => prevDeck.filter(card => card.id !== maneuver.id));
+            // Also remove from local hand if it exists there
+            setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
+          }
+        } catch (error) {
+          console.error("Error processing dropped card:", error);
         }
       }}
     >
       {/* Drop Area Overlay */}
-      <div style={dropAreaStyle}>Discard</div>
+      <div style={dropAreaStyle} />
 
       <div style={tableStyles.filters}>
         <input

@@ -180,13 +180,13 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
         setIsDragging(false);
 
         if (e.dataTransfer.types.includes("application/x-maneuver")) {
-          const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
+          JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
           handleDrop(e);
         }
       }}
     >
       {/* Drop Area Overlay */}
-      <div style={dropAreaStyle}>Add to Deck</div>
+      <div style={dropAreaStyle} />
       {/* Search Bar */}
       <div style={tableStyles.filters}>
         <input
