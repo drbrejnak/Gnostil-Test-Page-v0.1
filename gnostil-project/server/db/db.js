@@ -44,7 +44,6 @@ const fetchHand = async (hand_id) => {
     SELECT
       character_hand.maneuver_id,
       character_hand.position,
-      character_hand.macro,
       maneuvers.*
     FROM
       character_hand
@@ -56,7 +55,7 @@ const fetchHand = async (hand_id) => {
       character_hand.hand_id = $1
   `;
   const response = await client.query(SQL, [hand_id]);
-  return response.rows; // Return all rows with maneuver, position, and macro data
+  return response.rows; // Return all rows with maneuver, position data
 };
 
 // (async () => {
@@ -90,7 +89,7 @@ const removeFromDeck = async({maneuver_id, deck_id})=> {
 // removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '90'});
 // removeFromDeck({deck_id: '161063af-ca6e-4701-a28c-4103753def14', maneuver_id: '90'});
 
-const addToHand = async({maneuver_id, deck_id, hand_id, position, macro})=> {
+const addToHand = async({maneuver_id, deck_id, hand_id, position})=> {
   try {
     // First check if the maneuver already exists in hand
     const checkSQL = `
@@ -106,8 +105,8 @@ const addToHand = async({maneuver_id, deck_id, hand_id, position, macro})=> {
 
     // If not exists, insert new record
     const SQL = `
-      INSERT INTO character_hand(maneuver_id, deck_id, hand_id, position, macro)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO character_hand(maneuver_id, deck_id, hand_id, position)
+      VALUES ($1, $2, $3, $4)
       RETURNING *
     `;
     const response = await client.query(SQL, [
@@ -115,7 +114,6 @@ const addToHand = async({maneuver_id, deck_id, hand_id, position, macro})=> {
       deck_id,
       hand_id,
       position || 0,  // Default to 0 if position not provided
-      macro || 1      // Default to 1 if macro not provided
     ]);
 
     return response.rows[0];

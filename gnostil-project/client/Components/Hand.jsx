@@ -8,7 +8,6 @@ import { handStyles } from "./Styles/HandStyles";
 
 export default function Hand({ auth, char, cards, setCards, setActiveCard, localCards, setLocalCards, setDeck, setLocalDeck }) {
   const [isDragging, setIsDragging] = useState(false); // State to track if a card is being dragged over the hand area
-  const [macro, setMacro] = useState(1);
 
   useEffect(() => {
     if (auth.id && char.id) {
@@ -20,11 +19,7 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
     }
   }, [auth, char]);
 
-  const handleSelectChange = (event) => {
-    setMacro(Number(event.target.value));
-  };
-
-  const handleDrop = async (data, position, macro) => {
+  const handleDrop = async (data, position) => {
     if (auth.id && (!char || !char.id)) {
       return;
     }
@@ -50,13 +45,12 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
         const newCards = updatedCards.map((card, index) => ({
           ...card,
           position: index, // Assign the new index as the position
-          macro: macro,
         }));
 
         updateCardsInHand(auth, char, newCards, setCards);
         return newCards;
       });
-      const success = await addToHand(auth, char, setCards, data.id, position, macro);
+      const success = await addToHand(auth, char, setCards, data.id, position);
       if (success) {
         // Also add to deck
         await addToDeck(auth, char, setDeck, data.id);
@@ -82,7 +76,6 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
         const newCards = updatedCards.map((card, index) => ({
           ...card,
           position: index, // Assign the new index as the position
-          macro: macro,
         }));
 
         setLocalDeck((prevDeck) => {
@@ -125,7 +118,7 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
         setIsDragging(false);
         if (e.dataTransfer.types.includes("application/x-maneuver")) {
           const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
-          handleDrop(data, 0, macro);
+          handleDrop(data, 0);
         }
       }}
     >
@@ -136,17 +129,7 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
         }}
       />
 
-      <select
-        style={handStyles.select}
-        value={macro}
-        onChange={handleSelectChange}
-      >
-        <option value={1}>Macro 1</option>
-        <option value={2}>Macro 2</option>
-        <option value={3}>Macro 3</option>
-      </select>
-
-      <DropArea onDrop={(data) => handleDrop(data, 0, macro)} />
+      <DropArea onDrop={(data) => handleDrop(data, 0)} />
 
       <div style={handStyles.cardsContainer}>
         {sortedHandToRender.map((card, index) => (
@@ -164,15 +147,15 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
               index={index}
               onDrop={(data) => {
                 if (data.position === undefined) {
-                  handleDrop(data, index + 1, macro);
+                  handleDrop(data, index + 1);
                 } else if (data.position === index || data.position - 1 === index) {
-                  handleDrop(data, data.position, macro);
+                  handleDrop(data, data.position);
                 } else if (index === 0) {
-                  handleDrop(data, index + 1, macro);
+                  handleDrop(data, index + 1);
                 } else if (data.position > index) {
-                  handleDrop(data, index + 1, macro);
+                  handleDrop(data, index + 1);
                 } else {
-                  handleDrop(data, index, macro);
+                  handleDrop(data, index);
                 }
               }}
             />

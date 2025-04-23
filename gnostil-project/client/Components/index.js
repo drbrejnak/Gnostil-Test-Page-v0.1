@@ -226,7 +226,7 @@ export const fetchCharHand = async (auth, char, setCards) => {
     }
 };
 
-export const addToHand = async (auth, char, setCards, maneuver_id, position, macro) => {
+export const addToHand = async (auth, char, setCards, maneuver_id, position) => {
     const deck_id = char.deck_id;
     const hand_id = char.hand_id;
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
@@ -235,7 +235,7 @@ export const addToHand = async (auth, char, setCards, maneuver_id, position, mac
         'Content-Type': 'application/json',
         authorization: window.localStorage.getItem('token'),
       },
-      body: JSON.stringify({maneuver_id, deck_id, hand_id, position, macro}),
+      body: JSON.stringify({maneuver_id, deck_id, hand_id, position}),
     })
     if (response.ok) {
         // Refetch the hand to update the state

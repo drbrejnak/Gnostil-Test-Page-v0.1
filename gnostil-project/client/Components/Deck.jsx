@@ -40,7 +40,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
       const success = await addToDeck(auth, char, setDeck, data.id);
       if (success) {
         // Also add to hand
-        await addToHand(auth, char, setCards, data.id, 0, 1); // Default position and macro
+        await addToHand(auth, char, setCards, data.id, 0);
       }
     } else {
       setLocalDeck((prevDeck) => {
@@ -48,7 +48,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
           // Also add to local hand
           setLocalCards((prevCards) => {
             if (!prevCards.some((card) => card.id === data.id)) {
-              return [...prevCards, { ...data, position: 0, macro: 1 }];
+              return [...prevCards, { ...data, position: 0 }];
             }
             return prevCards;
           });

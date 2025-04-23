@@ -229,8 +229,7 @@ router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLog
       maneuver_id: req.body.maneuver_id,
       deck_id: req.params.deckId,
       hand_id: req.params.handId,
-      position: req.body.position,
-      macro: req.body.macro
+      position: req.body.position
     });
 
     res.json(result);
