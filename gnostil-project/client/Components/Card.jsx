@@ -1,139 +1,78 @@
 import React from 'react';
 import '../src/App.css';
+import { cardStyles } from './Styles/CardStyles';
 
-const Card = ({ maneuver }) => {
-  // Styles for the card layout
-  const handCardStyles = {
-    container: {
-      position: 'absolute',
-      left: '50%',
-      top: '40%',
-      height: '33vw',
-      width: '33vw',
-      transform: "translate(-50%, -50%)",
-      backgroundColor: '#1a1a1a',
-      borderRadius: '15px',
-      color: 'white',
-      boxShadow: '0 4px 8px rgba(0,0,0,0.5)',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '5px',
-    },
-    header: {
-      borderBottom: '2px solid #333',
-      paddingBottom: '10px',
-      paddingTop: '10px',
-    },
-    title: {
-      fontSize: '24px',
-      fontWeight: 'bold',
-      marginBottom: '5px',
-    },
-    subtitle: {
-      fontSize: '16px',
-      color: '#888',
-    },
-    section: {
-      marginBottom: '15px',
-    },
-    propertyGrid: {
-      display: 'grid',
-      gridTemplateColumns: 'repeat(2, 1fr)',
-      gap: '10px',
-      padding: '10px',
-      backgroundColor: '#252525',
-      borderRadius: '8px',
-    },
-    property: {
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '5px',
-    },
-    propertyLabel: {
-      fontSize: '14px',
-      color: '#888',
-    },
-    propertyValue: {
-      fontSize: '16px',
-      color: '#fff',
-    },
-    wording: {
-      padding: '15px',
-      backgroundColor: '#252525',
-      borderRadius: '8px',
-      fontSize: '16px',
-      lineHeight: '1.5',
-    },
-    svgContainer: {
-      width: '100%',
-      height: '200px',
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#000',
-      borderRadius: '8px',
-      overflow: 'hidden',
-    },
-  };
-
+const Card = ({ maneuver, setSelectedManeuver }) => {
   return (
-    <div style={handCardStyles.container}>
+    <div style={cardStyles.container}>
+      {/* Close Button */}
+      <button
+        onClick={() => setSelectedManeuver(null)}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          right: '10px',
+          background: 'transparent',
+          border: 'none',
+          fontSize: '1.5rem',
+          color: 'white',
+          cursor: 'pointer',
+          zIndex: 1000,
+        }}
+      >
+        &times;
+      </button>
+
       {/* Header Section */}
-      <div style={handCardStyles.header}>
-        <div style={handCardStyles.title}>{maneuver?.maneuver_name || 'Maneuver Name'}</div>
-        <div style={handCardStyles.subtitle}>{maneuver?.discipline || 'Discipline'}</div>
+      <div style={cardStyles.header}>
+        <div style={cardStyles.title}>{maneuver?.maneuver_name || 'Maneuver Name'}</div>
+        <div style={cardStyles.subtitle}>{maneuver?.discipline || 'Discipline'}</div>
       </div>
 
-    {/* Properties Section */}
-        <div style={handCardStyles.section}>
-          <div style={handCardStyles.propertyGrid}>
-            <div style={handCardStyles.property}>
-                <span style={handCardStyles.propertyLabel}>
-                    Type
-                </span>
-                <span style={handCardStyles.propertyValue}>
-                    {maneuver?.maneuver_type || 'Type'}
-                </span>
-            </div>
-            <div style={handCardStyles.property}>
-                <span style={handCardStyles.propertyLabel}>
-                    {maneuver?.toll !== null ? 'Toll' : maneuver?.yield !== null ? 'Yield' : 'Toll/Yield'}
-                </span>
-                <span style={handCardStyles.propertyValue}>
-                    {maneuver?.toll !== null ? maneuver.toll : maneuver?.yield !== null ? maneuver.yield : 'Toll/Yield'}
-                </span>
-            </div>
-            <div style={handCardStyles.property}>
-                <span style={handCardStyles.propertyLabel}>
-                    Weight
-                </span>
-                <span style={handCardStyles.propertyValue}>
-                    {maneuver?.weight || 'Weight'}
-                </span>
-            </div>
-            <div style={handCardStyles.property}>
-                <span style={handCardStyles.propertyLabel}>
-                    Paradigm
-                </span>
-                <span style={handCardStyles.propertyValue}>
-                    {maneuver?.paradigm || 'Paradigm'}
-                </span>
-            </div>
+      {/* Properties Section */}
+      <div style={cardStyles.section}>
+        <div style={cardStyles.propertyGrid}>
+          <div style={cardStyles.property}>
+            <span style={cardStyles.propertyLabel}>Type</span>
+            <span style={cardStyles.propertyValue}>
+              {maneuver?.maneuver_type || 'Type'}
+            </span>
+          </div>
+          <div style={cardStyles.property}>
+            <span style={cardStyles.propertyLabel}>
+              {maneuver?.toll !== null ? 'Toll' : maneuver?.yield !== null ? 'Yield' : 'Toll/Yield'}
+            </span>
+            <span style={cardStyles.propertyValue}>
+              {maneuver?.toll !== null ? maneuver.toll : maneuver?.yield !== null ? maneuver.yield : 'Toll/Yield'}
+            </span>
+          </div>
+          <div style={cardStyles.property}>
+            <span style={cardStyles.propertyLabel}>Weight</span>
+            <span style={cardStyles.propertyValue}>
+              {maneuver?.weight || 'Weight'}
+            </span>
+          </div>
+          <div style={cardStyles.property}>
+            <span style={cardStyles.propertyLabel}>Paradigm</span>
+            <span style={cardStyles.propertyValue}>
+              {maneuver?.paradigm || 'Paradigm'}
+            </span>
           </div>
         </div>
+      </div>
 
-        {/* Description Section */}
-      <div style={handCardStyles.section}>
-        <div style={handCardStyles.wording}>
-        <div style={handCardStyles.propertyLabel}>Description</div>
+      {/* Description Section */}
+      <div style={cardStyles.section}>
+        <div style={cardStyles.wording}>
+          <div style={cardStyles.propertyLabel}>Description</div>
           {maneuver?.description || 'Maneuver description goes here...'}
         </div>
       </div>
 
       {/* Ability Section */}
-      <div style={handCardStyles.section}>
-        <div style={handCardStyles.wording}>
-        <div style={handCardStyles.propertyLabel}>Ability</div>
+      <div style={cardStyles.section}>
+        <div style={cardStyles.wording}>
+          <div style={cardStyles.propertyLabel}>Ability</div>
           {maneuver?.ability || 'Ability description goes here...'}
         </div>
       </div>

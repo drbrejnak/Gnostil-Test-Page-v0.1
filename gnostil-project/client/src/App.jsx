@@ -13,6 +13,7 @@ function App() {
   const [char, setChar] = useState({});
   const [deck, setDeck] = useState([]);
   const [cards, setCards] = useState([]);
+  const [localCards, setLocalCards] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
   const [selectedManeuver, setSelectedManeuver] = useState(null);
 
@@ -22,6 +23,19 @@ function App() {
     setAuth({});
     setChar({});
   }, []);
+
+  useEffect(() => {
+    if (!auth.id) {
+      const savedLocalCards = JSON.parse(localStorage.getItem("localCards")) || [];
+      setLocalCards(savedLocalCards);
+    }
+  }, [auth]);
+
+  useEffect(() => {
+    if (!auth.id) {
+      localStorage.setItem("localCards", JSON.stringify(localCards));
+    }
+  }, [localCards]);
 
   return (
     <>
@@ -61,23 +75,7 @@ function App() {
       <div>
         {selectedManeuver ? (
           <div>
-            <Card maneuver={selectedManeuver} />
-            <button
-              onClick={() => setSelectedManeuver(null)}
-              style={{
-                position: 'absolute',
-                top: '10px',
-                left: '10px',
-                padding: '5px 10px',
-                background: '#333',
-                color: 'white',
-                border: 'none',
-                borderRadius: '5px',
-                cursor: 'pointer'
-              }}
-            >
-              ×
-            </button>
+            <Card maneuver={selectedManeuver} setSelectedManeuver={setSelectedManeuver} />
           </div>
         ) : (
           <ExaminationArea />
@@ -95,7 +93,10 @@ function App() {
       setSelectedManeuver={setSelectedManeuver}
       auth={auth}
       char={char}
+      cards={cards}
       setCards={setCards}
+      localCards={localCards}
+      setLocalCards={setLocalCards}
       />
       <Hand
         auth={auth}
@@ -103,6 +104,8 @@ function App() {
         char={char}
         cards={cards}
         setCards={setCards}
+        localCards={localCards}
+        setLocalCards={setLocalCards}
         setActiveCard={setActiveCard}
       />
     </>

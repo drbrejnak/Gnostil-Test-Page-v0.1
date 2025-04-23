@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { tableStyles } from "./Styles/TableStyles";
 import { removeFromHand } from ".";
 
-export default function Compendium({ setSelectedManeuver, auth, char, setCards }) {
+export default function Compendium({ setSelectedManeuver, auth, char, setCards, localCards, setLocalCards }) {
   const [compendium, setCompendium] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("");
@@ -15,6 +15,7 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards }
   const [showFilters, setShowFilters] = useState(false); // State to toggle filters
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null }); // Sorting state
   const [isDragging, setIsDragging] = useState(false);
+  console.log(localCards)
 
   const getManeuvers = async () => {
     try {
@@ -147,15 +148,17 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards }
           try {
             const maneuverData = e.dataTransfer.getData("application/x-card");
             const maneuver = JSON.parse(maneuverData);
-            console.log('Dropped maneuver:', maneuver); // Debug log
+            console.log('Dropped maneuver:', maneuver);
 
             if (auth?.id && char?.id && maneuver?.id) {
+              // Authenticated user - remove from database
               const success = await removeFromHand(auth, char, setCards, maneuver.id);
               if (!success) {
                 console.error('Failed to remove card from hand');
               }
             } else {
-              console.error('Missing required data:', { auth, char, maneuver });
+              // Unauthenticated user - just update local state
+              setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
             }
           } catch (error) {
             console.error("Error processing dropped card:", error);

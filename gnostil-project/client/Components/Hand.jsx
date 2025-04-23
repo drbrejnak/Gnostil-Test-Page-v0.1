@@ -4,9 +4,9 @@ import "../src/App.css";
 import Card from "./HandCard";
 import DropArea from "./DropArea";
 import { fetchCharHand, addToHand, updateCardsInHand } from ".";
+import { handStyles } from "./Styles/HandStyles";
 
-export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
-  const [localCards, setLocalCards] = useState([]); // Local cards state for unauthenticated users
+export default function Hand({ auth, char, cards, setCards, setActiveCard, localCards, setLocalCards }) {
   const [isDragging, setIsDragging] = useState(false); // State to track if a card is being dragged over the hand area
   const [macro, setMacro] = useState(1);
 
@@ -20,78 +20,8 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
     }
   }, [auth, char]);
 
-  useEffect(() => {
-    if (!auth.id) {
-      const savedLocalCards = JSON.parse(localStorage.getItem("localCards")) || [];
-      setLocalCards(savedLocalCards);
-    }
-  }, [auth]);
-
-  useEffect(() => {
-    if (!auth.id) {
-      localStorage.setItem("localCards", JSON.stringify(localCards));
-    }
-  }, [localCards]);
-
   const handleSelectChange = (event) => {
     setMacro(Number(event.target.value));
-  };
-
-  const handStyles = {
-    container: {
-      backgroundColor: "#1a1a1a",
-      display: "flex",
-      flexGrow: 0,
-      flexShrink: 1,
-      flexBasis: "96vw",
-      justifyContent: "center",
-      alignItems: "center",
-      position: "absolute",
-      bottom: 10,
-      width: "100%",
-      height: "30%",
-      borderRadius: "15px",
-      boxShadow: "0 4px 8px rgba(0,0,0,0.5)",
-    },
-    dropArea: {
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width: "100%",
-      height: "100%",
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-      display: "none",
-      zIndex: 1,
-      borderRadius: "15px",
-      transition: "background-color 0.2s ease",
-    },
-    dropAreaActive: {
-      display: "block",
-      backgroundColor: "rgba(255, 255, 255, 0.2)",
-    },
-    select: {
-      position: "absolute",
-      top: "10px",
-      left: "20px",
-      backgroundColor: "#252525",
-      color: "white",
-      border: "1px solid #333",
-      borderRadius: "4px",
-      padding: "6px",
-      fontSize: "12px",
-      cursor: "pointer",
-      "&:hover": {
-        backgroundColor: "#333",
-      },
-    },
-    cardsContainer: {
-      display: "flex",
-      flexDirection: "row",
-      alignItems: "center",
-      padding: "0 20px",
-      overflowX: "auto",      // Allow horizontal scrolling if needed
-      overflowY: "hidden",    // Prevent vertical scrolling
-    },
   };
 
   const handleDrop = (data, position, macro) => {
