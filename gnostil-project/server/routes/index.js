@@ -220,13 +220,22 @@ router.get('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLogg
 router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
     }
-    res.send(await addToHand(req.body));
+
+    const result = await addToHand({
+      maneuver_id: req.body.maneuver_id,
+      deck_id: req.params.deckId,
+      hand_id: req.params.handId,
+      position: req.body.position,
+      macro: req.body.macro
+    });
+
+    res.json(result);
   } catch(err) {
+    console.error('Route error:', err);
     next(err);
   }
 });
@@ -256,10 +265,21 @@ router.delete('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isL
 
     const result = await removeFromHand({
       maneuver_id: req.body.maneuver_id,
-      hand_id: req.params.handId
+      hand_id: req.params.handId,
+      deck_id: req.params.deckId  // Add deck_id to params
     });
 
-    res.json({ success: true, result });
+    // After successful removal, fetch updated hand and deck
+    const updatedHand = await fetchHand(req.params.handId);
+    const updatedDeckIds = await fetchDeck(req.params.deckId);
+    const updatedDeck = await fetchDeckManeuvers(updatedDeckIds);
+
+    res.json({
+      success: true,
+      result,
+      hand: updatedHand,
+      deck: updatedDeck
+    });
   } catch(err) {
     next(err);
   }

@@ -3,10 +3,10 @@ import { useEffect, useState } from "react";
 import "../src/App.css";
 import HandCard from "./HandCard";
 import DropArea from "./DropArea";
-import { fetchCharHand, addToHand, updateCardsInHand } from ".";
+import { fetchCharHand, addToHand, updateCardsInHand, addToDeck } from ".";
 import { handStyles } from "./Styles/HandStyles";
 
-export default function Hand({ auth, char, cards, setCards, setActiveCard, localCards, setLocalCards }) {
+export default function Hand({ auth, char, cards, setCards, setActiveCard, localCards, setLocalCards, setDeck, setLocalDeck }) {
   const [isDragging, setIsDragging] = useState(false); // State to track if a card is being dragged over the hand area
   const [macro, setMacro] = useState(1);
 
@@ -24,7 +24,7 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
     setMacro(Number(event.target.value));
   };
 
-  const handleDrop = (data, position, macro) => {
+  const handleDrop = async (data, position, macro) => {
     if (auth.id && (!char || !char.id)) {
       return;
     }
@@ -56,9 +56,10 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
         updateCardsInHand(auth, char, newCards, setCards);
         return newCards;
       });
-      const cardExists = cards.some((card) => card.maneuver_name === data.maneuver_name);
-      if (!cardExists) {
-        addToHand(auth, char, setCards, data.id, position, macro);
+      const success = await addToHand(auth, char, setCards, data.id, position, macro);
+      if (success) {
+        // Also add to deck
+        await addToDeck(auth, char, setDeck, data.id);
       }
     } else {
       setLocalCards((prevCards) => {
@@ -78,11 +79,20 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard, local
         updatedCards.splice(position, 0, data);
 
         // Recalculate positions for all cards
-        return updatedCards.map((card, index) => ({
+        const newCards = updatedCards.map((card, index) => ({
           ...card,
           position: index, // Assign the new index as the position
           macro: macro,
         }));
+
+        setLocalDeck((prevDeck) => {
+          if (!prevDeck.some((card) => card.id === data.id)) {
+            return [...prevDeck, data];
+          }
+          return prevDeck;
+        });
+
+        return newCards;
       });
     }
   };

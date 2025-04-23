@@ -91,23 +91,68 @@ const removeFromDeck = async({maneuver_id, deck_id})=> {
 // removeFromDeck({deck_id: '161063af-ca6e-4701-a28c-4103753def14', maneuver_id: '90'});
 
 const addToHand = async({maneuver_id, deck_id, hand_id, position, macro})=> {
-  const SQL = `
-    INSERT INTO character_hand(maneuver_id, deck_id, hand_id, position, macro) VALUES ($1, $2, $3, $4, $5) RETURNING maneuver_id
-  `;
-  const response = await client.query(SQL, [maneuver_id, deck_id, hand_id, position, macro]);
-  return response.rows[0];
+  try {
+    // First check if the maneuver already exists in hand
+    const checkSQL = `
+      SELECT * FROM character_hand
+      WHERE maneuver_id = $1 AND hand_id = $2
+    `;
+    const checkResult = await client.query(checkSQL, [maneuver_id, hand_id]);
+
+    if (checkResult.rows.length > 0) {
+      // Maneuver already exists in hand
+      return checkResult.rows[0];
+    }
+
+    // If not exists, insert new record
+    const SQL = `
+      INSERT INTO character_hand(maneuver_id, deck_id, hand_id, position, macro)
+      VALUES ($1, $2, $3, $4, $5)
+      RETURNING *
+    `;
+    const response = await client.query(SQL, [
+      maneuver_id,
+      deck_id,
+      hand_id,
+      position || 0,  // Default to 0 if position not provided
+      macro || 1      // Default to 1 if macro not provided
+    ]);
+
+    return response.rows[0];
+  } catch (error) {
+    console.error('Error in addToHand:', error);
+    throw error;
+  }
 }
 
-const removeFromHand = async({maneuver_id, hand_id})=> {
+const removeFromHand = async({maneuver_id, hand_id, deck_id})=> {
   try {
-    console.log('Removing maneuver:', maneuver_id, 'from hand:', hand_id); // Debug log
+    // Begin transaction
+    await client.query('BEGIN');
+
+    // Remove from hand
     const SQL = `
-      DELETE FROM character_hand WHERE maneuver_id = $1 AND hand_id = $2 RETURNING *
+      DELETE FROM character_hand
+      WHERE maneuver_id = $1 AND hand_id = $2
+      RETURNING *
     `;
-    const result = await client.query(SQL, [maneuver_id, hand_id]);
-    console.log('Delete result:', result.rows); // Debug log
-    return result.rows[0];
+    const handResult = await client.query(SQL, [maneuver_id, hand_id]);
+
+    // Also remove from deck
+    const deckSQL = `
+      DELETE FROM character_deck
+      WHERE maneuver_id = $1 AND deck_id = $2
+      RETURNING *
+    `;
+    await client.query(deckSQL, [maneuver_id, deck_id]);
+
+    // Commit transaction
+    await client.query('COMMIT');
+
+    return handResult.rows[0];
   } catch (error) {
+    // Rollback on error
+    await client.query('ROLLBACK');
     console.error('Error in removeFromHand:', error);
     throw error;
   }

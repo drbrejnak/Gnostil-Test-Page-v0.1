@@ -1,10 +1,9 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { fetchCharDeck, removeFromDeck, addToDeck } from ".";
+import { fetchCharDeck, removeFromDeck, addToDeck, addToHand, removeFromHand } from ".";
 import { tableStyles } from "./Styles/TableStyles";
 
-export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver }) {
-  const [localDeck, setLocalDeck] = useState([]); // Local deck state for unauthenticated users
+export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, setCards, localDeck, setLocalDeck, localCards, setLocalCards }) {; // Local deck state for unauthenticated users
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("");
   const [filterType, setFilterType] = useState("");
@@ -28,20 +27,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
     }
   }, [auth, char]);
 
-  useEffect(() => {
-    if (!auth.id) {
-      const savedLocalDeck = JSON.parse(localStorage.getItem("localDeck")) || [];
-      setLocalDeck(savedLocalDeck);
-    }
-  }, [auth]);
-
-  useEffect(() => {
-    if (!auth.id) {
-      localStorage.setItem("localDeck", JSON.stringify(localDeck));
-    }
-  }, [localDeck]);
-
-  const handleDrop = (e) => {
+  const handleDrop = async (e) => {
     e.preventDefault();
     if (auth.id && (!char || !char.id)) {
       return;
@@ -50,29 +36,46 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
     const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
 
     if (auth.id) {
-      // Add to the database-backed deck for authenticated users
-      addToDeck(auth, char, setDeck, data.id);
+      // Add to deck via DB
+      const success = await addToDeck(auth, char, setDeck, data.id);
+      if (success) {
+        // Also add to hand
+        await addToHand(auth, char, setCards, data.id, 0, 1); // Default position and macro
+      }
     } else {
-      // Add to the local deck for unauthenticated users
-      setLocalDeck((prevLocalDeck) => {
-        // Avoid duplicates in the local deck
-        if (!prevLocalDeck.some((maneuver) => maneuver.id === data.id)) {
-          return [...prevLocalDeck, data];
+      setLocalDeck((prevDeck) => {
+        if (!prevDeck.some((card) => card.id === data.id)) {
+          // Also add to local hand
+          setLocalCards((prevCards) => {
+            if (!prevCards.some((card) => card.id === data.id)) {
+              return [...prevCards, { ...data, position: 0, macro: 1 }];
+            }
+            return prevCards;
+          });
+          return [...prevDeck, data];
         }
-        return prevLocalDeck;
+        return prevDeck;
       });
     }
   };
 
-  const handleRemove = (maneuverId) => {
+  const handleRemove = async (maneuverId) => {
     if (auth.id) {
-      // Remove from the database-backed deck for authenticated users
-      removeFromDeck(auth, char, setDeck, maneuverId);
+      // Remove from deck via DB
+      const success = await removeFromDeck(auth, char, setDeck, maneuverId);
+      if (success) {
+        // Also remove from hand
+        await removeFromHand(auth, char, setCards, maneuverId);
+      }
     } else {
-      // Remove from the local deck for unauthenticated users
-      setLocalDeck((prevLocalDeck) =>
-        prevLocalDeck.filter((maneuver) => maneuver.id !== maneuverId)
-      );
+      // Remove from local deck
+      setLocalDeck((prevDeck) => {
+        // Also remove from local hand
+        setLocalCards((prevCards) =>
+          prevCards.filter((card) => card.id !== maneuverId)
+        );
+        return prevDeck.filter((card) => card.id !== maneuverId);
+      });
     }
   };
 

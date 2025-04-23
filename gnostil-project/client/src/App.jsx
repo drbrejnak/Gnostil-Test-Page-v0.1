@@ -14,6 +14,7 @@ function App() {
   const [deck, setDeck] = useState([]);
   const [cards, setCards] = useState([]);
   const [localCards, setLocalCards] = useState([]);
+  const [localDeck, setLocalDeck] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
   const [selectedManeuver, setSelectedManeuver] = useState(null);
 
@@ -36,6 +37,19 @@ function App() {
       localStorage.setItem("localCards", JSON.stringify(localCards));
     }
   }, [localCards]);
+
+  useEffect(() => {
+    if (!auth.id) {
+      const savedLocalDeck = JSON.parse(localStorage.getItem("localDeck")) || [];
+      setLocalDeck(savedLocalDeck);
+    }
+  }, [auth]);
+
+  useEffect(() => {
+    if (!auth.id) {
+      localStorage.setItem("localDeck", JSON.stringify(localDeck));
+    }
+  }, [localDeck]);
 
   return (
     <>
@@ -100,8 +114,14 @@ function App() {
             auth={auth}
             char={char}
             deck={deck}
+            cards={cards}
             setDeck={setDeck}
+            setCards={setCards}
             setSelectedManeuver={setSelectedManeuver}
+            localDeck={localDeck}
+            setLocalDeck={setLocalDeck}
+            localCards={localCards}
+            setLocalCards={setLocalCards}
           />
         </div>
 
@@ -130,8 +150,12 @@ function App() {
             setSelectedManeuver={setSelectedManeuver}
             auth={auth}
             char={char}
+            deck={deck}
+            setDeck={setDeck}
             cards={cards}
             setCards={setCards}
+            localDeck={localDeck}
+            setLocalDeck={setLocalDeck}
             localCards={localCards}
             setLocalCards={setLocalCards}
           />
@@ -150,8 +174,11 @@ function App() {
           auth={auth}
           deck={deck}
           char={char}
+          setDeck={setDeck}
           cards={cards}
           setCards={setCards}
+          localDeck={localDeck}
+          setLocalDeck={setLocalDeck}
           localCards={localCards}
           setLocalCards={setLocalCards}
           setActiveCard={setActiveCard}

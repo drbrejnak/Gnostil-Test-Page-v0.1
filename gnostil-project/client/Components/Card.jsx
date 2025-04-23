@@ -29,37 +29,37 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
         <div style={cardStyles.subtitle}>{maneuver?.discipline || 'Discipline'}</div>
       </div>
 
-      {/* Properties Grid */}
-      <div style={cardStyles.propertyGrid}>
-        <div style={cardStyles.property}>
-          <span style={cardStyles.propertyLabel}>Type</span>
-          <span style={cardStyles.propertyValue}>
+    {/* Properties Grid */}
+        <div style={cardStyles.propertyGrid}>
+          <div style={cardStyles.property}>
+            <span style={cardStyles.propertyLabel}>Type</span>
+            <span style={cardStyles.propertyValue}>
             {maneuver?.maneuver_type || 'Type'}
-          </span>
-        </div>
-        <div style={cardStyles.property}>
-          <span style={cardStyles.propertyLabel}>
-            {maneuver?.toll !== null ? 'Toll' : maneuver?.yield !== null ? 'Yield' : 'Toll/Yield'}
-          </span>
-          <span style={cardStyles.propertyValue}>
-            {maneuver?.toll !== null ? maneuver.toll : maneuver?.yield !== null ? maneuver.yield : 'Toll/Yield'}
-          </span>
-        </div>
-        <div style={cardStyles.property}>
-          <span style={cardStyles.propertyLabel}>Weight</span>
-          <span style={cardStyles.propertyValue}>
+            </span>
+          </div>
+          <div style={cardStyles.property}>
+            <span style={cardStyles.propertyLabel}>
+            {maneuver?.toll === 0 ? 'Yield' : 'Toll'}
+            </span>
+            <span style={cardStyles.propertyValue}>
+            {maneuver?.toll === 0 ? maneuver?.yield : maneuver?.toll}
+            </span>
+          </div>
+          <div style={cardStyles.property}>
+            <span style={cardStyles.propertyLabel}>Weight</span>
+            <span style={cardStyles.propertyValue}>
             {maneuver?.weight || 'Weight'}
-          </span>
-        </div>
-        <div style={cardStyles.property}>
-          <span style={cardStyles.propertyLabel}>Paradigm</span>
-          <span style={cardStyles.propertyValue}>
+            </span>
+          </div>
+          <div style={cardStyles.property}>
+            <span style={cardStyles.propertyLabel}>Paradigm</span>
+            <span style={cardStyles.propertyValue}>
             {maneuver?.paradigm || 'Paradigm'}
-          </span>
+            </span>
+          </div>
         </div>
-      </div>
 
-      {/* Description Section */}
+        {/* Description Section */}
       <div style={cardStyles.wording}>
         <div style={cardStyles.propertyLabel}>Description</div>
         {maneuver?.description || 'Maneuver description goes here...'}

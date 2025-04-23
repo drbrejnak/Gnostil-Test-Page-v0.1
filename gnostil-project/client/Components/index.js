@@ -189,10 +189,11 @@ export const addToDeck = async (auth, char, setDeck, maneuver_id) => {
     });
 
     if (response.ok) {
-      // Refetch the deck to update the state
       fetchCharDeck(auth, char, setDeck);
+      return true;  // Add this return value
     }
-  };
+    return false;  // Add this return value
+};
 
 export const removeFromDeck = async (auth, char, setDeck, maneuver_id) => {
     const deck_id = char.deck_id;
@@ -208,7 +209,9 @@ export const removeFromDeck = async (auth, char, setDeck, maneuver_id) => {
     if (response.ok) {
       // Refetch the deck to update the state
       fetchCharDeck(auth, char, setDeck);
+      return true;  // Add this return value
     }
+    return false;  // Add this return value
 };
 
 export const fetchCharHand = async (auth, char, setCards) => {
@@ -237,8 +240,10 @@ export const addToHand = async (auth, char, setCards, maneuver_id, position, mac
     if (response.ok) {
         // Refetch the hand to update the state
         fetchCharHand(auth, char, setCards);
-    }
-};
+        return true;  // Add this return value
+      }
+      return false;  // Add this return value
+  };
 
 export const updateCardsInHand = async (auth, char, cards, setCards) => {
   const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {

@@ -1,9 +1,9 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { tableStyles } from "./Styles/TableStyles";
-import { removeFromHand } from ".";
+import { removeFromHand, removeFromDeck } from ".";
 
-export default function Compendium({ setSelectedManeuver, auth, char, setCards, localCards, setLocalCards }) {
+export default function Compendium({ setSelectedManeuver, auth, char, setCards, setDeck, localCards, setLocalCards, localDeck, setLocalDeck }) {
   const [compendium, setCompendium] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("");
@@ -15,7 +15,6 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
   const [showFilters, setShowFilters] = useState(false); // State to toggle filters
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null }); // Sorting state
   const [isDragging, setIsDragging] = useState(false);
-  console.log(localCards)
 
   const getManeuvers = async () => {
     try {
@@ -147,14 +146,19 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
             console.log('Dropped maneuver:', maneuver);
 
             if (auth?.id && char?.id && maneuver?.id) {
-              // Authenticated user - remove from database
+              // Remove from hand via DB
               const success = await removeFromHand(auth, char, setCards, maneuver.id);
-              if (!success) {
-                console.error('Failed to remove card from hand');
+              if (success) {
+                // Also remove from deck
+                await removeFromDeck(auth, char, setDeck, maneuver.id);
               }
             } else {
-              // Unauthenticated user - just update local state
-              setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
+              // Remove from local hand
+              setLocalCards(prevCards => {
+                // Also remove from local deck
+                setLocalDeck(prevDeck => prevDeck.filter(card => card.id !== maneuver.id));
+                return prevCards.filter(card => card.id !== maneuver.id);
+              });
             }
           } catch (error) {
             console.error("Error processing dropped card:", error);
