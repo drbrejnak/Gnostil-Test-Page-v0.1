@@ -1,12 +1,14 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
-import { fetchCharacters, createCharacter } from '.';
+import { fetchCharacters, createCharacter, editCharName } from '.';
 import { tableStyles } from './Styles/TableStyles';
 
 const CharSelect = ({auth, char, setChar}) => {
   const [characters, setCharacters] = useState([]);
   const [newCharName, setNewCharName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [error, setError] = useState('');
 
   useEffect(()=> {
     if(auth.id){
@@ -26,8 +28,29 @@ const CharSelect = ({auth, char, setChar}) => {
     }
   };
 
+  const handleEditCharacter = async (e) => {
+    e.preventDefault();
+    setError(''); // Clear any existing error
+    if (newCharName.trim()) {
+      const result = await editCharName(auth, char, newCharName.trim(), setCharacters);
+      if (result.success) {
+        setNewCharName('');
+        setIsEditing(false);
+      } else {
+        setError(result.error);
+        setNewCharName(''); // Clear input to show error message
+      }
+    }
+  };
+
+  const handleInputChange = (e) => {
+    setNewCharName(e.target.value);
+    if (error) setError(''); // Clear error when user starts typing
+  };
+
   const handleCancel = () => {
     setIsCreating(false);
+    setIsEditing(false);
     setNewCharName('');
   };
 
@@ -43,11 +66,11 @@ const CharSelect = ({auth, char, setChar}) => {
       transform: 'translateX(-50%)',
       zIndex: 1000,
       display: 'flex',
-      flexDirection: 'row', // Changed to row for horizontal layout
+      flexDirection: 'row',
       alignItems: 'center',
       gap: '10px'
     }}>
-      {!isCreating ? (
+      {!isCreating && !isEditing ? (
         <>
           <select
             value={JSON.stringify(char)}
@@ -79,10 +102,24 @@ const CharSelect = ({auth, char, setChar}) => {
           >
             +
           </button>
+          {char && char.id && (
+            <button
+              onClick={() => {
+                setIsEditing(true);
+                setNewCharName(char.char_name);
+              }}
+              style={{
+                ...tableStyles.button,
+                padding: "8px 12px",
+              }}
+            >
+              ✎
+            </button>
+          )}
         </>
       ) : (
         <form
-          onSubmit={handleCreateCharacter}
+          onSubmit={isEditing ? handleEditCharacter : handleCreateCharacter}
           style={{
             display: 'flex',
             gap: '8px'
@@ -91,18 +128,22 @@ const CharSelect = ({auth, char, setChar}) => {
           <input
             type="text"
             value={newCharName}
-            onChange={(e) => setNewCharName(e.target.value)}
-            placeholder="New character name"
+            onChange={handleInputChange}
+            placeholder={error || char.char_name}
             autoFocus
             style={{
               ...tableStyles.select,
+              cursor: 'text',
               backgroundColor: "rgba(26, 26, 26, 0.9)",
               backdropFilter: "blur(4px)",
               WebkitBackdropFilter: "blur(4px)",
               border: "1px solid rgba(255, 255, 255, 0.1)",
               transition: "all 0.2s ease",
               padding: "8px 12px",
-              width: '200px'
+              width: '200px',
+              '&::placeholder': {
+                color: error ? '#ff6b6b' : 'rgba(255, 255, 255, 0.5)'
+              }
             }}
           />
           <button
@@ -113,7 +154,7 @@ const CharSelect = ({auth, char, setChar}) => {
               padding: "8px 12px",
             }}
           >
-            Create
+            {isEditing ? 'Save' : 'Create'}
           </button>
           <button
             type="button"

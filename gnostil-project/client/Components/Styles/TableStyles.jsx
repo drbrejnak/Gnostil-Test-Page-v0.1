@@ -29,7 +29,7 @@ export const tableStyles = {
     },
     row: {
       transition: "background-color 0.2s ease",
-      cursor: "pointer",
+      cursor: "grab",
       "&:hover": {
         backgroundColor: "#252525",
       },
@@ -46,11 +46,15 @@ export const tableStyles = {
       overflow: "hidden",
       display: "flex",
       flexDirection: "column",
+      height: "calc(100vh - 200px)", // Set fixed height
     },
     tableContainer: {
+      position: "relative",
       overflow: "auto",
       scrollbarColor: "#333 #1a1a1a",
-      padding: "0 0 8px 0",
+      flex: 1,
+      display: "flex",
+      flexDirection: "column",
       "&::-webkit-scrollbar": {
         width: "8px",
         height: "8px",
@@ -58,6 +62,7 @@ export const tableStyles = {
       "&::-webkit-scrollbar-track": {
         background: "#1a1a1a",
         borderRadius: "4px",
+        marginBottom: "0",
       },
       "&::-webkit-scrollbar-thumb": {
         background: "#333",
@@ -66,6 +71,10 @@ export const tableStyles = {
           background: "#444",
         },
       },
+      "& table": {
+        flex: "1 1 auto",
+        margin: 0,
+      }
     },
     filters: {
       padding: "15px",

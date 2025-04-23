@@ -9,6 +9,8 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
   const [localCards, setLocalCards] = useState([]); // Local cards state for unauthenticated users
   const [isDragging, setIsDragging] = useState(false); // State to track if a card is being dragged over the hand area
   const [macro, setMacro] = useState(1);
+  console.log(char)
+  console.log(cards)
 
   useEffect(() => {
     if (auth.id && char.id) {
@@ -95,6 +97,9 @@ export default function Hand({ auth, char, cards, setCards, setActiveCard }) {
   };
 
   const handleDrop = (data, position, macro) => {
+    if (auth.id && (!char || !char.id)) {
+      return;
+    }
     setIsDragging(false); // Hide the drop area after dropping
     if (auth.id) {
       setCards((prevCards) => {

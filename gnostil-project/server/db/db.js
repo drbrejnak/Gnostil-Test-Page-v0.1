@@ -159,6 +159,27 @@ const deleteCharacter = async({ id })=> {
 
 // deleteCharacter({id: 'c6e443bd-1b98-44a9-841f-345c55d78254'})
 
+const editCharName = async({ id, char_name, user_id })=> {
+  // First check if name already exists for this user
+  const checkSQL = `
+    SELECT * FROM characters
+    WHERE user_id = $1 AND char_name = $2 AND id != $3
+  `;
+  const checkResult = await client.query(checkSQL, [user_id, char_name, id]);
+
+  if (checkResult.rows.length > 0) {
+    const error = new Error('Character name already exists.');
+    error.status = 400;
+    throw error;
+  }
+
+  const SQL = `
+    UPDATE characters SET char_name = $1 WHERE id = $2 RETURNING *
+  `;
+  const response = await client.query(SQL, [char_name, id]);
+  return response.rows[0];
+}
+
 const authenticate = async({ username, password })=> {
   const SQL = `
     SELECT id, password FROM users WHERE username=$1;
@@ -228,5 +249,6 @@ module.exports = {
   removeFromHand,
   updateCardsInHand,
   createUser,
-  createCharacter
+  createCharacter,
+  editCharName
 };

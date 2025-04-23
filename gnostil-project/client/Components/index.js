@@ -100,6 +100,32 @@ export const createCharacter = async(auth, newCharacter, setCharacters)=> {
   }
 };
 
+export const editCharName = async(auth, char, newName, setCharacters)=> {
+    try {
+        const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                authorization: window.localStorage.getItem('token'),
+            },
+            body: JSON.stringify({ char_id: char.id, char_name: newName }),
+        });
+        const json = await response.json();
+
+        if (!response.ok) {
+            throw new Error(json.error || 'Failed to update character name');
+        }
+
+        setCharacters(json);
+        return { success: true };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.message || 'Failed to update character name'
+        };
+    }
+};
+
 export const fetchCharDeck = async (auth, char, setDeck) => {
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
         headers: {

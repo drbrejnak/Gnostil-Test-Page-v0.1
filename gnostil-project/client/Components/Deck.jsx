@@ -43,6 +43,9 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
 
   const handleDrop = (e) => {
     e.preventDefault();
+    if (auth.id && (!char || !char.id)) {
+      return;
+    }
     setIsDragging(false); // Hide the drop area after dropping
     const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { register, login, attemptLoginWithToken } from '.';
-import { LoginStyles } from './Styles/LoginStyles';
+import { loginStyles } from './Styles/LoginStyles';
 
 export const Login = ({ setAuth }) => {
   const [username, setUsername] = useState('');
@@ -59,10 +59,10 @@ export const Login = ({ setAuth }) => {
   // Show username and logout option when logged in
   if (currentUser) {
     return (
-      <div style={LoginStyles.loginButtonContainer}>
+      <div style={loginStyles.loginButtonContainer}>
         <button
           onClick={() => setShowLogout(!showLogout)}
-          style={LoginStyles.loginButton}
+          style={loginStyles.loginButton}
         >
           {currentUser}
         </button>
@@ -70,7 +70,7 @@ export const Login = ({ setAuth }) => {
           <button
             onClick={handleLogout}
             style={{
-              ...LoginStyles.loginButton,
+              ...loginStyles.loginButton,
               position: 'absolute',
               top: '100%',
               left: 0,
@@ -94,10 +94,10 @@ export const Login = ({ setAuth }) => {
 
   if (!isLoginVisible && !isRegisterVisible) {
     return (
-      <div style={LoginStyles.loginButtonContainer}>
+      <div style={loginStyles.loginButtonContainer}>
         <button
           onClick={() => setIsLoginVisible(true)}
-          style={LoginStyles.loginButton}
+          style={loginStyles.loginButton}
         >
           Login
         </button>
@@ -106,12 +106,12 @@ export const Login = ({ setAuth }) => {
   }
 
   return (
-    <div style={LoginStyles.loginOverlay}>
-      <div style={LoginStyles.loginContainer}>
+    <div style={loginStyles.loginOverlay}>
+      <div style={loginStyles.loginContainer}>
         <button
           onClick={cancel}
           style={{
-            ...LoginStyles.closeButton,
+            ...loginStyles.closeButton,
             position: 'absolute',
             top: '10px',
             right: '10px',
@@ -129,7 +129,7 @@ export const Login = ({ setAuth }) => {
         </h2>
         <form
           onSubmit={isRegisterVisible ? handleSubmitRegister : handleSubmitLogin}
-          style={LoginStyles.loginForm}
+          style={loginStyles.loginForm}
         >
           {error && (
             <div style={{
@@ -145,20 +145,20 @@ export const Login = ({ setAuth }) => {
             value={username}
             placeholder="Username"
             onChange={(ev) => setUsername(ev.target.value)}
-            style={LoginStyles.loginInput}
+            style={loginStyles.loginInput}
           />
           <input
             type="password"
             value={password}
             placeholder="Password"
             onChange={(ev) => setPassword(ev.target.value)}
-            style={LoginStyles.loginInput}
+            style={loginStyles.loginInput}
           />
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <button
               type="submit"
               disabled={!username || !password}
-              style={LoginStyles.loginButton}
+              style={loginStyles.loginButton}
             >
               {isRegisterVisible ? 'Register' : 'Login'}
             </button>
@@ -171,7 +171,7 @@ export const Login = ({ setAuth }) => {
                   setIsLoginVisible(true);
                   setIsRegisterVisible(false);
                 }}
-                style={LoginStyles.loginButton}
+                style={loginStyles.loginButton}
               >
                 Return to Login
               </button>
@@ -185,7 +185,7 @@ export const Login = ({ setAuth }) => {
                   setIsLoginVisible(false);
                   setIsRegisterVisible(true);
                 }}
-                style={LoginStyles.loginButton}
+                style={loginStyles.loginButton}
               >
                 Register
               </button>

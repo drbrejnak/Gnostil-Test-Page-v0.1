@@ -3,7 +3,7 @@ import '../src/App.css';
 
 const Card = ({ maneuver }) => {
   // Styles for the card layout
-  const cardStyles = {
+  const handCardStyles = {
     container: {
       position: 'absolute',
       left: '50%',
@@ -77,45 +77,45 @@ const Card = ({ maneuver }) => {
   };
 
   return (
-    <div style={cardStyles.container}>
+    <div style={handCardStyles.container}>
       {/* Header Section */}
-      <div style={cardStyles.header}>
-        <div style={cardStyles.title}>{maneuver?.maneuver_name || 'Maneuver Name'}</div>
-        <div style={cardStyles.subtitle}>{maneuver?.discipline || 'Discipline'}</div>
+      <div style={handCardStyles.header}>
+        <div style={handCardStyles.title}>{maneuver?.maneuver_name || 'Maneuver Name'}</div>
+        <div style={handCardStyles.subtitle}>{maneuver?.discipline || 'Discipline'}</div>
       </div>
 
     {/* Properties Section */}
-        <div style={cardStyles.section}>
-          <div style={cardStyles.propertyGrid}>
-            <div style={cardStyles.property}>
-                <span style={cardStyles.propertyLabel}>
+        <div style={handCardStyles.section}>
+          <div style={handCardStyles.propertyGrid}>
+            <div style={handCardStyles.property}>
+                <span style={handCardStyles.propertyLabel}>
                     Type
                 </span>
-                <span style={cardStyles.propertyValue}>
+                <span style={handCardStyles.propertyValue}>
                     {maneuver?.maneuver_type || 'Type'}
                 </span>
             </div>
-            <div style={cardStyles.property}>
-                <span style={cardStyles.propertyLabel}>
+            <div style={handCardStyles.property}>
+                <span style={handCardStyles.propertyLabel}>
                     {maneuver?.toll !== null ? 'Toll' : maneuver?.yield !== null ? 'Yield' : 'Toll/Yield'}
                 </span>
-                <span style={cardStyles.propertyValue}>
+                <span style={handCardStyles.propertyValue}>
                     {maneuver?.toll !== null ? maneuver.toll : maneuver?.yield !== null ? maneuver.yield : 'Toll/Yield'}
                 </span>
             </div>
-            <div style={cardStyles.property}>
-                <span style={cardStyles.propertyLabel}>
+            <div style={handCardStyles.property}>
+                <span style={handCardStyles.propertyLabel}>
                     Weight
                 </span>
-                <span style={cardStyles.propertyValue}>
+                <span style={handCardStyles.propertyValue}>
                     {maneuver?.weight || 'Weight'}
                 </span>
             </div>
-            <div style={cardStyles.property}>
-                <span style={cardStyles.propertyLabel}>
+            <div style={handCardStyles.property}>
+                <span style={handCardStyles.propertyLabel}>
                     Paradigm
                 </span>
-                <span style={cardStyles.propertyValue}>
+                <span style={handCardStyles.propertyValue}>
                     {maneuver?.paradigm || 'Paradigm'}
                 </span>
             </div>
@@ -123,17 +123,17 @@ const Card = ({ maneuver }) => {
         </div>
 
         {/* Description Section */}
-      <div style={cardStyles.section}>
-        <div style={cardStyles.wording}>
-        <div style={cardStyles.propertyLabel}>Description</div>
+      <div style={handCardStyles.section}>
+        <div style={handCardStyles.wording}>
+        <div style={handCardStyles.propertyLabel}>Description</div>
           {maneuver?.description || 'Maneuver description goes here...'}
         </div>
       </div>
 
       {/* Ability Section */}
-      <div style={cardStyles.section}>
-        <div style={cardStyles.wording}>
-        <div style={cardStyles.propertyLabel}>Ability</div>
+      <div style={handCardStyles.section}>
+        <div style={handCardStyles.wording}>
+        <div style={handCardStyles.propertyLabel}>Ability</div>
           {maneuver?.ability || 'Ability description goes here...'}
         </div>
       </div>

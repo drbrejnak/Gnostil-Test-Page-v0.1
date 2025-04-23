@@ -1,4 +1,4 @@
-export const LoginStyles = {
+export const loginStyles = {
     loginOverlay: {
         position: "fixed",
         top: 0,

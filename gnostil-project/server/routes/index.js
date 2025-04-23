@@ -14,7 +14,8 @@ const {
   removeFromHand,
   updateCardsInHand,
   createUser,
-  createCharacter
+  createCharacter,
+  editCharName
 } = require('../db/db');
 const express = require('express');
 const cors = require('cors');
@@ -114,6 +115,25 @@ router.post('/users/:userId/characters', isLoggedIn, async(req, res, next)=> {
     }
     console.log(req.params.userId, req.body);
     res.send(await createCharacter({user_id: req.params.userId, char_name: req.body.newCharacter}));
+  } catch(err) {
+    next(err);
+  }
+});
+
+router.put('/users/:userId/characters/:charId', isLoggedIn, async(req, res, next)=> {
+  try {
+    if(req.params.userId !== req.user.id){
+      const error = Error('not authorized');
+      error.status = 401;
+      throw error;
+    }
+    const updatedChar = await editCharName({
+      id: req.params.charId,
+      char_name: req.body.char_name,
+      user_id: req.params.userId
+    });
+    const characters = await fetchCharacters(req.params.userId);
+    res.json(characters);
   } catch(err) {
     next(err);
   }
