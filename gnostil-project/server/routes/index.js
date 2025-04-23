@@ -13,7 +13,8 @@ const {
   fetchHand,
   removeFromHand,
   updateCardsInHand,
-  createUser
+  createUser,
+  createCharacter
 } = require('../db/db');
 const express = require('express');
 const cors = require('cors');
@@ -92,12 +93,27 @@ router.get('/maneuvers', async(req, res, next)=> {
 router.get('/users/:userId/characters', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
+      console.log(`params ${req.params.userId}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
     }
     res.send(await fetchCharacters(req.params.userId));
+  } catch(err) {
+    next(err);
+  }
+});
+
+router.post('/users/:userId/characters', isLoggedIn, async(req, res, next)=> {
+  try {
+    if(req.params.userId !== req.user.id){
+      console.log(`params ${req.params.userId}`, `user ${req.user.id}`);
+      const error = Error('not authorized');
+      error.status = 401;
+      throw error;
+    }
+    console.log(req.params.userId, req.body);
+    res.send(await createCharacter({user_id: req.params.userId, char_name: req.body.newCharacter}));
   } catch(err) {
     next(err);
   }

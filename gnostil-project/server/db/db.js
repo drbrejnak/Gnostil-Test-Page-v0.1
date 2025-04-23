@@ -157,6 +157,8 @@ const deleteCharacter = async({ id })=> {
   await client.query(SQL, [id]);
 };
 
+// deleteCharacter({id: 'c6e443bd-1b98-44a9-841f-345c55d78254'})
+
 const authenticate = async({ username, password })=> {
   const SQL = `
     SELECT id, password FROM users WHERE username=$1;
@@ -225,5 +227,6 @@ module.exports = {
   fetchHand,
   removeFromHand,
   updateCardsInHand,
-  createUser
+  createUser,
+  createCharacter
 };

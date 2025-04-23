@@ -16,6 +16,12 @@ function App() {
   const [activeCard, setActiveCard] = useState(null);
   const [selectedManeuver, setSelectedManeuver] = useState(null);
 
+  useEffect(() => {
+    // Clear token on page load/refresh
+    localStorage.clear();
+    setAuth({});
+  }, []);
+
   return (
     <>
       <div>

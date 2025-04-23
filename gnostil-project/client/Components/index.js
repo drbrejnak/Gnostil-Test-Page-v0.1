@@ -85,6 +85,21 @@ export const fetchCharacters = async(auth, setCharacters)=> {
     }
 };
 
+export const createCharacter = async(auth, newCharacter, setCharacters)=> {
+  const response = await fetch(`${host}/users/${auth.id}/characters/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: window.localStorage.getItem('token'),
+    },
+    body: JSON.stringify({ newCharacter }),
+  });
+  const json = await response.json();
+  if(response.ok){
+    setCharacters(Array.isArray(json) ? json : []);
+  }
+};
+
 export const fetchCharDeck = async (auth, char, setDeck) => {
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
         headers: {
