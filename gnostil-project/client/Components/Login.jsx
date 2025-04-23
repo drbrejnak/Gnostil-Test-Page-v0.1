@@ -74,7 +74,7 @@ export const Login = ({ setAuth }) => {
         style={{
           ...loginStyles.loginButton,
           width: '36px',
-          height: '37.33px',
+          height: '32px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

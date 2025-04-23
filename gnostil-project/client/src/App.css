@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+
 .container {
   position: absolute;
   left: 50%;
@@ -26,7 +28,7 @@ svg {
 
 .thumbnail svg {
   position: absolute; /* Position the SVG relative to the thumbnail */
-  top: 45%; 
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -55%);
 }
