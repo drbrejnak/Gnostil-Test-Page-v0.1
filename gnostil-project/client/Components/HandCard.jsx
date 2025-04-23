@@ -1,7 +1,7 @@
 import React from 'react'
 import "../src/App.css";
 import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modify, Narrative, Reaction, Rings } from "../Maneuver_Properties/PropertyIndex.js";
-import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCaller, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
+import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCalled, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
 const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
   const cardStyle = {
@@ -73,7 +73,7 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
     };
 
     const renderWeightSVG = () => {
-        if (card.weight === "X") {
+        if (card.weight <= 5) {
             return <Light animate={0} />;
         } else {
             return <Heavy animate={0} />;
@@ -111,13 +111,13 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
             return <FleshShaper animate={0} />;
           case "Gloommantle":
             return <Gloommantle animate={0} />;
-          case "Geist Caller":
-            return <GeistCaller animate={0} />;
+          case "Geist Called":
+            return <GeistCalled animate={0} />;
           case "Ironhanded":
             return <Ironhanded animate={0} />;
           case "Metapsychiral":
             return <Metapsychiral animate={0} />;
-          case "Nobles Nail":
+          case "Noble’s Nail":
             return <NoblesNail animate={0} />;
           case "Paragon Populi":
             return <ParagonPopuli animate={0} />;

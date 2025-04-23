@@ -4,7 +4,7 @@ import Euclidinst from "./Euclidinst";
 import FleshShaper from "./FleshShaper";
 import FleethandJaeger from "./FleethandJaeger";
 import Gloommantle from "./Gloommantle";
-import GeistCaller from "./GeistCaller";
+import GeistCalled from "./GeistCalled";
 import Ironhanded from "./Ironhanded";
 import Metapsychiral from "./Metapsychiral";
 import NoblesNail from "./NoblesNail";
@@ -20,7 +20,7 @@ export {
     FleshShaper,
     FleethandJaeger,
     Gloommantle,
-    GeistCaller,
+    GeistCalled,
     Ironhanded,
     Metapsychiral,
     NoblesNail,

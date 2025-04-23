@@ -143,7 +143,6 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
           try {
             const maneuverData = e.dataTransfer.getData("application/x-card");
             const maneuver = JSON.parse(maneuverData);
-            console.log('Dropped maneuver:', maneuver);
 
             if (auth?.id && char?.id && maneuver?.id) {
               // Remove from hand via DB
@@ -258,7 +257,8 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
             >
               <option value="">All Weights</option>
               {[...new Set(compendium.map((maneuver) => maneuver.weight))]
-                .sort((a, b) => a?.localeCompare(b))
+                .filter(yieldValue => yieldValue !== null)  // Remove null values
+                .sort((a, b) => Number(a) - Number(b))  // Numerical sort
                 .map((weight, index) => (
                   <option key={index} value={weight}>
                     {weight}
@@ -273,7 +273,7 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
             >
               <option value="">All Paradigms</option>
               {[...new Set(compendium.map((maneuver) => maneuver.paradigm))]
-                .sort((a, b) => a?.localeCompare(b))
+                .sort((a, b) => a.localeCompare(b))
                 .map((paradigm, index) => (
                   <option key={index} value={paradigm}>
                     {paradigm}

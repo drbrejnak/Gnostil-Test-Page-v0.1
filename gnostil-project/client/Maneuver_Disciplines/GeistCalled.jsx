@@ -1,7 +1,7 @@
 import * as React from "react"
 import {motion} from "framer-motion"
 
-const GeistCaller  = (props) => (
+const GeistCalled = (props) => (
   <motion.svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" preserveAspectRatio="xMinYMax meet" {...props}
   style={{
     width: "100%", // Scale to fit the container width
@@ -286,4 +286,4 @@ z
     </motion.g>
   </motion.svg>
 )
-export default GeistCaller
+export default GeistCalled

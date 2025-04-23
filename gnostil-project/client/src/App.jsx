@@ -17,6 +17,7 @@ function App() {
   const [localDeck, setLocalDeck] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
   const [selectedManeuver, setSelectedManeuver] = useState(null);
+  console.log(selectedManeuver)
 
   useEffect(() => {
     // Clear token on page load/refresh

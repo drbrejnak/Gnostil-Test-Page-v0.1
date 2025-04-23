@@ -292,7 +292,8 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
         >
           <option value="">All Weights</option>
           {[...new Set(filteredDeck.map((maneuver) => maneuver.weight))]
-            .sort((a, b) => a?.localeCompare(b))
+            .filter(yieldValue => yieldValue !== null)  // Remove null values
+            .sort((a, b) => Number(a) - Number(b))  // Numerical sort
             .map((weight, index) => (
               <option key={index} value={weight}>
                 {weight}
@@ -308,7 +309,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
         >
           <option value="">All Paradigms</option>
           {[...new Set(filteredDeck.map((maneuver) => maneuver.paradigm))]
-            .sort((a, b) => a?.localeCompare(b))
+            .sort((a, b) => a.localeCompare(b))
             .map((paradigm, index) => (
               <option key={index} value={paradigm}>
                 {paradigm}

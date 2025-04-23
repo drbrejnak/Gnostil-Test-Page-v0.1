@@ -3,7 +3,7 @@ import "../src/App.css";
 
 // Import all SVG components
 import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modify, Narrative, Reaction, Rings } from "../Maneuver_Properties/PropertyIndex.js";
-import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCaller, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
+import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCalled, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
 const ExaminationArea = ({ setSelectedManeuver }) => {
 
@@ -44,7 +44,7 @@ const ExaminationArea = ({ setSelectedManeuver }) => {
     { name: "Elementalist", Component: Elementalist },
     { name: "Metapsychiral", Component: Metapsychiral },
     { name: "Wild Whisperer", Component: WildWhisperer },
-    { name: "Geist Caller", Component: GeistCaller },
+    { name: "Geist Caller", Component: GeistCalled },
     { name: "Flesh Shaper", Component: FleshShaper },
     { name: "Gloommantle", Component: Gloommantle },
     { name: "Fleethand Jaeger", Component: FleethandJaeger },
@@ -52,7 +52,7 @@ const ExaminationArea = ({ setSelectedManeuver }) => {
     { name: "Shieldbearer", Component: Shieldbearer },
     { name: "Euclidinst", Component: Euclidinst },
     { name: "Paragon Populi", Component: ParagonPopuli },
-    { name: "Nobles Nail", Component: NoblesNail },
+    { name: "Noble's Nail", Component: NoblesNail },
     { name: "Yieldless Goliath", Component: YieldlessGoliath },
     { name: "Aiontropier", Component: Aiontropier },
   ];
