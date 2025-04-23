@@ -71,7 +71,7 @@ const addToDeck = async({maneuver_id, deck_id})=> {
   return response.rows[0];
 }
 
-// addToDeck({maneuver_id: '7', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
+// addToDeck({maneuver_id: '7', deck_id: '1eea3a98-4345-4efc-9f35-6ffb888d95de'});
 // addToDeck({maneuver_id: '9', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
 // addToDeck({maneuver_id: '102', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
 

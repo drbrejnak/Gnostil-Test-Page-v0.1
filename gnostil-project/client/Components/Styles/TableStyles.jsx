@@ -53,6 +53,7 @@ export const tableStyles = {
       width: "100%",
       minWidth: 0, // Allow container to shrink
       maxWidth: "100%", // Prevent container from exceeding parent width
+      pointerEvents: "auto",
     },
     tableContainer: {
       position: "relative",

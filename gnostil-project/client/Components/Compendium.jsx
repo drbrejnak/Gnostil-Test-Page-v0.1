@@ -56,16 +56,23 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
       );
     })
     .sort((a, b) => {
-      if (!sortConfig.key) return 0; // No sorting
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
+      if (!sortConfig.key) return 0;
+
+      let aValue = a[sortConfig.key];
+      let bValue = b[sortConfig.key];
+
+      // Handle numeric sorting for toll and yield
+      if (sortConfig.key === 'toll' || sortConfig.key === 'yield') {
+        aValue = aValue !== null ? Number(aValue) : -Infinity;
+        bValue = bValue !== null ? Number(bValue) : -Infinity;
+      }
 
       if (sortConfig.direction === "ascending") {
         return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
       } else if (sortConfig.direction === "descending") {
         return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
       }
-      return 0; // Original order
+      return 0;
     });
 
   // Handle sorting
@@ -184,13 +191,13 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
               style={tableStyles.select}
             >
               <option value="">All Disciplines</option>
-              {[...new Set(compendium.map((maneuver) => maneuver.discipline))].map(
-                (discipline, index) => (
+              {[...new Set(compendium.map((maneuver) => maneuver.discipline))]
+                .sort((a, b) => a.localeCompare(b))
+                .map((discipline, index) => (
                   <option key={index} value={discipline}>
                     {discipline}
                   </option>
-                )
-              )}
+                ))}
             </select>
 
             <select
@@ -199,13 +206,13 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
               style={tableStyles.select}
             >
               <option value="">All Types</option>
-              {[...new Set(compendium.map((maneuver) => maneuver.maneuver_type))].map(
-                (type, index) => (
+              {[...new Set(compendium.map((maneuver) => maneuver.maneuver_type))]
+                .sort((a, b) => a.localeCompare(b))
+                .map((type, index) => (
                   <option key={index} value={type}>
                     {type}
                   </option>
-                )
-              )}
+                ))}
             </select>
 
             <select
@@ -214,13 +221,14 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
               style={tableStyles.select}
             >
               <option value="">All Tolls</option>
-              {[...new Set(compendium.map((maneuver) => maneuver.toll))].map(
-                (toll, index) => (
+              {[...new Set(compendium.map((maneuver) => maneuver.toll))]
+                .filter(toll => toll !== null)  // Remove null values
+                .sort((a, b) => Number(a) - Number(b))  // Numerical sort
+                .map((toll, index) => (
                   <option key={index} value={toll}>
                     {toll}
                   </option>
-                )
-              )}
+                ))}
             </select>
 
             <select
@@ -229,13 +237,14 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
               style={tableStyles.select}
             >
               <option value="">All Yields</option>
-              {[...new Set(compendium.map((maneuver) => maneuver.yield))].map(
-                (yieldValue, index) => (
+              {[...new Set(compendium.map((maneuver) => maneuver.yield))]
+                .filter(yieldValue => yieldValue !== null)  // Remove null values
+                .sort((a, b) => Number(a) - Number(b))  // Numerical sort
+                .map((yieldValue, index) => (
                   <option key={index} value={yieldValue}>
                     {yieldValue}
                   </option>
-                )
-              )}
+                ))}
             </select>
 
             <select
@@ -244,13 +253,13 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
               style={tableStyles.select}
             >
               <option value="">All Weights</option>
-              {[...new Set(compendium.map((maneuver) => maneuver.weight))].map(
-                (weight, index) => (
+              {[...new Set(compendium.map((maneuver) => maneuver.weight))]
+                .sort((a, b) => a?.localeCompare(b))
+                .map((weight, index) => (
                   <option key={index} value={weight}>
                     {weight}
                   </option>
-                )
-              )}
+                ))}
             </select>
 
             <select
@@ -259,13 +268,13 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
               style={tableStyles.select}
             >
               <option value="">All Paradigms</option>
-              {[...new Set(compendium.map((maneuver) => maneuver.paradigm))].map(
-                (paradigm, index) => (
+              {[...new Set(compendium.map((maneuver) => maneuver.paradigm))]
+                .sort((a, b) => a?.localeCompare(b))
+                .map((paradigm, index) => (
                   <option key={index} value={paradigm}>
                     {paradigm}
                   </option>
-                )
-              )}
+                ))}
             </select>
           </div>
         )}
@@ -337,12 +346,16 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
               <tr
                 key={index}
                 style={tableStyles.row}
-                draggable
-                onClick={() => handleRowClick(maneuver)}
-                onDragStart={(e) =>
-                  e.dataTransfer.setData(
-                    "application/x-maneuver",
-                    JSON.stringify({
+                draggable={true}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleRowClick(maneuver);
+                }}
+                onDragStart={(e) => {
+                  e.stopPropagation();
+                  const dt = e.dataTransfer;
+
+                  const maneuverData = {
                       id: maneuver.id,
                       maneuver_name: maneuver.maneuver_name,
                       discipline: maneuver.discipline,
@@ -353,9 +366,14 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
                       yield: maneuver.yield,
                       weight: maneuver.weight,
                       paradigm: maneuver.paradigm,
-                    })
-                  )
-                }
+                  };
+
+                  dt.setData('application/x-maneuver', JSON.stringify(maneuverData));
+                }}
+                onDragEnd={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                }}
               >
                 <td style={tableStyles.cell}>{maneuver.maneuver_name}</td>
                 <td style={tableStyles.cell}>{maneuver.discipline}</td>

@@ -101,16 +101,23 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
       );
     })
     .sort((a, b) => {
-      if (!sortConfig.key) return 0; // No sorting
-      const aValue = a[sortConfig.key];
-      const bValue = b[sortConfig.key];
+      if (!sortConfig.key) return 0;
+
+      let aValue = a[sortConfig.key];
+      let bValue = b[sortConfig.key];
+
+      // Handle numeric sorting for toll and yield
+      if (sortConfig.key === 'toll' || sortConfig.key === 'yield') {
+        aValue = aValue !== null ? Number(aValue) : -Infinity;
+        bValue = bValue !== null ? Number(bValue) : -Infinity;
+      }
 
       if (sortConfig.direction === "ascending") {
         return aValue > bValue ? 1 : aValue < bValue ? -1 : 0;
       } else if (sortConfig.direction === "descending") {
         return aValue < bValue ? 1 : aValue > bValue ? -1 : 0;
       }
-      return 0; // Original order
+      return 0;
     });
 
   // Handle sorting
@@ -208,96 +215,104 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver })
         {/* Filters */}
         {showFilters && (
           <div style={tableStyles.filterContainer}>
-            <select
-              value={filterDiscipline}
-              onChange={(e) => setFilterDiscipline(e.target.value)}
-              style={tableStyles.select}
-            >
-              <option value="">All Disciplines</option>
-              {[...new Set(filteredDeck.map((maneuver) => maneuver.discipline))].map(
-                (discipline, index) => (
-                  <option key={index} value={discipline}>
-                    {discipline}
-                  </option>
-                )
-              )}
-            </select>
+        {/* Discipline filter */}
+        <select
+          value={filterDiscipline}
+          onChange={(e) => setFilterDiscipline(e.target.value)}
+          style={tableStyles.select}
+        >
+          <option value="">All Disciplines</option>
+          {[...new Set(filteredDeck.map((maneuver) => maneuver.discipline))]
+            .sort((a, b) => a.localeCompare(b))
+            .map((discipline, index) => (
+              <option key={index} value={discipline}>
+                {discipline}
+              </option>
+            ))}
+        </select>
 
-            <select
-              value={filterType}
-              onChange={(e) => setFilterType(e.target.value)}
-              style={tableStyles.select}
-            >
-              <option value="">All Types</option>
-              {[...new Set(filteredDeck.map((maneuver) => maneuver.maneuver_type))].map(
-                (type, index) => (
-                  <option key={index} value={type}>
-                    {type}
-                  </option>
-                )
-              )}
-            </select>
+        {/* Type filter */}
+        <select
+          value={filterType}
+          onChange={(e) => setFilterType(e.target.value)}
+          style={tableStyles.select}
+        >
+          <option value="">All Types</option>
+          {[...new Set(filteredDeck.map((maneuver) => maneuver.maneuver_type))]
+            .sort((a, b) => a.localeCompare(b))
+            .map((type, index) => (
+              <option key={index} value={type}>
+                {type}
+              </option>
+            ))}
+        </select>
 
-            <select
-              value={filterToll}
-              onChange={(e) => setFilterToll(e.target.value)}
-              style={tableStyles.select}
-            >
-              <option value="">All Tolls</option>
-              {[...new Set(filteredDeck.map((maneuver) => maneuver.toll))].map(
-                (toll, index) => (
-                  <option key={index} value={toll}>
-                    {toll}
-                  </option>
-                )
-              )}
-            </select>
+        {/* Toll filter */}
+        <select
+          value={filterToll}
+          onChange={(e) => setFilterToll(e.target.value)}
+          style={tableStyles.select}
+        >
+          <option value="">All Tolls</option>
+          {[...new Set(filteredDeck.map((maneuver) => maneuver.toll))]
+            .filter(toll => toll !== null)
+            .sort((a, b) => Number(a) - Number(b))
+            .map((toll, index) => (
+              <option key={index} value={toll}>
+                {toll}
+              </option>
+            ))}
+        </select>
 
-            <select
-              value={filterYield}
-              onChange={(e) => setFilterYield(e.target.value)}
-              style={tableStyles.select}
-            >
-              <option value="">All Yields</option>
-              {[...new Set(filteredDeck.map((maneuver) => maneuver.yield))].map(
-                (yieldValue, index) => (
-                  <option key={index} value={yieldValue}>
-                    {yieldValue}
-                  </option>
-                )
-              )}
-            </select>
+        {/* Yield filter */}
+        <select
+          value={filterYield}
+          onChange={(e) => setFilterYield(e.target.value)}
+          style={tableStyles.select}
+        >
+          <option value="">All Yields</option>
+          {[...new Set(filteredDeck.map((maneuver) => maneuver.yield))]
+            .filter(yieldValue => yieldValue !== null)
+            .sort((a, b) => Number(a) - Number(b))
+            .map((yieldValue, index) => (
+              <option key={index} value={yieldValue}>
+                {yieldValue}
+              </option>
+            ))}
+        </select>
 
-            <select
-              value={filterWeight}
-              onChange={(e) => setFilterWeight(e.target.value)}
-              style={tableStyles.select}
-            >
-              <option value="">All Weights</option>
-              {[...new Set(filteredDeck.map((maneuver) => maneuver.weight))].map(
-                (weight, index) => (
-                  <option key={index} value={weight}>
-                    {weight}
-                  </option>
-                )
-              )}
-            </select>
+        {/* Weight filter */}
+        <select
+          value={filterWeight}
+          onChange={(e) => setFilterWeight(e.target.value)}
+          style={tableStyles.select}
+        >
+          <option value="">All Weights</option>
+          {[...new Set(filteredDeck.map((maneuver) => maneuver.weight))]
+            .sort((a, b) => a?.localeCompare(b))
+            .map((weight, index) => (
+              <option key={index} value={weight}>
+                {weight}
+              </option>
+            ))}
+        </select>
 
-            <select
-              value={filterParadigm}
-              onChange={(e) => setFilterParadigm(e.target.value)}
-              style={tableStyles.select}
-            >
-              <option value="">All Paradigms</option>
-              {[...new Set(filteredDeck.map((maneuver) => maneuver.paradigm))].map(
-                (paradigm, index) => (
-                  <option key={index} value={paradigm}>
-                    {paradigm}
-                  </option>
-                )
-              )}
-            </select>
-          </div>
+        {/* Paradigm filter */}
+        <select
+          value={filterParadigm}
+          onChange={(e) => setFilterParadigm(e.target.value)}
+          style={tableStyles.select}
+        >
+          <option value="">All Paradigms</option>
+          {[...new Set(filteredDeck.map((maneuver) => maneuver.paradigm))]
+            .sort((a, b) => a?.localeCompare(b))
+            .map((paradigm, index) => (
+              <option key={index} value={paradigm}>
+                {paradigm}
+              </option>
+            ))}
+        </select>
+      </div>
         )}
       </div>
       <div style={tableStyles.tableContainer}>

@@ -76,14 +76,19 @@ function App() {
       {/* Middle Section Container */}
       <div style={{
         position: 'fixed',
-        top: '80px', // Leave space for header
+        top: '80px',
         left: 0,
         right: 0,
-        bottom: '150px', // Leave space for Hand component
+        bottom: '150px',
         display: 'flex',
         justifyContent: 'space-between',
         padding: '0 20px',
         gap: '20px',
+        pointerEvents: 'auto',
+        overflow: 'hidden',
+        zIndex: 1,
+        WebkitUserDrag: 'none',
+        MozUserDrag: 'none'
       }}>
         {/* Left Component - Deck */}
         <div style={{
