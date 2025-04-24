@@ -2,6 +2,31 @@ import React from 'react';
 import '../src/App.css';
 import { cardStyles } from './Styles/CardStyles';
 
+// Update Hexagon component
+const Hexagon = () => (
+  <div style={{
+    flex: '0 0 16px',
+    height: '16px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  }}>
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 104 120"
+    >
+      <path
+        d="M52 0 L104 30 L104 90 L52 120 L0 90 L0 30 Z"
+        fill="rgba(255, 0, 0, 0.5)"
+        stroke="white"
+        strokeWidth="2"
+      />
+    </svg>
+  </div>
+);
+
 const Card = ({ maneuver, setSelectedManeuver }) => {
   // Render ability section based on maneuver type
   const renderAbility = () => {
@@ -85,9 +110,33 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
       </button>
 
       {/* Header Section */}
-      <div style={cardStyles.header}>
-        <div style={cardStyles.title}>{maneuver?.maneuver_name || 'Maneuver Name'}</div>
-        <div style={cardStyles.subtitle}>{maneuver?.discipline || 'Discipline'}</div>
+      <div style={{
+        ...cardStyles.header,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '4px'
+      }}>
+        <div style={cardStyles.title}>
+          {maneuver?.maneuver_name || 'Maneuver Name'}
+        </div>
+        {maneuver?.is_technique ? (
+          <div style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: '8px',
+          }}>
+            {maneuver.component_maneuvers.map((_, index) => (
+              <Hexagon key={index} />
+            ))}
+          </div>
+        ) : (
+          <div style={cardStyles.subtitle}>
+            {maneuver?.discipline || 'Discipline'}
+          </div>
+        )}
       </div>
 
       {/* Properties Grid */}
