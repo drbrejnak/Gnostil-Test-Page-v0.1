@@ -93,7 +93,7 @@ function App() {
         top: '80px',
         left: 0,
         right: 0,
-        bottom: '150px',
+        bottom: '25%',
         display: 'flex',
         justifyContent: 'space-between',
         padding: '0 20px',
@@ -130,7 +130,6 @@ function App() {
               flex: '1 1 0',
               minWidth: 0,
               width: '33.333%',
-              height: '100%', // Ensure full height
               position: 'relative' // Add this for proper child positioning
             }}>
           {selectedManeuver ? (

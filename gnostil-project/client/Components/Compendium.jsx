@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { tableStyles } from "./Styles/TableStyles";
 import { removeFromHand, removeFromDeck } from ".";
 
-export default function Compendium({ setSelectedManeuver, auth, char, setCards, setDeck, localCards, setLocalCards, localDeck, setLocalDeck }) {
+export default function Compendium({ setSelectedManeuver, auth, char, setCards, setDeck, localCards, setLocalCards, localDeck, setLocalDeck, deck, cards }) {
   const [compendium, setCompendium] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("");
@@ -122,7 +122,7 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
     <div
       style={tableStyles.container}
       onDragOver={(e) => {
-        // Accept both hand and deck cards
+        // Only accept cards from deck or hand, but don't try to parse data yet
         if (e.dataTransfer.types.includes("application/x-card") ||
             e.dataTransfer.types.includes("application/x-maneuver")) {
           e.preventDefault();
@@ -142,7 +142,6 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
 
         try {
           let maneuver;
-          // Handle both types of dragged items
           if (e.dataTransfer.types.includes("application/x-card")) {
             maneuver = JSON.parse(e.dataTransfer.getData("application/x-card"));
           } else if (e.dataTransfer.types.includes("application/x-maneuver")) {
@@ -151,16 +150,24 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
 
           if (!maneuver) return;
 
-          if (auth?.id && char?.id && maneuver?.id) {
-            // Remove from deck
-            await removeFromDeck(auth, char, setDeck, maneuver.id);
-            // Also try to remove from hand if it exists there
-            await removeFromHand(auth, char, setCards, maneuver.id);
-          } else {
-            // Remove from local deck
-            setLocalDeck(prevDeck => prevDeck.filter(card => card.id !== maneuver.id));
-            // Also remove from local hand if it exists there
-            setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
+          // Check if the maneuver is from deck or hand
+          const isInDeck = auth.id
+            ? deck.some(card => card.id === maneuver.id)
+            : localDeck.some(card => card.id === maneuver.id);
+
+          const isInHand = auth.id
+            ? cards.some(card => card.id === maneuver.id)
+            : localCards.some(card => card.id === maneuver.id);
+
+          // Only proceed if the maneuver is from deck or hand
+          if (isInDeck || isInHand) {
+            if (auth?.id && char?.id) {
+              await removeFromDeck(auth, char, setDeck, maneuver.id);
+              await removeFromHand(auth, char, setCards, maneuver.id);
+            } else {
+              setLocalDeck(prevDeck => prevDeck.filter(card => card.id !== maneuver.id));
+              setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
+            }
           }
         } catch (error) {
           console.error("Error processing dropped card:", error);
