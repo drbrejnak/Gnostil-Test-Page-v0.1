@@ -4,13 +4,59 @@ import { cardStyles } from './Styles/CardStyles';
 import { tableStyles } from './Styles/TableStyles';
 import { techniqueMessageStyles } from './Styles/TechOverlayStyles';
 
-const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique }) => {
+const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, localDeck, setLocalDeck, auth, char, setDeck, deck }) => {
   const [name, setName] = useState(techniqueName || '');
   const [description, setDescription] = useState('');
 
   // Calculate combined stats
   const totalToll = maneuvers.reduce((sum, m) => sum + (m.toll || 0), 0);
   const totalYield = maneuvers.reduce((sum, m) => sum + (m.yield || 0), 0);
+
+  const handleAddToDeck = () => {
+    // Validate required name field
+    if (!name.trim()) {
+      alert('Please enter a technique name.');
+      return;
+    }
+
+    // Check for duplicate names in the appropriate deck
+    const deckToCheck = auth?.id ? deck : localDeck;
+    const isDuplicate = deckToCheck.some(card => card.maneuver_name.toLowerCase() === name.trim().toLowerCase());
+
+    if (isDuplicate) {
+      alert('A card with this name already exists in the deck.');
+      return;
+    }
+
+    // Create technique object
+    const technique = {
+      id: `tech-${Date.now()}`,
+      maneuver_name: name,
+      description: description,
+      discipline: Array.from(activeProperties).find(prop => maneuvers[0].discipline === prop),
+      maneuver_type: Array.from(activeProperties).find(prop =>
+        ["Attack", "Inciting", "Aura", "Modify", "Reaction"].includes(prop)
+      ),
+      toll: totalToll,
+      yield: totalYield,
+      weight: Array.from(activeProperties).find(prop => ["Light", "Heavy"].includes(prop)),
+      paradigm: Array.from(activeProperties).find(prop => ["Honorable", "Infamous"].includes(prop)),
+      is_technique: true,
+      component_maneuvers: maneuvers
+    };
+
+    // Add to appropriate deck based on auth status
+    if (auth?.id) {
+      // Add to server deck
+      addToDeck(auth, char, setDeck, technique.id);
+    } else {
+      // Add to local deck
+      setLocalDeck(prev => [...prev, technique]);
+    }
+
+    // Close the TechCard
+    setTechnique(null);
+  };
 
   return (
     <div style={cardStyles.container}>
@@ -126,12 +172,10 @@ const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique }) 
         display: 'flex',
         justifyContent: 'space-around',
         gap: '2vh',
-        // marginTop: '16px',
-        // marginBottom: '16px'
       }}>
         <button
           style={techniqueMessageStyles.button}
-          onClick={() => {/* Add to Deck logic will go here */}}
+          onClick={handleAddToDeck}
         >
           Add to Deck
         </button>

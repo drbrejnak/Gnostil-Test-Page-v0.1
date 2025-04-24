@@ -217,6 +217,11 @@ function App() {
               setTechnique={setTechnique}
               activeProperties={technique.activeProperties}
               maneuvers={technique.maneuvers}
+              localDeck={localDeck}
+              setLocalDeck={setLocalDeck}
+              auth={auth}
+              char={char}
+              setDeck={setDeck}
             />
           ) : selectedManeuver ? (
             <Card maneuver={selectedManeuver} setSelectedManeuver={setSelectedManeuver} />
