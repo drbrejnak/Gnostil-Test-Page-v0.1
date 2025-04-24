@@ -82,15 +82,15 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
 
     const renderTypeSVG = () => {
         switch (card.maneuver_type) {
-          case "Attack Maneuver":
+          case "Attack":
             return <Attack animate={0} />;
-          case "Aura Maneuver":
+          case "Aura":
             return <Aura animate={0} />;
-          case "Inciting Maneuver":
+          case "Inciting":
             return <Inciting animate={0} />;
-          case "Modify Maneuver":
+          case "Modify":
             return <Modify animate={0} />;
-          case "Reaction Maneuver":
+          case "Reaction":
             return <Reaction animate={0} />;
           default:
             return null; // Return null if no matching type is found
@@ -98,37 +98,68 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
     };
 
     const renderDisciplineSVG = () => {
+        // If it's a technique, render all original disciplines
+        if (card.discipline === "Technique" && card.original_disciplines) {
+            return card.original_disciplines.map(discipline => {
+                // Use the same discipline mapping as ExaminationArea
+                const disciplineMap = [
+                    { name: "Elementalist", Component: Elementalist },
+                    { name: "Metapsychiral", Component: Metapsychiral },
+                    { name: "Wild Whisperer", Component: WildWhisperer },
+                    { name: "Geist Caller", Component: GeistCalled },
+                    { name: "Flesh Shaper", Component: FleshShaper },
+                    { name: "Gloommantle", Component: Gloommantle },
+                    { name: "Fleethand Jaeger", Component: FleethandJaeger },
+                    { name: "Ironhanded", Component: Ironhanded },
+                    { name: "Shieldbearer", Component: Shieldbearer },
+                    { name: "Euclidinst", Component: Euclidinst },
+                    { name: "Paragon Populi", Component: ParagonPopuli },
+                    { name: "Noble's Nail", Component: NoblesNail },
+                    { name: "Yieldless Goliath", Component: YieldlessGoliath },
+                    { name: "Aiontropier", Component: Aiontropier }
+                ];
+
+                const disciplineComponent = disciplineMap.find(d => d.name === discipline);
+                if (disciplineComponent) {
+                    const { Component } = disciplineComponent;
+                    return <Component key={discipline} animate={0} />;
+                }
+                return null;
+            });
+        }
+
+        // For regular maneuvers, use existing switch case
         switch (card.discipline) {
-          case "Aiontropier":
-            return <Aiontropier animate={0} />;
-          case "Elementalist":
-            return <Elementalist animate={0} />;
-          case "Euclidinst":
-            return <Euclidinst animate={0} />;
-          case "Fleethand Jaeger":
-            return <FleethandJaeger animate={0} />;
-          case "Flesh Shaper":
-            return <FleshShaper animate={0} />;
-          case "Gloommantle":
-            return <Gloommantle animate={0} />;
-          case "Geist Called":
-            return <GeistCalled animate={0} />;
-          case "Ironhanded":
-            return <Ironhanded animate={0} />;
-          case "Metapsychiral":
-            return <Metapsychiral animate={0} />;
-          case "Noble’s Nail":
-            return <NoblesNail animate={0} />;
-          case "Paragon Populi":
-            return <ParagonPopuli animate={0} />;
-          case "Shieldbearer":
-            return <Shieldbearer animate={0} />;
-          case "Wild Whisperer":
-            return <WildWhisperer animate={0} />;
-          case "Yieldless Goliath":
-            return <YieldlessGoliath animate={0} />;
-          default:
-            return null; // Return null if no matching type is found
+            case "Aiontropier":
+                return <Aiontropier animate={0} />;
+            case "Elementalist":
+                return <Elementalist animate={0} />;
+            case "Euclidinst":
+                return <Euclidinst animate={0} />;
+            case "Fleethand Jaeger":
+                return <FleethandJaeger animate={0} />;
+            case "Flesh Shaper":
+                return <FleshShaper animate={0} />;
+            case "Gloommantle":
+                return <Gloommantle animate={0} />;
+            case "Geist Called":
+                return <GeistCalled animate={0} />;
+            case "Ironhanded":
+                return <Ironhanded animate={0} />;
+            case "Metapsychiral":
+                return <Metapsychiral animate={0} />;
+            case "Noble’s Nail":
+                return <NoblesNail animate={0} />;
+            case "Paragon Populi":
+                return <ParagonPopuli animate={0} />;
+            case "Shieldbearer":
+                return <Shieldbearer animate={0} />;
+            case "Wild Whisperer":
+                return <WildWhisperer animate={0} />;
+            case "Yieldless Goliath":
+                return <YieldlessGoliath animate={0} />;
+            default:
+                return null;
         }
     }
 

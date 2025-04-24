@@ -136,6 +136,7 @@ export default function Hand({
         setIsDragging(false);
         if (e.dataTransfer.types.includes("application/x-maneuver")) {
           const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
+          console.log(data)
           handleDrop(data, 0);
         }
       }}

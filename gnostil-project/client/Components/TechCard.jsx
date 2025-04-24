@@ -30,10 +30,11 @@ const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, lo
 
     // Create technique object
     const technique = {
-      id: `tech-${Date.now()}`,
+      id: Math.floor(10000 + Math.random() * 90000),
       maneuver_name: name,
       description: description,
-      discipline: Array.from(activeProperties).find(prop => maneuvers[0].discipline === prop),
+      discipline: "Technique", // Display discipline
+      original_disciplines: maneuvers.map(m => m.discipline), // Store original disciplines
       maneuver_type: Array.from(activeProperties).find(prop =>
         ["Attack", "Inciting", "Aura", "Modify", "Reaction"].includes(prop)
       ),

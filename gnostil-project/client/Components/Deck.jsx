@@ -430,6 +430,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
                       id: maneuver.id,
                       maneuver_name: maneuver.maneuver_name,
                       discipline: maneuver.discipline,
+                      original_disciplines: maneuver.original_disciplines,
                       maneuver_type: maneuver.maneuver_type,
                       description: maneuver.description,
                       ability: maneuver.ability,

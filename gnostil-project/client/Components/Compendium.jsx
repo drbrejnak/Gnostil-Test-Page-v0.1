@@ -141,36 +141,38 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
         setIsDragging(false);
 
         try {
-          let maneuver;
-          if (e.dataTransfer.types.includes("application/x-card")) {
-            maneuver = JSON.parse(e.dataTransfer.getData("application/x-card"));
-          } else if (e.dataTransfer.types.includes("application/x-maneuver")) {
-            maneuver = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
-          }
-
-          if (!maneuver) return;
-
-          // Check if the maneuver is from deck or hand
-          const isInDeck = auth.id
-            ? deck.some(card => card.id === maneuver.id)
-            : localDeck.some(card => card.id === maneuver.id);
-
-          const isInHand = auth.id
-            ? cards.some(card => card.id === maneuver.id)
-            : localCards.some(card => card.id === maneuver.id);
-
-          // Only proceed if the maneuver is from deck or hand
-          if (isInDeck || isInHand) {
-            if (auth?.id && char?.id) {
-              await removeFromDeck(auth, char, setDeck, maneuver.id);
-              await removeFromHand(auth, char, setCards, maneuver.id);
-            } else {
-              setLocalDeck(prevDeck => prevDeck.filter(card => card.id !== maneuver.id));
-              setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
+            // If from hand (x-card)
+            if (e.dataTransfer.types.includes("application/x-card")) {
+                const maneuver = JSON.parse(e.dataTransfer.getData("application/x-card"));
+                // Only remove from hand
+                if (auth?.id && char?.id) {
+                    await removeFromHand(auth, char, setCards, maneuver.id);
+                } else {
+                    setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
+                }
             }
-          }
+            // If from deck (x-maneuver)
+            else if (e.dataTransfer.types.includes("application/x-maneuver")) {
+                const maneuver = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
+                // Remove from both deck and hand
+                if (auth?.id && char?.id) {
+                    await removeFromDeck(auth, char, setDeck, maneuver.id);
+                    // Also check and remove from hand if present
+                    const isInHand = cards.some(card => card.id === maneuver.id);
+                    if (isInHand) {
+                        await removeFromHand(auth, char, setCards, maneuver.id);
+                    }
+                } else {
+                    setLocalDeck(prevDeck => prevDeck.filter(card => card.id !== maneuver.id));
+                    // Also check and remove from local hand if present
+                    const isInHand = localCards.some(card => card.id === maneuver.id);
+                    if (isInHand) {
+                        setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
+                    }
+                }
+            }
         } catch (error) {
-          console.error("Error processing dropped card:", error);
+            console.error("Error processing dropped card:", error);
         }
       }}
     >
