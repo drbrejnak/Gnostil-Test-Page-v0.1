@@ -8,6 +8,7 @@ import CharSelect from "../Components/CharSelect";
 import ExaminationArea from "../Components/ExaminationArea";
 import Card from "../Components/Card";
 import TechniqueOverlay from "../Components/TechniqueOverlay";
+import { techniqueMessageStyles } from '../Components/Styles/TechOverlayStyles';
 
 function App() {
   const [auth, setAuth] = useState({});
@@ -18,6 +19,27 @@ function App() {
   const [localDeck, setLocalDeck] = useState([]);
   const [activeCard, setActiveCard] = useState(null);
   const [selectedManeuver, setSelectedManeuver] = useState(null);
+  const [hexagonStates, setHexagonStates] = useState({
+    hex1: null,
+    hex2: null,
+    hex3: null,
+    hex4: null,
+    hex5: null,
+    hex6: null
+  });
+
+  const hasAnyManeuvers = Object.values(hexagonStates).some(state => state !== null);
+
+  const handleCancelTechnique = () => {
+    setHexagonStates({
+      hex1: null,
+      hex2: null,
+      hex3: null,
+      hex4: null,
+      hex5: null,
+      hex6: null
+    });
+  };
 
   useEffect(() => {
     // Clear token on page load/refresh
@@ -61,31 +83,58 @@ function App() {
         left: 0,
         right: 0,
         display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        flexDirection: 'column',
+        gap: '5px',
         padding: '0 20px',
         zIndex: 1000,
       }}>
         <div style={{
-          fontFamily: 'UnifrakturMaguntia',
-          fontSize: '32px',
-          color: 'white',
-          textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-        }}>
-          Gnostil
-        </div>
-        <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '20px',
+          justifyContent: 'space-between',
         }}>
-          <CharSelect
-            auth={auth}
-            char={char}
-            setChar={setChar}
-          />
-          <Login setAuth={setAuth} />
+          <div style={{
+            fontFamily: 'UnifrakturMaguntia',
+            fontSize: '32px',
+            color: 'white',
+            textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+          }}>
+            Gnostil
+          </div>
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '20px',
+          }}>
+            <CharSelect
+              auth={auth}
+              char={char}
+              setChar={setChar}
+            />
+            <Login setAuth={setAuth} />
+          </div>
         </div>
+
+        {/* Technique Creation Message */}
+        {hasAnyManeuvers && (
+          <div style={techniqueMessageStyles.messageContainer}>
+            <span style={techniqueMessageStyles.message}>
+              Create Technique:
+            </span>
+            <button
+              style={techniqueMessageStyles.button}
+              onClick={() => console.log('Confirm clicked')}
+            >
+              Confirm
+            </button>
+            <button
+              style={techniqueMessageStyles.button}
+              onClick={handleCancelTechnique}
+            >
+              Clear
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Middle Section Container */}
@@ -133,7 +182,11 @@ function App() {
               width: '33.333%',
               position: 'relative' // Add this for proper child positioning
             }}>
-          <TechniqueOverlay />
+          <TechniqueOverlay
+            selectedManeuver={selectedManeuver}
+            hexagonStates={hexagonStates}
+            setHexagonStates={setHexagonStates}
+          />
           {selectedManeuver ? (
             <Card maneuver={selectedManeuver} setSelectedManeuver={setSelectedManeuver} />
           ) : (
