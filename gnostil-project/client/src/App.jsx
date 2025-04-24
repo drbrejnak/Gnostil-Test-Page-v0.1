@@ -7,6 +7,7 @@ import Hand from "../Components/Hand";
 import CharSelect from "../Components/CharSelect";
 import ExaminationArea from "../Components/ExaminationArea";
 import Card from "../Components/Card";
+import TechniqueOverlay from "../Components/TechniqueOverlay";
 
 function App() {
   const [auth, setAuth] = useState({});
@@ -132,6 +133,7 @@ function App() {
               width: '33.333%',
               position: 'relative' // Add this for proper child positioning
             }}>
+          <TechniqueOverlay />
           {selectedManeuver ? (
             <Card maneuver={selectedManeuver} setSelectedManeuver={setSelectedManeuver} />
           ) : (
