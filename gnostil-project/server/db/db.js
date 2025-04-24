@@ -1,9 +1,10 @@
+require('dotenv').config();
 const pg = require('pg');
-const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:DAN0NOAH1@localhost/GnostilDB');
+const client = new pg.Client(process.env.DATABASE_URL || 'postgres://postgres:@localhost/GnostilDB');
 const uuid = require('uuid');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const JWT = process.env.JWT || 'shhh';
+const JWT = process.env.JWT;
 
 const fetchManeuvers = async()=> {
   const SQL = `

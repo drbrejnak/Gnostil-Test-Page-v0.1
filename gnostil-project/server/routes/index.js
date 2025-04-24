@@ -21,9 +21,10 @@ const {
 } = require('../db/db');
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const JWT = process.env.JWT || 'shhh';
+const JWT = process.env.JWT;
 
 client.connect();
 
