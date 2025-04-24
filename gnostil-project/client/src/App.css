@@ -53,12 +53,16 @@ svg {
 
 .iris {
   background: black;
-  animation: iris-transition 3s ease-out infinite;
+  animation: iris 3s infinite;
   height: 200px;
   width: 200px;
 }
 
-@keyframes iris-transition {
+.iris-once {
+  animation: iris 3s forwards;
+}
+
+@keyframes iris {
   0% { clip-path: circle(0%); }
   100% { clip-path: circle(29.15%); }
 }

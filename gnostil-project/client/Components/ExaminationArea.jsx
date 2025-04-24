@@ -5,7 +5,7 @@ import "../src/App.css";
 import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modify, Narrative, Reaction, Rings } from "../Maneuver_Properties/PropertyIndex.js";
 import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCalled, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
-const ExaminationArea = ({ setSelectedManeuver }) => {
+const ExaminationArea = ({ setSelectedManeuver, hexagonStates }) => {
 
   // Group 0: Rings
   const svgGroup0 = [
@@ -145,11 +145,114 @@ const ExaminationArea = ({ setSelectedManeuver }) => {
   }, [svgGroup5.length]);
 
   const { Component: SelectedSVG0 } = svgGroup0[0]; // Always show Rings
-  const { Component: SelectedSVG1 } = svgGroup1[currentIndex1];
-  const { Component: SelectedSVG2 } = svgGroup2[currentIndex2];
-  const { Component: SelectedSVG3 } = svgGroup3[currentIndex3];
-  const { Component: SelectedSVG4 } = svgGroup4[currentIndex4];
-  const { Component: SelectedSVG5 } = svgGroup5[currentIndex5];
+  const { Component: SelectedSVG5 } = svgGroup5[currentIndex5]; // Get current discipline SVG
+
+  // Function to get unique properties from hexagon maneuvers
+  const getActiveProperties = () => {
+    const properties = new Set();
+    const maneuvers = Object.values(hexagonStates).filter(m => m !== null);
+
+    if (maneuvers.length > 0) {
+      // Always add Combat type when maneuvers exist
+      properties.add("Combat");
+
+      // Handle disciplines - add all of them
+      maneuvers.forEach(maneuver => {
+        if (maneuver.discipline) {
+          properties.add(maneuver.discipline);
+        }
+      });
+
+      // Handle maneuver types based on hierarchy
+      const typeHierarchy = ["Attack", "Inciting", "Aura", "Modify", "Reaction"];
+      let highestPriorityType = null;
+
+      // Check each maneuver's type against the hierarchy
+      maneuvers.forEach(maneuver => {
+        if (maneuver.maneuver_type) {
+          const currentIndex = typeHierarchy.indexOf(maneuver.maneuver_type);
+          const highestIndex = highestPriorityType ? typeHierarchy.indexOf(highestPriorityType) : -1;
+
+          if (currentIndex !== -1 && (highestPriorityType === null || currentIndex < highestIndex)) {
+            highestPriorityType = maneuver.maneuver_type;
+          }
+        }
+      });
+
+      // Only add the highest priority type found
+      if (highestPriorityType) {
+        properties.add(highestPriorityType);
+      }
+
+      // Handle weight - count occurrences
+      const weightCounts = {
+        Light: 0,
+        Heavy: 0
+      };
+
+      maneuvers.forEach(m => {
+        if (m.weight === "Light") weightCounts.Light++;
+        if (m.weight === "Heavy") weightCounts.Heavy++;
+      });
+
+      if (weightCounts.Light <= weightCounts.Heavy) {
+        properties.add("Heavy");
+      } else {
+        properties.add("Light");
+      }
+
+      // Handle paradigm - count occurrences
+      const paradigmCounts = {
+        Honorable: 0,
+        Infamous: 0
+      };
+
+      maneuvers.forEach(m => {
+        if (m.paradigm === "Honorable") paradigmCounts.Honorable++;
+        if (m.paradigm === "Infamous") paradigmCounts.Infamous++;
+      });
+
+      if (paradigmCounts.Honorable >= paradigmCounts.Infamous) {
+        properties.add("Honorable");
+      } else {
+        properties.add("Infamous");
+      }
+    }
+    
+    return properties;
+  };
+
+  // Determine if we should show cycling SVGs or filtered ones
+  const hasManeuvers = Object.values(hexagonStates).some(state => state !== null);
+  const activeProperties = hasManeuvers ? getActiveProperties() : null;
+
+  // Modified render logic for each group
+  const renderSVG = (group, currentIndex, fade) => {
+    if (!hasManeuvers) {
+      // Original cycling behavior
+      const { Component } = group[currentIndex];
+      return Component && (
+        <div style={{
+          opacity: fade ? 1 : 0,
+          transition: "opacity 0.5s ease-in-out",
+        }}>
+          <Component />
+        </div>
+      );
+    } else {
+      // Show only SVGs that match active properties
+      return group.map(({ name, Component }) => {
+        if (activeProperties.has(name)) {
+          return (
+            <div key={name} style={{ opacity: 1 }}>
+              <Component />
+            </div>
+          );
+        }
+        return null;
+      });
+    }
+  };
 
   return (
     <div
@@ -187,73 +290,28 @@ const ExaminationArea = ({ setSelectedManeuver }) => {
         }
       }}
     >
-        <div>
-           {SelectedSVG0 && <SelectedSVG0 />}
-       </div>
-
-      {/* Group 1: Combat & Narrative */}
-        <div
-          style={{
-            opacity: fade1 ? 1 : 0,
-            transition: "opacity 0.5s ease-in-out", // Fade effect
-          }}
-        >
-          {SelectedSVG1 && <SelectedSVG1 />}
+      <div>
+        {SelectedSVG0 && <SelectedSVG0 />}
       </div>
 
-      {/* Group 2: Honorable & Infamous */}
-        <div
-          style={{
-            opacity: fade2 ? 1 : 0,
-            transition: "opacity 0.5s ease-in-out", // Fade effect
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            animation: "spinClockwise 60s linear infinite", // Clockwise rotation
-          }}
-        >
-          {SelectedSVG2 && <SelectedSVG2 />}
-      </div>
-
-      {/* Group 3: Light & Heavy */}
-        <div
-          style={{
-            opacity: fade3 ? 1 : 0,
-            transition: "opacity 0.5s ease-in-out", // Fade effect
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            animation: "spinCounterClockwise 30s linear infinite", // Clockwise rotation
-          }}
-        >
-          {SelectedSVG3 && <SelectedSVG3 />}
-        </div>
-
-      {/* Group 4: Attack & Others */}
-        <div
-          style={{
-            opacity: fade4 ? 1 : 0,
-            transition: "opacity 0.5s ease-in-out", // Fade effect
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            animation: "spinClockwise 25s linear infinite", // Clockwise rotation
-          }}
-        >
-          {SelectedSVG4 && <SelectedSVG4 />}
-      </div>
+      {renderSVG(svgGroup1, currentIndex1, fade1)}
+      {renderSVG(svgGroup2, currentIndex2, fade2)}
+      {renderSVG(svgGroup3, currentIndex3, fade3)}
+      {renderSVG(svgGroup4, currentIndex4, fade4)}
 
       {/* Group 5: Disciplines */}
-        <div
-            style={{
-              // opacity: fade5 ? 1 : 0,
-              // transition: "opacity 0.5s ease-in-out", // Fade effect
-              width: "100%",
-              height: "100%",
-            }}
-          >
-            {SelectedSVG5 && <SelectedSVG5 className="iris" />}
-        </div>
+      <div style={{ width: "100%", height: "100%" }}>
+        {hasManeuvers ? (
+          svgGroup5.map(({ name, Component }) => {
+            if (activeProperties?.has(name)) {
+              return <Component key={name} className="iris-once" />;
+            }
+            return null;
+          })
+        ) : (
+          SelectedSVG5 && <SelectedSVG5 className="iris" />
+        )}
+      </div>
     </div>
   );
 };

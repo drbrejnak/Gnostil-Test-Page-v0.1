@@ -190,7 +190,10 @@ function App() {
           {selectedManeuver ? (
             <Card maneuver={selectedManeuver} setSelectedManeuver={setSelectedManeuver} />
           ) : (
-            <ExaminationArea setSelectedManeuver={setSelectedManeuver} />
+            <ExaminationArea
+              setSelectedManeuver={setSelectedManeuver}
+              hexagonStates={hexagonStates}
+            />
           )}
         </div>
 
