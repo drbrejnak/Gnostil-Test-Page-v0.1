@@ -8,7 +8,9 @@ import CharSelect from "../Components/CharSelect";
 import ExaminationArea from "../Components/ExaminationArea";
 import Card from "../Components/Card";
 import TechniqueOverlay from "../Components/TechniqueOverlay";
+import TechCard from "../Components/TechCard";
 import { techniqueMessageStyles } from '../Components/Styles/TechOverlayStyles';
+import { getActiveProperties } from '../Components/ExaminationArea';
 
 function App() {
   const [auth, setAuth] = useState({});
@@ -27,10 +29,31 @@ function App() {
     hex5: null,
     hex6: null
   });
+  const [technique, setTechnique] = useState(null);
 
   const hasAnyManeuvers = Object.values(hexagonStates).some(state => state !== null);
 
   const handleCancelTechnique = () => {
+    setHexagonStates({
+      hex1: null,
+      hex2: null,
+      hex3: null,
+      hex4: null,
+      hex5: null,
+      hex6: null
+    });
+  };
+
+  const handleConfirmTechnique = () => {
+    const maneuvers = Object.values(hexagonStates).filter(m => m !== null);
+    const properties = getActiveProperties(hexagonStates); // Pass hexagonStates as argument
+
+    setTechnique({
+      activeProperties: properties,
+      maneuvers: maneuvers
+    });
+
+    // Reset hexagon states
     setHexagonStates({
       hex1: null,
       hex2: null,
@@ -123,7 +146,7 @@ function App() {
             </span>
             <button
               style={techniqueMessageStyles.button}
-              onClick={() => console.log('Confirm clicked')}
+              onClick={handleConfirmTechnique}
             >
               Confirm
             </button>
@@ -180,14 +203,22 @@ function App() {
               flex: '1 1 0',
               minWidth: 0,
               width: '33.333%',
-              position: 'relative' // Add this for proper child positioning
+              position: 'relative'
             }}>
-          <TechniqueOverlay
-            selectedManeuver={selectedManeuver}
-            hexagonStates={hexagonStates}
-            setHexagonStates={setHexagonStates}
-          />
-          {selectedManeuver ? (
+          {!technique && (
+            <TechniqueOverlay
+              selectedManeuver={selectedManeuver}
+              hexagonStates={hexagonStates}
+              setHexagonStates={setHexagonStates}
+            />
+          )}
+          {technique ? (
+            <TechCard
+              setTechnique={setTechnique}
+              activeProperties={technique.activeProperties}
+              maneuvers={technique.maneuvers}
+            />
+          ) : selectedManeuver ? (
             <Card maneuver={selectedManeuver} setSelectedManeuver={setSelectedManeuver} />
           ) : (
             <ExaminationArea

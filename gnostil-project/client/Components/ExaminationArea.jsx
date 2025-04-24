@@ -5,6 +5,81 @@ import "../src/App.css";
 import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modify, Narrative, Reaction, Rings } from "../Maneuver_Properties/PropertyIndex.js";
 import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCalled, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
+// Export the getActiveProperties function
+export const getActiveProperties = (hexagonStates) => {
+  const properties = new Set();
+  const maneuvers = Object.values(hexagonStates).filter(m => m !== null);
+
+  if (maneuvers.length > 0) {
+    // Always add Combat type when maneuvers exist
+    properties.add("Combat");
+
+    // Handle disciplines - add all of them
+    maneuvers.forEach(maneuver => {
+      if (maneuver.discipline) {
+        properties.add(maneuver.discipline);
+      }
+    });
+
+    // Handle maneuver types based on hierarchy
+    const typeHierarchy = ["Attack", "Inciting", "Aura", "Modify", "Reaction"];
+    let highestPriorityType = null;
+
+    // Check each maneuver's type against the hierarchy
+    maneuvers.forEach(maneuver => {
+      if (maneuver.maneuver_type) {
+        const currentIndex = typeHierarchy.indexOf(maneuver.maneuver_type);
+        const highestIndex = highestPriorityType ? typeHierarchy.indexOf(highestPriorityType) : -1;
+
+        if (currentIndex !== -1 && (highestPriorityType === null || currentIndex < highestIndex)) {
+          highestPriorityType = maneuver.maneuver_type;
+        }
+      }
+    });
+
+    // Only add the highest priority type found
+    if (highestPriorityType) {
+      properties.add(highestPriorityType);
+    }
+
+    // Handle weight - count occurrences
+    const weightCounts = {
+      Light: 0,
+      Heavy: 0
+    };
+
+    maneuvers.forEach(m => {
+      if (m.weight === "Light") weightCounts.Light++;
+      if (m.weight === "Heavy") weightCounts.Heavy++;
+    });
+
+    if (weightCounts.Light <= weightCounts.Heavy) {
+      properties.add("Heavy");
+    } else {
+      properties.add("Light");
+    }
+
+    // Handle paradigm - count occurrences
+    const paradigmCounts = {
+      Honorable: 0,
+      Infamous: 0
+    };
+
+    maneuvers.forEach(m => {
+      if (m.paradigm === "Honorable") paradigmCounts.Honorable++;
+      if (m.paradigm === "Infamous") paradigmCounts.Infamous++;
+    });
+
+    if (paradigmCounts.Honorable >= paradigmCounts.Infamous) {
+      properties.add("Honorable");
+    } else {
+      properties.add("Infamous");
+    }
+  }
+
+  return properties;
+};
+
 const ExaminationArea = ({ setSelectedManeuver, hexagonStates }) => {
 
   // Group 0: Rings
@@ -147,84 +222,9 @@ const ExaminationArea = ({ setSelectedManeuver, hexagonStates }) => {
   const { Component: SelectedSVG0 } = svgGroup0[0]; // Always show Rings
   const { Component: SelectedSVG5 } = svgGroup5[currentIndex5]; // Get current discipline SVG
 
-  // Function to get unique properties from hexagon maneuvers
-  const getActiveProperties = () => {
-    const properties = new Set();
-    const maneuvers = Object.values(hexagonStates).filter(m => m !== null);
-
-    if (maneuvers.length > 0) {
-      // Always add Combat type when maneuvers exist
-      properties.add("Combat");
-
-      // Handle disciplines - add all of them
-      maneuvers.forEach(maneuver => {
-        if (maneuver.discipline) {
-          properties.add(maneuver.discipline);
-        }
-      });
-
-      // Handle maneuver types based on hierarchy
-      const typeHierarchy = ["Attack", "Inciting", "Aura", "Modify", "Reaction"];
-      let highestPriorityType = null;
-
-      // Check each maneuver's type against the hierarchy
-      maneuvers.forEach(maneuver => {
-        if (maneuver.maneuver_type) {
-          const currentIndex = typeHierarchy.indexOf(maneuver.maneuver_type);
-          const highestIndex = highestPriorityType ? typeHierarchy.indexOf(highestPriorityType) : -1;
-
-          if (currentIndex !== -1 && (highestPriorityType === null || currentIndex < highestIndex)) {
-            highestPriorityType = maneuver.maneuver_type;
-          }
-        }
-      });
-
-      // Only add the highest priority type found
-      if (highestPriorityType) {
-        properties.add(highestPriorityType);
-      }
-
-      // Handle weight - count occurrences
-      const weightCounts = {
-        Light: 0,
-        Heavy: 0
-      };
-
-      maneuvers.forEach(m => {
-        if (m.weight === "Light") weightCounts.Light++;
-        if (m.weight === "Heavy") weightCounts.Heavy++;
-      });
-
-      if (weightCounts.Light <= weightCounts.Heavy) {
-        properties.add("Heavy");
-      } else {
-        properties.add("Light");
-      }
-
-      // Handle paradigm - count occurrences
-      const paradigmCounts = {
-        Honorable: 0,
-        Infamous: 0
-      };
-
-      maneuvers.forEach(m => {
-        if (m.paradigm === "Honorable") paradigmCounts.Honorable++;
-        if (m.paradigm === "Infamous") paradigmCounts.Infamous++;
-      });
-
-      if (paradigmCounts.Honorable >= paradigmCounts.Infamous) {
-        properties.add("Honorable");
-      } else {
-        properties.add("Infamous");
-      }
-    }
-    
-    return properties;
-  };
-
   // Determine if we should show cycling SVGs or filtered ones
   const hasManeuvers = Object.values(hexagonStates).some(state => state !== null);
-  const activeProperties = hasManeuvers ? getActiveProperties() : null;
+  const activeProperties = hasManeuvers ? getActiveProperties(hexagonStates) : null;
 
   // Modified render logic for each group
   const renderSVG = (group, currentIndex, fade) => {
