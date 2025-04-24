@@ -43,7 +43,8 @@ const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, lo
       weight: Array.from(activeProperties).find(prop => ["Light", "Heavy"].includes(prop)),
       paradigm: Array.from(activeProperties).find(prop => ["Honorable", "Infamous"].includes(prop)),
       is_technique: true,
-      component_maneuvers: maneuvers
+      component_maneuvers: maneuvers,
+      ability: maneuvers.map(m => `${m.maneuver_name}: ${m.ability}`).join('\n\n') // Combined abilities
     };
 
     // Add to appropriate deck based on auth status

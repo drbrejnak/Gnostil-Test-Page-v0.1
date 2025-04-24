@@ -438,6 +438,8 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
                       yield: maneuver.yield,
                       weight: maneuver.weight,
                       paradigm: maneuver.paradigm,
+                      is_technique: maneuver.is_technique,
+                      component_maneuvers: maneuver.component_maneuvers
                     })
                   );
                 }}
