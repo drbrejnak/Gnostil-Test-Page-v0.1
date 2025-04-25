@@ -120,27 +120,38 @@ const addToDeck = async({maneuver_id, tech_id, deck_id})=> {
 // addToDeck({maneuver_id: '9', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
 // addToDeck({maneuver_id: '102', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
 
-const removeFromDeck = async({maneuver_id, tech_id, deck_id})=> {
-  const SQL = `
-    DELETE FROM character_deck
-    WHERE (maneuver_id = $1 OR tech_id = $2) AND deck_id = $3
-    RETURNING *
-  `;
-  const result = await client.query(SQL, [
-    maneuver_id || null,
-    tech_id || null,
-    deck_id
-  ]);
-  return result.rows[0];
-}
+const removeFromDeck = async({maneuver_id, tech_id, deck_id, is_technique})=> {
+  try {
+    await client.query('BEGIN');
 
-// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '5'});
-// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '2'});
-// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '3'});
-// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '6'});
-// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '7'});
-// removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '90'});
-// removeFromDeck({deck_id: '161063af-ca6e-4701-a28c-4103753def14', maneuver_id: '90'});
+    // Remove from deck
+    const SQL = `
+      DELETE FROM character_deck
+      WHERE (maneuver_id = $1 OR tech_id = $2) AND deck_id = $3
+      RETURNING *
+    `;
+    const result = await client.query(SQL, [
+      maneuver_id || null,
+      tech_id || null,
+      deck_id
+    ]);
+
+    // If it's a technique, also remove from techniques table
+    if (is_technique && tech_id) {
+      await removeFromTechniques({
+        tech_id: tech_id,
+        deck_id: deck_id
+      });
+    }
+
+    await client.query('COMMIT');
+    return result.rows[0];
+  } catch (error) {
+    await client.query('ROLLBACK');
+    console.error('Error in removeFromDeck:', error);
+    throw error;
+  }
+}
 
 const addToTechniques = async({
   hand_id,
@@ -194,6 +205,16 @@ const addToTechniques = async({
     paradigm,
     og_disciplines
   ]);
+  return response.rows[0];
+}
+
+const removeFromTechniques = async({tech_id, deck_id})=> {
+  const SQL = `
+    DELETE FROM techniques
+    WHERE tech_id = $1 AND deck_id = $2
+    RETURNING *
+  `;
+  const response = await client.query(SQL, [tech_id, deck_id]);
   return response.rows[0];
 }
 

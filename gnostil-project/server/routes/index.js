@@ -202,11 +202,15 @@ router.delete('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, asyn
       error.status = 401;
       throw error;
     }
+
+    // Remove from deck and potentially from techniques
     const result = await removeFromDeck({
       maneuver_id: req.body.maneuver_id,
       tech_id: req.body.tech_id,
-      deck_id: req.params.deckId
+      deck_id: req.params.deckId,
+      is_technique: req.body.is_technique
     });
+
     res.json(result);
   } catch(err) {
     next(err);

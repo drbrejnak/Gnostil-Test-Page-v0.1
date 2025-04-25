@@ -210,7 +210,8 @@ export const removeFromDeck = async (auth, char, setDeck, id, isTechnique) => {
       body: JSON.stringify({
         maneuver_id: isTechnique ? null : id,
         tech_id: isTechnique ? id : null,
-        deck_id
+        deck_id,
+        is_technique: isTechnique // Add this line to send the flag
       }),
     });
 
