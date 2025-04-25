@@ -35,7 +35,9 @@ const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, lo
       maneuver_name: name,
       description: description,
       discipline: "Technique", // Display discipline
-      original_disciplines: maneuvers.map(m => m.discipline), // Store original disciplines
+      original_disciplines: JSON.stringify(
+        maneuvers.map(m => m.discipline)
+      ), // Store original disciplines
       maneuver_type: Array.from(activeProperties).find(prop =>
         ["Attack", "Inciting", "Aura", "Modify", "Reaction"].includes(prop)
       ),
@@ -53,6 +55,7 @@ const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, lo
         }))
       )
     };
+    console.log(technique)
 
     // Add to appropriate deck based on auth status
     if (auth?.id) {

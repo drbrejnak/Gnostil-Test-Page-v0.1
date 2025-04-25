@@ -24,20 +24,59 @@ const fetchManeuver = async(id)=> {
 
 const fetchDeck = async(id)=> {
   const SQL = `
-    SELECT maneuver_id FROM character_deck WHERE deck_id = $1
+    SELECT maneuver_id, tech_id
+    FROM character_deck
+    WHERE deck_id = $1
   `;
   const response = await client.query(SQL, [id]);
-  const ids = response.rows.map(row => row.maneuver_id);
-  return ids;
+  return {
+    maneuverIds: response.rows.filter(row => row.maneuver_id).map(row => row.maneuver_id),
+    techIds: response.rows.filter(row => row.tech_id).map(row => row.tech_id)
+  };
 }
 
-const fetchDeckManeuvers = async(ids)=> {
-  const SQL = `
-    SELECT * FROM maneuvers WHERE id = ANY($1)
-  `;
-  const response = await client.query(SQL, [ids]);
-  console.log(response.rows);
-  return response.rows;
+const fetchDeckManeuvers = async({maneuverIds = [], techIds = []})=> {
+  let results = [];
+
+  // Handle empty deck case
+  if (!maneuverIds.length && !techIds.length) return [];
+
+  // Fetch maneuvers if any exist
+  if (maneuverIds && maneuverIds.length) {
+    const maneuversSQL = `
+      SELECT *, false as is_technique
+      FROM maneuvers
+      WHERE id = ANY($1)
+    `;
+    const maneuverResponse = await client.query(maneuversSQL, [maneuverIds]);
+    results = [...results, ...maneuverResponse.rows];
+  }
+
+  // Fetch techniques if any exist
+  if (techIds && techIds.length) {
+    const techniquesSQL = `
+      SELECT
+        tech_id as id,
+        tech_name as maneuver_name,
+        discipline,
+        tech_type as maneuver_type,
+        tech_description as description,
+        tech_ability as ability,
+        toll,
+        yield,
+        weight,
+        paradigm,
+        inputs,
+        og_disciplines as original_disciplines,
+        true as is_technique
+      FROM techniques
+      WHERE tech_id = ANY($1)
+    `;
+    const techResponse = await client.query(techniquesSQL, [techIds]);
+    results = [...results, ...techResponse.rows];
+  }
+
+  return results;
 }
 
 const fetchHand = async (hand_id) => {
@@ -63,11 +102,17 @@ const fetchHand = async (hand_id) => {
 //   await fetchDeckManeuvers(await fetchDeck('161063af-ca6e-4701-a28c-4103753def14'));
 // })();
 
-const addToDeck = async({maneuver_id, deck_id})=> {
+const addToDeck = async({maneuver_id, tech_id, deck_id})=> {
   const SQL = `
-    INSERT INTO character_deck(maneuver_id, deck_id) VALUES ($1, $2) RETURNING maneuver_id
+    INSERT INTO character_deck(maneuver_id, tech_id, deck_id)
+    VALUES ($1, $2, $3)
+    RETURNING *
   `;
-  const response = await client.query(SQL, [maneuver_id, deck_id]);
+  const response = await client.query(SQL, [
+    maneuver_id || null,
+    tech_id || null,
+    deck_id
+  ]);
   return response.rows[0];
 }
 
@@ -90,15 +135,60 @@ const removeFromDeck = async({maneuver_id, deck_id})=> {
 // removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '90'});
 // removeFromDeck({deck_id: '161063af-ca6e-4701-a28c-4103753def14', maneuver_id: '90'});
 
-const addToTechniques = async({tech_id, hand_id, deck_id, tech_name, discipline, inputs, tech_type, tech_description, tech_ability, toll, yield, weight, paradigm})=> {
+const addToTechniques = async({
+  hand_id,
+  deck_id,
+  tech_id,
+  tech_name,
+  discipline,
+  inputs,
+  tech_type,
+  tech_description,
+  tech_ability,
+  toll,
+  yield,
+  weight,
+  paradigm,
+  og_disciplines
+})=> {
   const SQL = `
-    INSERT INTO techniques(tech_id, hand_id, deck_id, tech_name, discipline, inputs, tech_type, tech_description, tech_ability, toll, yield, weight, paradigm) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *
+    INSERT INTO techniques(
+      hand_id,
+      deck_id,
+      tech_id,
+      tech_name,
+      discipline,
+      inputs,
+      tech_type,
+      tech_description,
+      tech_ability,
+      toll,
+      yield,
+      weight,
+      paradigm,
+      og_disciplines
+    )
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
+    RETURNING *
   `;
-  const response = await client.query(SQL, [tech_id, hand_id, deck_id, tech_name, discipline, inputs, tech_type, tech_description, tech_ability, toll, yield, weight, paradigm]);
+  const response = await client.query(SQL, [
+    hand_id,
+    deck_id,
+    tech_id,
+    tech_name,
+    discipline,
+    inputs,
+    tech_type,
+    tech_description,
+    tech_ability,
+    toll,
+    yield,
+    weight,
+    paradigm,
+    og_disciplines
+  ]);
   return response.rows[0];
 }
-
-// addToTechniques({tech_id: '12345', hand_id: 'a051a751-e63c-43b3-9c50-8f301f0eb96f', deck_id: '1eea3a98-4345-4efc-9f35-6ffb888d95de', tech_name: 'Test', discipline: 'Technique', inputs: 2, tech_type: 'Attack', tech_description: 'A powerful attack using fire and water.', tech_ability: 'Burn and Freeze', toll: 2, yield: 3, weight: 'Light', paradigm: 'Honorable'});
 
 const addToHand = async({maneuver_id, deck_id, hand_id, position})=> {
   try {

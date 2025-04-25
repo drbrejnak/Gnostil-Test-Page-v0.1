@@ -177,7 +177,7 @@ export const fetchCharDeck = async (auth, char, setDeck) => {
     }
 };
 
-export const addToDeck = async (auth, char, setDeck, maneuver_id) => {
+export const addToDeck = async (auth, char, setDeck, maneuver_id, tech_id) => {
     const deck_id = char.deck_id;
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
       method: 'POST',
@@ -185,14 +185,18 @@ export const addToDeck = async (auth, char, setDeck, maneuver_id) => {
         'Content-Type': 'application/json',
         authorization: window.localStorage.getItem('token'),
       },
-      body: JSON.stringify({ maneuver_id, deck_id }),
+      body: JSON.stringify({
+        maneuver_id: tech_id ? null : maneuver_id,
+        tech_id: tech_id || null,
+        deck_id
+      }),
     });
 
     if (response.ok) {
       fetchCharDeck(auth, char, setDeck);
-      return true;  // Add this return value
+      return true;
     }
-    return false;  // Add this return value
+    return false;
 };
 
 export const removeFromDeck = async (auth, char, setDeck, maneuver_id) => {
@@ -297,15 +301,48 @@ export const removeFromHand = async (auth, char, setCards, maneuver_id) => {
 };
 
 export const addToTechniques = async (auth, char, setDeck, technique) => {
-  const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      authorization: window.localStorage.getItem('token'),
-    },
-    body: JSON.stringify(technique),
-  });
-  if(response.ok){
-    console.log('Technique added successfully');
+  try {
+    console.log(technique)
+    // First create the technique
+    const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: window.localStorage.getItem('token'),
+      },
+      body: JSON.stringify(technique),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to add technique');
+    }
+
+    // Get the created technique data
+    const createdTechnique = await response.json();
+    console.log(createdTechnique)
+
+    // Add technique to deck
+    const deckResponse = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: window.localStorage.getItem('token'),
+      },
+      body: JSON.stringify({
+        tech_id: createdTechnique.tech_id,
+        deck_id: char.deck_id
+      }),
+    });
+
+    if (!deckResponse.ok) {
+      throw new Error('Failed to add technique to deck');
+    }
+
+    // Finally refresh the deck
+    await fetchCharDeck(auth, char, setDeck);
+    return true;
+  } catch (error) {
+    console.error('Error adding technique:', error);
+    return false;
   }
-}
+};

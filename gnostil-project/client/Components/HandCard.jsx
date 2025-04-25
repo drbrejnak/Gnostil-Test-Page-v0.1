@@ -98,10 +98,12 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
     };
 
     const renderDisciplineSVG = () => {
-        // If it's a technique, render all original disciplines
+        // If it's a technique, parse and render all original disciplines
         if (card.discipline === "Technique" && card.original_disciplines) {
-            return card.original_disciplines.map(discipline => {
-                // Use the same discipline mapping as ExaminationArea
+            // Parse the JSON string to get the array
+            const disciplines = JSON.parse(card.original_disciplines);
+
+            return disciplines.map(discipline => {
                 const disciplineMap = [
                     { name: "Elementalist", Component: Elementalist },
                     { name: "Metapsychiral", Component: Metapsychiral },

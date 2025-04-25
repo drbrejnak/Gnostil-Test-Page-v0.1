@@ -180,12 +180,16 @@ router.get('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, async(r
 router.post('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
     }
-    res.send(await addToDeck(req.body));
+    const result = await addToDeck({
+      maneuver_id: req.body.maneuver_id,
+      tech_id: req.body.tech_id,
+      deck_id: req.params.deckId
+    });
+    res.json(result);
   } catch(err) {
     next(err);
   }
@@ -222,12 +226,26 @@ router.get('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLogg
 router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
     }
-    res.send(await addToTechniques({tech_id: req.body.id, hand_id: req.params.handId, deck_id: req.params.deckId, tech_name: req.body.maneuver_name, discipline: req.body.discipline, tech_type: req.body.maneuver_type, inputs: req.body.inputs, tech_description: req.body.description, tech_ability: req.body.ability, toll: req.body.toll, yield: req.body.yield, weight: req.body.weight, paradigm: req.body.paradigm}));
+    res.send(await addToTechniques({
+      tech_id: req.body.id,
+      hand_id: req.params.handId,
+      deck_id: req.params.deckId,
+      tech_name: req.body.maneuver_name,
+      discipline: req.body.discipline,
+      tech_type: req.body.maneuver_type,
+      inputs: req.body.inputs,
+      tech_description: req.body.description,
+      tech_ability: req.body.ability,
+      toll: req.body.toll,
+      yield: req.body.yield,
+      weight: req.body.weight,
+      paradigm: req.body.paradigm,
+      og_disciplines: req.body.original_disciplines
+    }));
   } catch(err) {
     next(err);
   }
@@ -297,6 +315,45 @@ router.delete('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isL
       hand: updatedHand,
       deck: updatedDeck
     });
+  } catch(err) {
+    next(err);
+  }
+});
+
+// Create new route specifically for adding techniques
+router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
+  try {
+    if(req.params.userId !== req.user.id){
+      const error = Error('not authorized');
+      error.status = 401;
+      throw error;
+    }
+
+    // First create the technique
+    const technique = await addToTechniques({
+      hand_id: req.params.handId,
+      deck_id: req.params.deckId,
+      tech_id: req.body.id,
+      tech_name: req.body.maneuver_name,
+      discipline: req.body.discipline,
+      tech_type: req.body.maneuver_type,
+      inputs: req.body.inputs,
+      tech_description: req.body.description,
+      tech_ability: req.body.ability,
+      toll: req.body.toll,
+      yield: req.body.yield,
+      weight: req.body.weight,
+      paradigm: req.body.paradigm,
+      og_disciplines: req.body.original_disciplines
+    });
+
+    // Then add it to the deck
+    await addToDeck({
+      tech_id: technique.tech_id,
+      deck_id: req.params.deckId
+    });
+
+    res.json(technique);
   } catch(err) {
     next(err);
   }
