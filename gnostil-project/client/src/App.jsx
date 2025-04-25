@@ -11,6 +11,7 @@ import TechniqueOverlay from "../Components/TechniqueOverlay";
 import TechCard from "../Components/TechCard";
 import { techniqueMessageStyles } from '../Components/Styles/TechOverlayStyles';
 import { getActiveProperties } from '../Components/ExaminationArea';
+import Tutorial from "../Components/Tutorial";
 
 function App() {
   const [auth, setAuth] = useState({});
@@ -31,6 +32,7 @@ function App() {
   });
   const [technique, setTechnique] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [showTutorial, setShowTutorial] = useState(true);
 
   const hasAnyManeuvers = Object.values(hexagonStates).some(state => state !== null);
 
@@ -120,15 +122,15 @@ function App() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-        }}>
-          <div style={{
-            fontFamily: 'UnifrakturMaguntia',
-            fontSize: '32px',
-            color: 'white',
-            textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
-          }}>
-            Gnostil
-          </div>
+                  }}>
+            <div style={{
+              fontFamily: 'UnifrakturMaguntia',
+              fontSize: '32px',
+              color: 'white',
+              textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)',
+            }}>
+              Gnostil
+                      </div>
           <div style={{
             display: 'flex',
             alignItems: 'center',
@@ -170,6 +172,11 @@ function App() {
           </div>
         )}
       </div>
+
+      {/* Tutorial component */}
+      {showTutorial && (
+        <Tutorial onClose={() => setShowTutorial(false)} />
+      )}
 
       {/* Middle Section Container */}
       <div style={{
