@@ -198,12 +198,16 @@ router.post('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, async(
 router.delete('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
     }
-    res.send(await removeFromDeck(req.body));
+    const result = await removeFromDeck({
+      maneuver_id: req.body.maneuver_id,
+      tech_id: req.body.tech_id,
+      deck_id: req.params.deckId
+    });
+    res.json(result);
   } catch(err) {
     next(err);
   }

@@ -199,7 +199,7 @@ export const addToDeck = async (auth, char, setDeck, maneuver_id, tech_id) => {
     return false;
 };
 
-export const removeFromDeck = async (auth, char, setDeck, maneuver_id) => {
+export const removeFromDeck = async (auth, char, setDeck, id, isTechnique) => {
     const deck_id = char.deck_id;
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
       method: 'DELETE',
@@ -207,15 +207,18 @@ export const removeFromDeck = async (auth, char, setDeck, maneuver_id) => {
         'Content-Type': 'application/json',
         authorization: window.localStorage.getItem('token'),
       },
-      body: JSON.stringify({ maneuver_id, deck_id }),
+      body: JSON.stringify({
+        maneuver_id: isTechnique ? null : id,
+        tech_id: isTechnique ? id : null,
+        deck_id
+      }),
     });
 
     if (response.ok) {
-      // Refetch the deck to update the state
       fetchCharDeck(auth, char, setDeck);
-      return true;  // Add this return value
+      return true;
     }
-    return false;  // Add this return value
+    return false;
 };
 
 export const fetchCharHand = async (auth, char, setCards) => {

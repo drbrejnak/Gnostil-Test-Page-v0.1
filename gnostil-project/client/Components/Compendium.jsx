@@ -156,7 +156,7 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
                 const maneuver = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
                 // Remove from both deck and hand
                 if (auth?.id && char?.id) {
-                    await removeFromDeck(auth, char, setDeck, maneuver.id);
+                    await removeFromDeck(auth, char, setDeck, maneuver.id, maneuver.discipline === "Technique");
                     // Also check and remove from hand if present
                     const isInHand = cards.some(card => card.id === maneuver.id);
                     if (isInHand) {

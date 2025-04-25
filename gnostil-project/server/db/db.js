@@ -120,11 +120,18 @@ const addToDeck = async({maneuver_id, tech_id, deck_id})=> {
 // addToDeck({maneuver_id: '9', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
 // addToDeck({maneuver_id: '102', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
 
-const removeFromDeck = async({maneuver_id, deck_id})=> {
+const removeFromDeck = async({maneuver_id, tech_id, deck_id})=> {
   const SQL = `
-    DELETE FROM character_deck WHERE maneuver_id = $1 AND deck_id = $2
+    DELETE FROM character_deck
+    WHERE (maneuver_id = $1 OR tech_id = $2) AND deck_id = $3
+    RETURNING *
   `;
-  await client.query(SQL, [maneuver_id, deck_id]);
+  const result = await client.query(SQL, [
+    maneuver_id || null,
+    tech_id || null,
+    deck_id
+  ]);
+  return result.rows[0];
 }
 
 // removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '5'});

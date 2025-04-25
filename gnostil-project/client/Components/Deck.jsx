@@ -50,23 +50,18 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
     }
   };
 
-  const handleRemove = async (maneuverId) => {
+  const handleRemove = async (maneuverId, maneuver) => {
     if (auth.id) {
-      // Remove from deck via DB
-      const success = await removeFromDeck(auth, char, setDeck, maneuverId);
+      // Pass both the ID and whether it's a technique
+      const success = await removeFromDeck(auth, char, setDeck, maneuverId, maneuver.discipline === "Technique");
       if (success) {
         // Also remove from hand
         await removeFromHand(auth, char, setCards, maneuverId);
       }
     } else {
-      // Remove from local deck
-      setLocalDeck((prevDeck) => {
-        // Also remove from local hand
-        setLocalCards((prevCards) =>
-          prevCards.filter((card) => card.id !== maneuverId)
-        );
-        return prevDeck.filter((card) => card.id !== maneuverId);
-      });
+      // Local storage logic remains the same
+      setLocalDeck((prevDeck) => prevDeck.filter((card) => card.id !== maneuverId));
+      setLocalCards((prevCards) => prevCards.filter((card) => card.id !== maneuverId));
     }
   };
 
@@ -84,8 +79,17 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
 
   const handleDeleteSelected = async () => {
     for (const maneuverId of checkedManeuvers) {
+      // Find the maneuver in the deck
+      const maneuver = deckToRender.find(m => m.id === maneuverId);
+
       if (auth.id) {
-        const success = await removeFromDeck(auth, char, setDeck, maneuverId);
+        const success = await removeFromDeck(
+          auth,
+          char,
+          setDeck,
+          maneuverId,
+          maneuver?.discipline === "Technique"
+        );
         if (success) {
           await removeFromHand(auth, char, setCards, maneuverId);
         }
