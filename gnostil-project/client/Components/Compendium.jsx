@@ -143,32 +143,34 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
         try {
             // If from hand (x-card)
             if (e.dataTransfer.types.includes("application/x-card")) {
-                const maneuver = JSON.parse(e.dataTransfer.getData("application/x-card"));
-                // Only remove from hand
+                const card = JSON.parse(e.dataTransfer.getData("application/x-card"));
                 if (auth?.id && char?.id) {
-                    await removeFromHand(auth, char, setCards, maneuver.id);
+                    // Only call removeFromHand once
+                    await removeFromHand(
+                        auth,
+                        char,
+                        setCards,
+                        card.id,
+                        card.discipline === "Technique"
+                    );
                 } else {
-                    setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
+                    setLocalCards(prevCards => prevCards.filter(c => c.id !== card.id));
                 }
             }
             // If from deck (x-maneuver)
             else if (e.dataTransfer.types.includes("application/x-maneuver")) {
                 const maneuver = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
-                // Remove from both deck and hand
                 if (auth?.id && char?.id) {
-                    await removeFromDeck(auth, char, setDeck, maneuver.id, maneuver.discipline === "Technique");
-                    // Also check and remove from hand if present
-                    const isInHand = cards.some(card => card.id === maneuver.id);
-                    if (isInHand) {
-                        await removeFromHand(auth, char, setCards, maneuver.id);
-                    }
+                    await removeFromDeck(
+                        auth,
+                        char,
+                        setDeck,
+                        maneuver.id,
+                        maneuver.discipline === "Technique"
+                    );
                 } else {
                     setLocalDeck(prevDeck => prevDeck.filter(card => card.id !== maneuver.id));
-                    // Also check and remove from local hand if present
-                    const isInHand = localCards.some(card => card.id === maneuver.id);
-                    if (isInHand) {
-                        setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
-                    }
+                    setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
                 }
             }
         } catch (error) {

@@ -234,47 +234,69 @@ export const fetchCharHand = async (auth, char, setCards) => {
     }
 };
 
-export const addToHand = async (auth, char, setCards, maneuver_id, position) => {
+export const addToHand = async (auth, char, setCards, id, position, isTechnique = false) => {
     const deck_id = char.deck_id;
     const hand_id = char.hand_id;
+
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         authorization: window.localStorage.getItem('token'),
       },
-      body: JSON.stringify({maneuver_id, deck_id, hand_id, position}),
-    })
+      body: JSON.stringify({
+        id: id,  // Pass the actual ID
+        maneuver_id: isTechnique ? null : id,
+        tech_id: isTechnique ? id : null,
+        deck_id,
+        hand_id,
+        position,
+        discipline: isTechnique ? "Technique" : null,
+        is_technique: isTechnique
+      }),
+    });
+
     if (response.ok) {
-        // Refetch the hand to update the state
-        fetchCharHand(auth, char, setCards);
-        return true;  // Add this return value
-      }
-      return false;  // Add this return value
-  };
+        await fetchCharHand(auth, char, setCards);
+        return true;
+    }
+    return false;
+};
 
 export const updateCardsInHand = async (auth, char, cards, setCards) => {
   const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
     method: 'PUT',
     headers: {
-    'Content-Type': 'application/json',
-    authorization: window.localStorage.getItem('token'),
+      'Content-Type': 'application/json',
+      authorization: window.localStorage.getItem('token'),
     },
-    body: JSON.stringify(cards),
+    body: JSON.stringify(cards.map(card => ({
+      id: card.id,
+      position: card.position,
+      discipline: card.discipline,
+      is_technique: card.discipline === "Technique"
+    }))),
   });
-}
 
-export const removeFromHand = async (auth, char, setCards, maneuver_id) => {
+  if (response.ok) {
+    await fetchCharHand(auth, char, setCards);
+    return true;
+  }
+  return false;
+};
+
+export const removeFromHand = async (auth, char, setCards, id, isTechnique = false) => {
   try {
     console.log('RemoveFromHand params:', {
       authId: auth?.id,
       charId: char?.id,
       deckId: char?.deck_id,
       handId: char?.hand_id,
-      maneuver_id
+      id,
+      isTechnique
     });
 
-    if (!auth?.id || !char?.id || !char?.deck_id || !char?.hand_id || !maneuver_id) {
+    if (!auth?.id || !char?.id || !char?.deck_id || !char?.hand_id || !id) {
       throw new Error('Missing required parameters');
     }
 
@@ -284,7 +306,11 @@ export const removeFromHand = async (auth, char, setCards, maneuver_id) => {
         'Content-Type': 'application/json',
         authorization: window.localStorage.getItem('token'),
       },
-      body: JSON.stringify({ maneuver_id }),
+      body: JSON.stringify({
+        maneuver_id: isTechnique ? null : id,
+        tech_id: isTechnique ? id : null,
+        is_technique: isTechnique
+      }),
     });
 
     const data = await response.json().catch(() => null);
@@ -294,7 +320,6 @@ export const removeFromHand = async (auth, char, setCards, maneuver_id) => {
       throw new Error(`Failed to remove card: ${data?.error || response.statusText}`);
     }
 
-    // Refresh the hand data
     await fetchCharHand(auth, char, setCards);
     return true;
   } catch (error) {
@@ -307,8 +332,8 @@ export const removeFromHand = async (auth, char, setCards, maneuver_id) => {
 export const addToTechniques = async (auth, char, setDeck, technique) => {
   try {
     console.log(technique)
-    // First create the technique
-    const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
+    // Create technique and add to deck in one request
+    const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}/techniques`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -323,26 +348,9 @@ export const addToTechniques = async (auth, char, setDeck, technique) => {
 
     // Get the created technique data
     const createdTechnique = await response.json();
-    console.log(createdTechnique)
+    console.log(createdTechnique);
 
-    // Add technique to deck
-    const deckResponse = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        authorization: window.localStorage.getItem('token'),
-      },
-      body: JSON.stringify({
-        tech_id: createdTechnique.tech_id,
-        deck_id: char.deck_id
-      }),
-    });
-
-    if (!deckResponse.ok) {
-      throw new Error('Failed to add technique to deck');
-    }
-
-    // Finally refresh the deck
+    // Refresh the deck
     await fetchCharDeck(auth, char, setDeck);
     return true;
   } catch (error) {

@@ -52,16 +52,29 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
 
   const handleRemove = async (maneuverId, maneuver) => {
     if (auth.id) {
-      // Pass both the ID and whether it's a technique
-      const success = await removeFromDeck(auth, char, setDeck, maneuverId, maneuver.discipline === "Technique");
-      if (success) {
-        // Also remove from hand
-        await removeFromHand(auth, char, setCards, maneuverId);
-      }
+        const isTechnique = maneuver.discipline === "Technique";
+        // Pass both the ID and whether it's a technique
+        const success = await removeFromDeck(
+            auth,
+            char,
+            setDeck,
+            maneuverId,
+            isTechnique
+        );
+        if (success) {
+            // Also remove from hand if present, passing technique flag
+            await removeFromHand(
+                auth,
+                char,
+                setCards,
+                maneuverId,
+                isTechnique
+            );
+        }
     } else {
-      // Local storage logic remains the same
-      setLocalDeck((prevDeck) => prevDeck.filter((card) => card.id !== maneuverId));
-      setLocalCards((prevCards) => prevCards.filter((card) => card.id !== maneuverId));
+        // Local storage logic remains the same
+        setLocalDeck((prevDeck) => prevDeck.filter((card) => card.id !== maneuverId));
+        setLocalCards((prevCards) => prevCards.filter((card) => card.id !== maneuverId));
     }
   };
 
@@ -79,28 +92,35 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
 
   const handleDeleteSelected = async () => {
     for (const maneuverId of checkedManeuvers) {
-      // Find the maneuver in the deck
-      const maneuver = deckToRender.find(m => m.id === maneuverId);
+        // Find the maneuver in the deck
+        const maneuver = deckToRender.find(m => m.id === maneuverId);
+        const isTechnique = maneuver?.discipline === "Technique";
 
-      if (auth.id) {
-        const success = await removeFromDeck(
-          auth,
-          char,
-          setDeck,
-          maneuverId,
-          maneuver?.discipline === "Technique"
-        );
-        if (success) {
-          await removeFromHand(auth, char, setCards, maneuverId);
+        if (auth.id) {
+            const success = await removeFromDeck(
+                auth,
+                char,
+                setDeck,
+                maneuverId,
+                isTechnique
+            );
+            if (success) {
+                await removeFromHand(
+                    auth,
+                    char,
+                    setCards,
+                    maneuverId,
+                    isTechnique
+                );
+            }
+        } else {
+            setLocalDeck(prevDeck =>
+                prevDeck.filter(card => card.id !== maneuverId)
+            );
+            setLocalCards(prevCards =>
+                prevCards.filter(card => card.id !== maneuverId)
+            );
         }
-      } else {
-        setLocalDeck(prevDeck =>
-          prevDeck.filter(card => card.id !== maneuverId)
-        );
-        setLocalCards(prevCards =>
-          prevCards.filter(card => card.id !== maneuverId)
-        );
-      }
     }
     setCheckedManeuvers(new Set()); // Clear selections after deletion
   };

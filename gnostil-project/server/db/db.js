@@ -82,20 +82,50 @@ const fetchDeckManeuvers = async({maneuverIds = [], techIds = []})=> {
 const fetchHand = async (hand_id) => {
   const SQL = `
     SELECT
-      character_hand.maneuver_id,
-      character_hand.position,
-      maneuvers.*
-    FROM
-      character_hand
-    JOIN
-      maneuvers
-    ON
-      character_hand.maneuver_id = maneuvers.id
-    WHERE
-      character_hand.hand_id = $1
+      ch.position,
+      CASE
+        WHEN ch.maneuver_id IS NOT NULL THEN
+          jsonb_build_object(
+            'id', m.id,
+            'maneuver_name', m.maneuver_name,
+            'discipline', m.discipline,
+            'maneuver_type', m.maneuver_type,
+            'description', m.description,
+            'ability', m.ability,
+            'toll', m.toll,
+            'yield', m.yield,
+            'weight', m.weight,
+            'paradigm', m.paradigm,
+            'is_technique', false
+          )
+        ELSE
+          jsonb_build_object(
+            'id', t.tech_id,
+            'maneuver_name', t.tech_name,
+            'discipline', t.discipline,
+            'maneuver_type', t.tech_type,
+            'description', t.tech_description,
+            'ability', t.tech_ability,
+            'toll', t.toll,
+            'yield', t.yield,
+            'weight', t.weight,
+            'paradigm', t.paradigm,
+            'inputs', t.inputs,
+            'original_disciplines', t.og_disciplines,
+            'is_technique', true
+          )
+      END as card_data
+    FROM character_hand ch
+    LEFT JOIN maneuvers m ON ch.maneuver_id = m.id
+    LEFT JOIN techniques t ON ch.tech_id = t.tech_id
+    WHERE ch.hand_id = $1
+    ORDER BY ch.position
   `;
   const response = await client.query(SQL, [hand_id]);
-  return response.rows; // Return all rows with maneuver, position data
+  return response.rows.map(row => ({
+    ...row.card_data,
+    position: row.position
+  }));
 };
 
 // (async () => {
@@ -218,31 +248,36 @@ const removeFromTechniques = async({tech_id, deck_id})=> {
   return response.rows[0];
 }
 
-const addToHand = async({maneuver_id, deck_id, hand_id, position})=> {
+const addToHand = async({maneuver_id, tech_id, deck_id, hand_id, position})=> {
   try {
-    // First check if the maneuver already exists in hand
     const checkSQL = `
       SELECT * FROM character_hand
-      WHERE maneuver_id = $1 AND hand_id = $2
+      WHERE (
+        (maneuver_id = $1 AND tech_id IS NULL) OR
+        (tech_id = $2 AND maneuver_id IS NULL)
+      ) AND hand_id = $3
     `;
-    const checkResult = await client.query(checkSQL, [maneuver_id, hand_id]);
+    const checkResult = await client.query(checkSQL, [
+      maneuver_id || null,
+      tech_id || null,
+      hand_id
+    ]);
 
     if (checkResult.rows.length > 0) {
-      // Maneuver already exists in hand
       return checkResult.rows[0];
     }
 
-    // If not exists, insert new record
     const SQL = `
-      INSERT INTO character_hand(maneuver_id, deck_id, hand_id, position)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO character_hand(maneuver_id, tech_id, deck_id, hand_id, position)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *
     `;
     const response = await client.query(SQL, [
-      maneuver_id,
+      maneuver_id || null,
+      tech_id || null,
       deck_id,
       hand_id,
-      position || 0,  // Default to 0 if position not provided
+      position || 0
     ]);
 
     return response.rows[0];
@@ -252,33 +287,28 @@ const addToHand = async({maneuver_id, deck_id, hand_id, position})=> {
   }
 }
 
-const removeFromHand = async({maneuver_id, hand_id, deck_id})=> {
+const removeFromHand = async({maneuver_id, tech_id, hand_id, deck_id, is_technique})=> {
   try {
-    // Begin transaction
     await client.query('BEGIN');
 
-    // Remove from hand
     const SQL = `
       DELETE FROM character_hand
-      WHERE maneuver_id = $1 AND hand_id = $2
+      WHERE hand_id = $1
+      AND (
+        (maneuver_id = $2 AND tech_id IS NULL) OR
+        (tech_id = $3 AND maneuver_id IS NULL)
+      )
       RETURNING *
     `;
-    const handResult = await client.query(SQL, [maneuver_id, hand_id]);
+    const handResult = await client.query(SQL, [
+      hand_id,
+      maneuver_id || null,
+      tech_id || null
+    ]);
 
-    // Also remove from deck
-    const deckSQL = `
-      DELETE FROM character_deck
-      WHERE maneuver_id = $1 AND deck_id = $2
-      RETURNING *
-    `;
-    await client.query(deckSQL, [maneuver_id, deck_id]);
-
-    // Commit transaction
     await client.query('COMMIT');
-
     return handResult.rows[0];
   } catch (error) {
-    // Rollback on error
     await client.query('ROLLBACK');
     console.error('Error in removeFromHand:', error);
     throw error;
@@ -286,16 +316,39 @@ const removeFromHand = async({maneuver_id, hand_id, deck_id})=> {
 }
 
 const updateCardsInHand = async ({ hand_id, cards }) => {
-  for (const card of cards) {
-    console.log("Processing card:", card); // Debugging
-    const SQL = `
-      UPDATE character_hand
-      SET position = $1
-      WHERE hand_id = $2 AND maneuver_id = $3
-      RETURNING maneuver_id;
-    `;
-    const response = await client.query(SQL, [card.position, hand_id, card.id]);
-    console.log("Updated card:", response.rows[0]); // Debugging
+  try {
+    for (const card of cards) {
+      console.log("Processing card:", card);
+
+      // Different query based on card type
+      const SQL = card.discipline === "Technique" ? `
+        UPDATE character_hand
+        SET position = $1
+        WHERE hand_id = $2 AND tech_id = $3
+        RETURNING maneuver_id, tech_id, position;
+      ` : `
+        UPDATE character_hand
+        SET position = $1
+        WHERE hand_id = $2 AND maneuver_id = $3
+        RETURNING maneuver_id, tech_id, position;
+      `;
+
+      const response = await client.query(SQL, [
+        card.position,
+        hand_id,
+        card.id
+      ]);
+
+      if (!response.rows[0]) {
+        console.error(`Failed to update position for ${card.discipline} with ID ${card.id}`);
+      } else {
+        console.log(`Successfully updated position for ${card.discipline} with ID ${card.id} to ${card.position}`);
+      }
+    }
+    return true;
+  } catch (error) {
+    console.error('Error in updateCardsInHand:', error);
+    throw error;
   }
 };
 

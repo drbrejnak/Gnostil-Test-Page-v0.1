@@ -39,39 +39,51 @@ export default function Hand({
     // Check for 9 card limit
     const currentCards = auth.id ? cards : localCards;
     if (currentCards.length >= 9) {
-      return; // Do nothing if trying to add a 10th card
+      return;
     }
 
     if (auth.id) {
-      setCards((prevCards) => {
-        const updatedCards = [...prevCards];
+      const isTechnique = data.discipline === "Technique";
 
-        // Check if the card is already in the hand
-        const existingIndex = updatedCards.findIndex(
-          (card) => card.maneuver_name === data.maneuver_name
+      // Single operation to add to hand
+      const success = await addToHand(
+        auth,
+        char,
+        setCards,
+        data.id,
+        position,
+        isTechnique
+      );
+
+      // Only add to deck if it's not a technique and add was successful
+      if (success && !isTechnique) {
+        await addToDeck(
+          auth,
+          char,
+          setDeck,
+          data.id,
+          null
         );
+      }
 
+      // After successful add, update positions
+      if (success) {
+        const updatedCards = [...cards];
+        // Check if card already exists and remove it
+        const existingIndex = updatedCards.findIndex(
+          (card) => card.id === data.id
+        );
         if (existingIndex !== -1) {
-          // Remove the card from its original position
           updatedCards.splice(existingIndex, 1);
         }
-
-        // Insert the card at the new position
+        // Insert at new position
         updatedCards.splice(position, 0, data);
-
-        // Recalculate positions
+        // Update positions
         const newCards = updatedCards.map((card, index) => ({
           ...card,
           position: index,
         }));
-
-        updateCardsInHand(auth, char, newCards, setCards);
-        return newCards;
-      });
-
-      const success = await addToHand(auth, char, setCards, data.id, position);
-      if (success) {
-        await addToDeck(auth, char, setDeck, data.id);
+        await updateCardsInHand(auth, char, newCards, setCards);
       }
     } else {
       setLocalCards((prevCards) => {

@@ -238,39 +238,10 @@ router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLog
       error.status = 401;
       throw error;
     }
-    res.send(await addToTechniques({
-      tech_id: req.body.id,
-      hand_id: req.params.handId,
-      deck_id: req.params.deckId,
-      tech_name: req.body.maneuver_name,
-      discipline: req.body.discipline,
-      tech_type: req.body.maneuver_type,
-      inputs: req.body.inputs,
-      tech_description: req.body.description,
-      tech_ability: req.body.ability,
-      toll: req.body.toll,
-      yield: req.body.yield,
-      weight: req.body.weight,
-      paradigm: req.body.paradigm,
-      og_disciplines: req.body.original_disciplines
-    }));
-  } catch(err) {
-    next(err);
-  }
-});
-
-// hand_id, deck_id, discipline, inputs, tech_type, tech_description, tech_ability, toll, yield, weight, paradigm
-
-router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
-  try {
-    if(req.params.userId !== req.user.id){
-      const error = Error('not authorized');
-      error.status = 401;
-      throw error;
-    }
 
     const result = await addToHand({
-      maneuver_id: req.body.maneuver_id,
+      maneuver_id: req.body.is_technique ? null : req.body.id,
+      tech_id: req.body.is_technique ? req.body.id : null,
       deck_id: req.params.deckId,
       hand_id: req.params.handId,
       position: req.body.position
@@ -308,28 +279,20 @@ router.delete('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isL
 
     const result = await removeFromHand({
       maneuver_id: req.body.maneuver_id,
+      tech_id: req.body.tech_id,
       hand_id: req.params.handId,
-      deck_id: req.params.deckId  // Add deck_id to params
+      deck_id: req.params.deckId,
+      is_technique: req.body.is_technique
     });
 
-    // After successful removal, fetch updated hand and deck
-    const updatedHand = await fetchHand(req.params.handId);
-    const updatedDeckIds = await fetchDeck(req.params.deckId);
-    const updatedDeck = await fetchDeckManeuvers(updatedDeckIds);
-
-    res.json({
-      success: true,
-      result,
-      hand: updatedHand,
-      deck: updatedDeck
-    });
+    res.json(result);
   } catch(err) {
     next(err);
   }
 });
 
 // Create new route specifically for adding techniques
-router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
+router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId/techniques', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
       const error = Error('not authorized');
