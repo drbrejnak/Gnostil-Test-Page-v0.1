@@ -295,3 +295,17 @@ export const removeFromHand = async (auth, char, setCards, maneuver_id) => {
     return false;
   }
 };
+
+export const addToTechniques = async (auth, char, setDeck, technique) => {
+  const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      authorization: window.localStorage.getItem('token'),
+    },
+    body: JSON.stringify(technique),
+  });
+  if(response.ok){
+    console.log('Technique added successfully');
+  }
+}

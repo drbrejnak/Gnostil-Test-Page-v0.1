@@ -44,6 +44,7 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
     };
 
     if (maneuver?.is_technique) {
+      const abilities = JSON.parse(maneuver.ability);
       return (
         <div style={abilityStyle}>
           <div style={cardStyles.propertyLabel}>Combined Abilities</div>
@@ -54,12 +55,12 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
             paddingRight: '8px',
             wordBreak: 'break-word'
           }}>
-            {maneuver.component_maneuvers.map((m, index) => (
+            {abilities.map((ability, index) => (
               <div key={index} style={{ marginBottom: '8px' }}>
                 <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>
-                  {m.maneuver_name}:
+                  {ability.name}:
                 </div>
-                <div>{m.ability}</div>
+                <div>{ability.text}</div>
               </div>
             ))}
           </div>
@@ -128,8 +129,8 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
             alignItems: 'center',
             gap: '8px',
           }}>
-            {maneuver.component_maneuvers.map((_, index) => (
-              <Hexagon key={index} />
+            {[...Array(maneuver.inputs)].map((_, index) => (
+                <Hexagon key={index} />
             ))}
           </div>
         ) : (

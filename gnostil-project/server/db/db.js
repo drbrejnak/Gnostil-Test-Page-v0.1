@@ -90,6 +90,16 @@ const removeFromDeck = async({maneuver_id, deck_id})=> {
 // removeFromDeck({deck_id: '56d47608-731f-41eb-b0e8-4bd0211595aa', maneuver_id: '90'});
 // removeFromDeck({deck_id: '161063af-ca6e-4701-a28c-4103753def14', maneuver_id: '90'});
 
+const addToTechniques = async({tech_id, hand_id, deck_id, tech_name, discipline, inputs, tech_type, tech_description, tech_ability, toll, yield, weight, paradigm})=> {
+  const SQL = `
+    INSERT INTO techniques(tech_id, hand_id, deck_id, tech_name, discipline, inputs, tech_type, tech_description, tech_ability, toll, yield, weight, paradigm) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *
+  `;
+  const response = await client.query(SQL, [tech_id, hand_id, deck_id, tech_name, discipline, inputs, tech_type, tech_description, tech_ability, toll, yield, weight, paradigm]);
+  return response.rows[0];
+}
+
+// addToTechniques({tech_id: '12345', hand_id: 'a051a751-e63c-43b3-9c50-8f301f0eb96f', deck_id: '1eea3a98-4345-4efc-9f35-6ffb888d95de', tech_name: 'Test', discipline: 'Technique', inputs: 2, tech_type: 'Attack', tech_description: 'A powerful attack using fire and water.', tech_ability: 'Burn and Freeze', toll: 2, yield: 3, weight: 'Light', paradigm: 'Honorable'});
+
 const addToHand = async({maneuver_id, deck_id, hand_id, position})=> {
   try {
     // First check if the maneuver already exists in hand
@@ -349,5 +359,6 @@ module.exports = {
   createUser,
   createCharacter,
   deleteCharacter,
-  editCharName
+  editCharName,
+  addToTechniques
 };

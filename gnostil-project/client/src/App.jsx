@@ -30,8 +30,13 @@ function App() {
     hex6: null
   });
   const [technique, setTechnique] = useState(null);
+  console.log(localDeck)
 
   const hasAnyManeuvers = Object.values(hexagonStates).some(state => state !== null);
+
+  const getManeuverCount = (hexStates) => {
+    return Object.values(hexStates).filter(state => state !== null).length;
+  };
 
   const handleCancelTechnique = () => {
     setHexagonStates({
@@ -145,8 +150,13 @@ function App() {
               Create Technique:
             </span>
             <button
-              style={techniqueMessageStyles.button}
+              style={{
+                ...techniqueMessageStyles.button,
+                opacity: getManeuverCount(hexagonStates) < 2 ? 0.5 : 1,
+                cursor: getManeuverCount(hexagonStates) < 2 ? 'not-allowed' : 'pointer'
+              }}
               onClick={handleConfirmTechnique}
+              disabled={getManeuverCount(hexagonStates) < 2}
             >
               Confirm
             </button>
@@ -221,6 +231,7 @@ function App() {
               setLocalDeck={setLocalDeck}
               auth={auth}
               char={char}
+              deck={deck}
               setDeck={setDeck}
             />
           ) : selectedManeuver ? (

@@ -17,6 +17,7 @@ const {
   createCharacter,
   deleteCharacter,
   editCharName,
+  addToTechniques,
   fetchCharHand
 } = require('../db/db');
 const express = require('express');
@@ -217,6 +218,22 @@ router.get('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLogg
     next(err);
   }
 });
+
+router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
+  try {
+    if(req.params.userId !== req.user.id){
+      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
+      const error = Error('not authorized');
+      error.status = 401;
+      throw error;
+    }
+    res.send(await addToTechniques({tech_id: req.body.id, hand_id: req.params.handId, deck_id: req.params.deckId, tech_name: req.body.maneuver_name, discipline: req.body.discipline, tech_type: req.body.maneuver_type, inputs: req.body.inputs, tech_description: req.body.description, tech_ability: req.body.ability, toll: req.body.toll, yield: req.body.yield, weight: req.body.weight, paradigm: req.body.paradigm}));
+  } catch(err) {
+    next(err);
+  }
+});
+
+// hand_id, deck_id, discipline, inputs, tech_type, tech_description, tech_ability, toll, yield, weight, paradigm
 
 router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
   try {

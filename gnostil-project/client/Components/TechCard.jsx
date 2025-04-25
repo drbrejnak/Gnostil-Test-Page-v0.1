@@ -3,6 +3,7 @@ import '../src/App.css';
 import { cardStyles } from './Styles/CardStyles';
 import { tableStyles } from './Styles/TableStyles';
 import { techniqueMessageStyles } from './Styles/TechOverlayStyles';
+import { addToTechniques } from '.';
 
 const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, localDeck, setLocalDeck, auth, char, setDeck, deck }) => {
   const [name, setName] = useState(techniqueName || '');
@@ -44,13 +45,19 @@ const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, lo
       paradigm: Array.from(activeProperties).find(prop => ["Honorable", "Infamous"].includes(prop)),
       is_technique: true,
       component_maneuvers: maneuvers,
-      ability: maneuvers.map(m => `${m.maneuver_name}: ${m.ability}`).join('\n\n') // Combined abilities
+      inputs: maneuvers.length,
+      ability: JSON.stringify(
+        maneuvers.map(m => ({
+          name: m.maneuver_name,
+          text: m.ability
+        }))
+      )
     };
 
     // Add to appropriate deck based on auth status
     if (auth?.id) {
-      // Add to server deck
-      addToDeck(auth, char, setDeck, technique.id);
+      // Add to server Techniques database
+      addToTechniques(auth, char, setDeck, technique);
     } else {
       // Add to local deck
       setLocalDeck(prev => [...prev, technique]);
