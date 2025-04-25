@@ -5,11 +5,10 @@ import { loginStyles } from './Styles/LoginStyles';
 export const Login = ({ setAuth }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoginVisible, setIsLoginVisible] = useState(false);
   const [isRegisterVisible, setIsRegisterVisible] = useState(false);
   const [error, setError] = useState('');
-  const [showLogout, setShowLogout] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
 
@@ -22,6 +21,17 @@ export const Login = ({ setAuth }) => {
     setAuth({});
     setCurrentUser(null);
     setShowLogout(false);
+  };
+
+  const validatePassword = (password) => {
+    const hasNumber = /\d/.test(password);
+    const isLongEnough = password.length >= 8;
+
+    if (!isLongEnough || !hasNumber) {
+      setError('Password must be at least 8 characters long and contain at least 1 number.');
+      return false;
+    }
+    return true;
   };
 
   const handleSubmitLogin = async (ev) => {
@@ -37,11 +47,30 @@ export const Login = ({ setAuth }) => {
   const handleSubmitRegister = async (ev) => {
     ev.preventDefault();
     setError(''); // Clear any existing errors
+
+    // Password validation
+    if (!validatePassword(password)) {
+      return;
+    }
+
+    // Password confirmation check
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
     const result = await register(setAuth, { username, password });
     if (result.success) {
-      setIsRegisterVisible(false);
-      setIsLoginVisible(false);
-      clearInputs();
+      // After successful registration, attempt login
+      const loginSuccess = await login(setAuth, { username, password });
+      if (loginSuccess) {
+        setCurrentUser(username);
+        setIsRegisterVisible(false);
+        setIsLoginVisible(false);
+        clearInputs();
+      } else {
+        setError('Registration successful but login failed. Please try logging in.');
+      }
     } else {
       setError(result.error);
     }
@@ -50,6 +79,7 @@ export const Login = ({ setAuth }) => {
   const clearInputs = () => {
     setUsername('');
     setPassword('');
+    setConfirmPassword('');
   };
 
   const cancel = () => {
@@ -187,10 +217,19 @@ export const Login = ({ setAuth }) => {
             onChange={(ev) => setPassword(ev.target.value)}
             style={loginStyles.loginInput}
           />
+          {isRegisterVisible && (
+            <input
+              type="password"
+              value={confirmPassword}
+              placeholder="Confirm Password"
+              onChange={(ev) => setConfirmPassword(ev.target.value)}
+              style={loginStyles.loginInput}
+            />
+          )}
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <button
               type="submit"
-              disabled={!username || !password}
+              disabled={!username || !password || (isRegisterVisible && !confirmPassword)}
               style={loginStyles.loginButton}
             >
               {isRegisterVisible ? 'Register' : 'Login'}
