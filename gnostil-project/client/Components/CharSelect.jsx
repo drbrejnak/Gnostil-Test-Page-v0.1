@@ -4,7 +4,7 @@ import { fetchCharacters, createCharacter, editCharName, deleteCharacter } from 
 import { tableStyles } from './Styles/TableStyles';
 import { loginStyles } from './Styles/LoginStyles';
 
-const CharSelect = ({auth, char, setChar}) => {
+const CharSelect = ({auth, char, setChar, currentUser}) => {
   const [characters, setCharacters] = useState([]);
   const [newCharName, setNewCharName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
@@ -78,7 +78,7 @@ const CharSelect = ({auth, char, setChar}) => {
     setNewCharName('');
   };
 
-  if (!auth.id) {
+  if (!currentUser) {
     return null;
   }
 

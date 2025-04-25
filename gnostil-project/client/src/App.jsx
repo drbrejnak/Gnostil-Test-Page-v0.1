@@ -30,7 +30,7 @@ function App() {
     hex6: null
   });
   const [technique, setTechnique] = useState(null);
-  console.log(localDeck)
+  const [currentUser, setCurrentUser] = useState(null);
 
   const hasAnyManeuvers = Object.values(hexagonStates).some(state => state !== null);
 
@@ -138,8 +138,9 @@ function App() {
               auth={auth}
               char={char}
               setChar={setChar}
+              currentUser={currentUser}
             />
-            <Login setAuth={setAuth} />
+            <Login setAuth={setAuth} currentUser={currentUser} setCurrentUser={setCurrentUser} />
           </div>
         </div>
 

@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react';
 import { register, login, attemptLoginWithToken } from '.';
 import { loginStyles } from './Styles/LoginStyles';
 
-export const Login = ({ setAuth }) => {
+export const Login = ({ setAuth, currentUser, setCurrentUser }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoginVisible, setIsLoginVisible] = useState(false);
   const [isRegisterVisible, setIsRegisterVisible] = useState(false);
   const [error, setError] = useState('');
-  const [currentUser, setCurrentUser] = useState(null);
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
 
   useEffect(() => {
