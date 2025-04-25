@@ -145,7 +145,6 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
             if (e.dataTransfer.types.includes("application/x-card")) {
                 const card = JSON.parse(e.dataTransfer.getData("application/x-card"));
                 if (auth?.id && char?.id) {
-                    // Only call removeFromHand once
                     await removeFromHand(
                         auth,
                         char,
@@ -161,13 +160,29 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
             else if (e.dataTransfer.types.includes("application/x-maneuver")) {
                 const maneuver = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
                 if (auth?.id && char?.id) {
-                    await removeFromDeck(
+                    // Remove from deck first
+                    const success = await removeFromDeck(
                         auth,
                         char,
                         setDeck,
                         maneuver.id,
                         maneuver.discipline === "Technique"
                     );
+
+                    // If it's a technique and was successfully removed from deck,
+                    // also check and remove from hand if present
+                    if (success) {
+                        const isInHand = cards.some(card => card.id === maneuver.id);
+                        if (isInHand) {
+                            await removeFromHand(
+                                auth,
+                                char,
+                                setCards,
+                                maneuver.id,
+                                maneuver.discipline === "Technique"
+                            );
+                        }
+                    }
                 } else {
                     setLocalDeck(prevDeck => prevDeck.filter(card => card.id !== maneuver.id));
                     setLocalCards(prevCards => prevCards.filter(card => card.id !== maneuver.id));
