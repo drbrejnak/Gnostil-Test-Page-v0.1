@@ -31,16 +31,14 @@ export default function Hand({
   }, [auth, char]);
 
   const handleDrop = async (data, position) => {
-    if (auth.id && (!char || !char.id)) {
-      return;
-    }
+    // Don't accept drops if logged in without character
+    if (auth.id && !char.id) return;
+
     setIsDragging(false);
 
     // Check for 9 card limit
     const currentCards = auth.id ? cards : localCards;
-    if (currentCards.length >= 9) {
-      return;
-    }
+    if (currentCards.length >= 9) return;
 
     if (auth.id) {
       const isTechnique = data.discipline === "Technique";
@@ -127,11 +125,13 @@ export default function Hand({
     <div
       style={{
         ...handStyles.container,
+        cursor: auth.id && !char.id ? 'not-allowed' : 'default',
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
       }}
       onDragOver={(e) => {
+        if (auth.id && !char.id) return; // Prevent drag over if no character
         e.preventDefault();
         if (e.dataTransfer.types.includes("application/x-maneuver")) {
           setIsDragging(true);

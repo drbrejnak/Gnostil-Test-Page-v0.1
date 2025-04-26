@@ -2,16 +2,17 @@ import React from 'react';
 import { useState } from 'react';
 import { techOverlayStyles } from './Styles/TechOverlayStyles';
 
-const TechniqueOverlay = ({ selectedManeuver, hexagonStates, setHexagonStates, setSelectedManeuver }) => {
+const TechniqueOverlay = ({ selectedManeuver, hexagonStates, setHexagonStates, setSelectedManeuver, auth, char }) => {
   if (selectedManeuver) return null;
 
   const Hexagon = ({ style, hexId }) => {
     const [isDragOver, setIsDragOver] = useState(false);
     const hasManeuver = hexagonStates[hexId] !== null;
+    const canAcceptDrop = !auth.id || (auth.id && char.id); // Allow drops if not logged in or if char is selected
 
     const handleDragOver = (e) => {
       e.preventDefault();
-      if (!hasManeuver) {
+      if (!hasManeuver && canAcceptDrop) {
         setIsDragOver(true);
       }
     };
@@ -24,8 +25,8 @@ const TechniqueOverlay = ({ selectedManeuver, hexagonStates, setHexagonStates, s
       e.preventDefault();
       setIsDragOver(false);
 
-      // If hexagon already has a maneuver, do nothing
-      if (hasManeuver) return;
+      // If hexagon has maneuver or user is logged in without character, do nothing
+      if (hasManeuver || (auth.id && !char.id)) return;
 
       // Try both data transfer types
       const maneuverData = e.dataTransfer.getData('application/x-maneuver') ||
@@ -69,7 +70,7 @@ const TechniqueOverlay = ({ selectedManeuver, hexagonStates, setHexagonStates, s
         style={{
           ...style,
           pointerEvents: 'auto',
-          cursor: hasManeuver ? 'pointer' : 'default'
+          cursor: hasManeuver ? 'pointer' : (auth?.id && !char?.id ? 'not-allowed' : 'default')
         }}
         onClick={handleClick}
         onDragOver={handleDragOver}

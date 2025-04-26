@@ -30,10 +30,10 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
 
   const handleDrop = async (e) => {
     e.preventDefault();
-    if (auth.id && (!char || !char.id)) {
-      return;
-    }
     setIsDragging(false);
+
+    // Don't accept drops if logged in without character
+    if (auth.id && !char.id) return;
 
     const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
 
@@ -215,9 +215,12 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
 
   return (
     <div
-      style={tableStyles.container}
+      style={{
+        ...tableStyles.container,
+        cursor: auth.id && !char.id ? 'not-allowed' : 'default'
+      }}
       onDragOver={(e) => {
-        // Only show drop area for application/x-maneuver data
+        if (auth.id && !char.id) return; // Prevent drag over if no character
         if (e.dataTransfer.types.includes("application/x-maneuver")) {
           e.preventDefault();
           e.stopPropagation();

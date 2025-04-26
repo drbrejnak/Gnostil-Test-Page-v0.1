@@ -263,6 +263,8 @@ function App() {
               setSelectedManeuver={setSelectedManeuver}
               hexagonStates={hexagonStates}
               setHexagonStates={setHexagonStates}
+              auth={auth}
+              char={char}
             />
           )}
           {technique ? (
