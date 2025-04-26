@@ -73,6 +73,17 @@ export const attemptLoginWithToken = async(setAuth)=> {
     }
 };
 
+
+export const getManeuvers = async (setCompendium) => {
+  try {
+    const response = await fetch(`${host}/maneuvers`);
+    const maneuvers = await response.json();
+    setCompendium(maneuvers);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const fetchCharacters = async(auth, setCharacters)=> {
     const response = await fetch(`${host}/users/${auth.id}/characters`, {
       headers: {

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { tableStyles } from "./Styles/TableStyles";
-import { removeFromHand, removeFromDeck } from ".";
+import { getManeuvers, removeFromHand, removeFromDeck } from ".";
 
 export default function Compendium({ setSelectedManeuver, auth, char, setCards, setDeck, localCards, setLocalCards, localDeck, setLocalDeck, deck, cards }) {
   const [compendium, setCompendium] = useState([]);
@@ -16,18 +16,8 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
   const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
   const [isDragging, setIsDragging] = useState(false);
 
-  const getManeuvers = async () => {
-    try {
-      const response = await fetch("http://localhost:3000/maneuvers");
-      const maneuvers = await response.json();
-      setCompendium(maneuvers);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   useEffect(() => {
-    getManeuvers();
+    getManeuvers(setCompendium);
   }, []);
 
   // Filtered and searched data
@@ -309,7 +299,7 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
               <option value="">All Weights</option>
               {[...new Set(compendium.map((maneuver) => maneuver.weight))]
                 .filter(yieldValue => yieldValue !== null)
-                .sort((a, b) => Number(a) - Number(b))  
+                .sort((a, b) => Number(a) - Number(b))
                 .map((weight, index) => (
                   <option key={index} value={weight}>
                     {weight}
