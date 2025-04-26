@@ -5,12 +5,17 @@ import Cookies from 'js-cookie';  // You'll need to npm install js-cookie
 const Tutorial = ({ onClose }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Check for skip preference on mount
+  // Check for skip preference only on initial mount
   useEffect(() => {
-    const hasSkipped = Cookies.get('skipTutorial');
-    if (hasSkipped === 'true') {
-      onClose();
+    // Only check cookie if this is the initial page load
+    if (!localStorage.getItem('tutorialManuallyOpened')) {
+      const hasSkipped = Cookies.get('skipTutorial');
+      if (hasSkipped === 'true') {
+        onClose();
+      }
     }
+    // Clear the flag when tutorial closes
+    return () => localStorage.removeItem('tutorialManuallyOpened');
   }, [onClose]);
 
   const handleSkip = () => {
@@ -73,7 +78,7 @@ const Tutorial = ({ onClose }) => {
         vertical: 'rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 77.5%, rgba(0, 0, 0, 0) 77.5%, rgba(0, 0, 0, 0) 100%'
       },
       5: { // Techniques
-        horizontal: 'rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 33.333%, rgba(0, 0, 0, 0) 33.333%, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 1) 55%, rgba(0, 0, 0, 0) 66.666%, rgba(0, 0, 0, 1) 66.666%, rgba(0, 0, 0, 1) 100%',
+        horizontal: 'rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 33.333%, rgba(0, 0, 0, 0) 33.333%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 66.666%, rgba(0, 0, 0, 1) 66.666%, rgba(0, 0, 0, 1) 100%',
         vertical: 'rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0) 80px, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 1) 75%'
       },
       6: { // Login/Register
@@ -248,13 +253,17 @@ return (
             ...loginStyles.loginContainer,
             position: 'fixed',
             ...(currentStep === 2 ? {
-                transform: 'translate(15%, 50%)'
+                top: '40%',
+                left: '9%',
+                transform: 'translate(-15%, -50%)'
             } : currentStep === 4 ? {
                 top: '40%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)'
             } : currentStep === 5 ? {
-                transform: 'translate(15%, 20%)',
+                top: '45%',
+                left: '9%',
+                transform: 'translate(-15%, -50%)'
             } : {
                 top: '50%',
                 left: '50%',

@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { register, login, attemptLoginWithToken } from '.';
 import { loginStyles } from './Styles/LoginStyles';
+import Tutorial from './Tutorial';
+import Cookies from 'js-cookie';
 
 export const Login = ({ setAuth, currentUser, setCurrentUser }) => {
   const [username, setUsername] = useState('');
@@ -9,7 +11,7 @@ export const Login = ({ setAuth, currentUser, setCurrentUser }) => {
   const [isLoginVisible, setIsLoginVisible] = useState(false);
   const [isRegisterVisible, setIsRegisterVisible] = useState(false);
   const [error, setError] = useState('');
-  const [isSettingsVisible, setIsSettingsVisible] = useState(false);
+  const [showTutorial, setShowTutorial] = useState(false);
 
   useEffect(() => {
     attemptLoginWithToken(setAuth);
@@ -87,82 +89,75 @@ export const Login = ({ setAuth, currentUser, setCurrentUser }) => {
     clearInputs();
   };
 
+  const HelpButton = () => (
+    <button
+      onClick={() => {
+        Cookies.remove('skipTutorial');
+        localStorage.setItem('tutorialManuallyOpened', 'true');
+        setShowTutorial(true);
+      }}
+      style={{
+        ...loginStyles.loginButton,
+        width: '36px',
+        height: '32px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: '1.2rem'
+      }}
+    >
+      ?
+    </button>
+  );
+
   // Show username and logout option when logged in
   if (currentUser) {
     return (
       <>
-      <div style={{
-        ...loginStyles.loginButtonContainer,
-        flexDirection: 'row',
-        gap: '10px',
-        alignItems: 'center'
-      }}>
-        <button
-        onClick={() => setIsSettingsVisible(true)}
-        style={{
-          ...loginStyles.loginButton,
-          width: '36px',
-          height: '32px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '1.2rem'
-        }}
-        >
-        ⚙
-        </button>
-        <button
-        style={{...loginStyles.loginButton, cursor: 'default'}}
-        >
-        {currentUser}
-        </button>
-        <button
-        onClick={handleLogout}
-        style={loginStyles.logoutButton}
-        >
-        Logout
-        </button>
-      </div>
-
-      {/* Settings Modal */}
-      {isSettingsVisible && (
-        <div style={loginStyles.loginOverlay}>
-        <div style={loginStyles.loginContainer}>
+        <div style={{
+          ...loginStyles.loginButtonContainer,
+          flexDirection: 'row',
+          gap: '10px',
+          alignItems: 'center'
+        }}>
+          <HelpButton />
           <button
-          onClick={() => setIsSettingsVisible(false)}
-          style={{
-            ...loginStyles.closeButton,
-            position: 'absolute',
-            top: '10px',
-            right: '10px',
-            background: 'transparent',
-            border: 'none',
-            fontSize: '1.5rem',
-            color: 'white',
-            cursor: 'pointer',
-          }}
+            style={{...loginStyles.loginButton, cursor: 'default'}}
           >
-          &times;
+            {currentUser}
           </button>
-          <h2 style={{ color: 'white', margin: 0, textAlign: 'center' }}>
-          Settings
-          </h2>
+          <button
+            onClick={handleLogout}
+            style={loginStyles.logoutButton}
+          >
+            Logout
+          </button>
         </div>
-        </div>
-      )}
+        {showTutorial && (
+          <Tutorial onClose={() => setShowTutorial(false)} />
+        )}
       </>
     );
   }
 
   if (!isLoginVisible && !isRegisterVisible) {
     return (
-      <div style={loginStyles.loginButtonContainer}>
+      <div style={{
+        ...loginStyles.loginButtonContainer,
+        flexDirection: 'row',
+        gap: '10px',
+        alignItems: 'center'
+      }}>
+        <HelpButton />
         <button
           onClick={() => setIsLoginVisible(true)}
           style={loginStyles.loginButton}
         >
           Login / Register
         </button>
+        {showTutorial && (
+          <Tutorial onClose={() => setShowTutorial(false)} />
+        )}
       </div>
     );
   }
