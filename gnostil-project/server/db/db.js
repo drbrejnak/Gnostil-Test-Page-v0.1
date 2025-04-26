@@ -23,7 +23,6 @@ const fetchManeuver = async(id)=> {
 };
 
 const fetchDeck = async(deck_id, user_id)=> {
-  // First verify character ownership
   const ownershipSQL = `
     SELECT 1 FROM characters
     WHERE deck_id = $1 AND user_id = $2
@@ -36,7 +35,6 @@ const fetchDeck = async(deck_id, user_id)=> {
     throw error;
   }
 
-  // If ownership verified, proceed with fetch
   const SQL = `
     SELECT maneuver_id, tech_id
     FROM character_deck
@@ -52,10 +50,8 @@ const fetchDeck = async(deck_id, user_id)=> {
 const fetchDeckManeuvers = async({maneuverIds = [], techIds = []})=> {
   let results = [];
 
-  // Handle empty deck case
   if (!maneuverIds.length && !techIds.length) return [];
 
-  // Fetch maneuvers if any exist
   if (maneuverIds && maneuverIds.length) {
     const maneuversSQL = `
       SELECT *, false as is_technique
@@ -66,7 +62,6 @@ const fetchDeckManeuvers = async({maneuverIds = [], techIds = []})=> {
     results = [...results, ...maneuverResponse.rows];
   }
 
-  // Fetch techniques if any exist
   if (techIds && techIds.length) {
     const techniquesSQL = `
       SELECT
@@ -142,10 +137,6 @@ const fetchHand = async (hand_id) => {
   }));
 };
 
-// (async () => {
-//   await fetchDeckManeuvers(await fetchDeck('161063af-ca6e-4701-a28c-4103753def14'));
-// })();
-
 const addToDeck = async({maneuver_id, tech_id, deck_id})=> {
   const SQL = `
     INSERT INTO character_deck(maneuver_id, tech_id, deck_id)
@@ -160,15 +151,10 @@ const addToDeck = async({maneuver_id, tech_id, deck_id})=> {
   return response.rows[0];
 }
 
-// addToDeck({maneuver_id: '7', deck_id: '1eea3a98-4345-4efc-9f35-6ffb888d95de'});
-// addToDeck({maneuver_id: '9', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
-// addToDeck({maneuver_id: '102', deck_id: '161063af-ca6e-4701-a28c-4103753def14'});
-
 const removeFromDeck = async({maneuver_id, tech_id, deck_id, is_technique})=> {
   try {
     await client.query('BEGIN');
 
-    // Remove from deck
     const SQL = `
       DELETE FROM character_deck
       WHERE (maneuver_id = $1 OR tech_id = $2) AND deck_id = $3
@@ -180,7 +166,6 @@ const removeFromDeck = async({maneuver_id, tech_id, deck_id, is_technique})=> {
       deck_id
     ]);
 
-    // If it's a technique, also remove from techniques table
     if (is_technique && tech_id) {
       await removeFromTechniques({
         tech_id: tech_id,
@@ -334,7 +319,6 @@ const updateCardsInHand = async ({ hand_id, cards }) => {
     for (const card of cards) {
       console.log("Processing card:", card);
 
-      // Different query based on card type
       const SQL = card.discipline === "Technique" ? `
         UPDATE character_hand
         SET position = $1
@@ -374,7 +358,7 @@ const createUser = async({ username, password })=> {
     const response = await client.query(SQL, [uuid.v4(), username, await bcrypt.hash(password, 5)]);
     return response.rows[0];
   } catch (error) {
-    if (error.code === '23505') { // PostgreSQL unique violation error code
+    if (error.code === '23505') {
       const customError = new Error('Username already exists. Please try again.');
       customError.status = 400;
       throw customError;
@@ -383,11 +367,9 @@ const createUser = async({ username, password })=> {
   }
 };
 
-// createUser({ username: 'test', password: 'test' });
 
 const createCharacter = async({ user_id, char_name })=> {
 
-  // First check if name already exists for this user
   const checkSQL = `
     SELECT * FROM characters
     WHERE user_id = $1 AND char_name = $2
@@ -407,13 +389,10 @@ const createCharacter = async({ user_id, char_name })=> {
   return response.rows[0];
 };
 
-// createCharacter({ user_id: '0127b82b-7603-493a-8ca1-f79cd9723b71' });
-// createCharacter({ user_id: '0127b82b-7603-493a-8ca1-f79cd9723b71', char_name: "test2" });
 
 
 const deleteCharacter = async({ id })=> {
   try {
-    // First, get the deck_id and hand_id for this character
     const getIdsSQL = `
       SELECT deck_id, hand_id FROM characters WHERE id = $1
     `;
@@ -422,7 +401,6 @@ const deleteCharacter = async({ id })=> {
     if (idsResult.rows.length > 0) {
       const { deck_id, hand_id } = idsResult.rows[0];
 
-      // Delete records from character_deck if they exist
       if (deck_id) {
         const deleteDeckSQL = `
           DELETE FROM character_deck WHERE deck_id = $1
@@ -430,7 +408,6 @@ const deleteCharacter = async({ id })=> {
         await client.query(deleteDeckSQL, [deck_id]);
       }
 
-      // Delete records from character_hand if they exist
       if (hand_id) {
         const deleteHandSQL = `
           DELETE FROM character_hand WHERE hand_id = $1
@@ -439,7 +416,6 @@ const deleteCharacter = async({ id })=> {
       }
     }
 
-    // Finally, delete the character
     const deleteCharSQL = `
       DELETE FROM characters WHERE id = $1
     `;
@@ -450,10 +426,8 @@ const deleteCharacter = async({ id })=> {
   }
 };
 
-// deleteCharacter({id: '38d23ae9-9af6-4e2a-ad11-dbbfb9c46a9a'})
 
 const editCharName = async({ id, char_name, user_id })=> {
-  // First check if name already exists for this user
   const checkSQL = `
     SELECT * FROM characters
     WHERE user_id = $1 AND char_name = $2 AND id != $3

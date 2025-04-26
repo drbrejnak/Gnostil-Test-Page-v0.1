@@ -18,32 +18,27 @@ export default function Hand({
   setLocalDeck,
   setSelectedManeuver
 }) {
-  const [isDragging, setIsDragging] = useState(false); // State to track if a card is being dragged over the hand area
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     if (auth.id && char.id) {
-      // Fetch the cards from the database for authenticated users
       fetchCharHand(auth, char, setCards);
     } else {
-      // Clear the database-backed cards for unauthenticated users
       setCards([]);
     }
   }, [auth, char]);
 
   const handleDrop = async (data, position) => {
-    // Don't accept drops if logged in without character
     if (auth.id && !char.id) return;
 
     setIsDragging(false);
 
-    // Check for 9 card limit
     const currentCards = auth.id ? cards : localCards;
     if (currentCards.length >= 9) return;
 
     if (auth.id) {
       const isTechnique = data.discipline === "Technique";
 
-      // Single operation to add to hand
       const success = await addToHand(
         auth,
         char,
@@ -53,7 +48,6 @@ export default function Hand({
         isTechnique
       );
 
-      // Only add to deck if it's not a technique and add was successful
       if (success && !isTechnique) {
         await addToDeck(
           auth,
@@ -64,19 +58,15 @@ export default function Hand({
         );
       }
 
-      // After successful add, update positions
       if (success) {
         const updatedCards = [...cards];
-        // Check if card already exists and remove it
         const existingIndex = updatedCards.findIndex(
           (card) => card.id === data.id
         );
         if (existingIndex !== -1) {
           updatedCards.splice(existingIndex, 1);
         }
-        // Insert at new position
         updatedCards.splice(position, 0, data);
-        // Update positions
         const newCards = updatedCards.map((card, index) => ({
           ...card,
           position: index,
@@ -85,7 +75,6 @@ export default function Hand({
       }
     } else {
       setLocalCards((prevCards) => {
-        // Check if adding would exceed 9 cards
         if (prevCards.length >= 9) {
           return prevCards;
         }
@@ -131,14 +120,13 @@ export default function Hand({
         alignItems: "center",
       }}
       onDragOver={(e) => {
-        if (auth.id && !char.id) return; // Prevent drag over if no character
+        if (auth.id && !char.id) return;
         e.preventDefault();
         if (e.dataTransfer.types.includes("application/x-maneuver")) {
           setIsDragging(true);
         }
       }}
       onDragLeave={(e) => {
-        // Only trigger if leaving the main container
         if (!e.currentTarget.contains(e.relatedTarget)) {
           setIsDragging(false);
         }
@@ -176,7 +164,7 @@ export default function Hand({
               index={index}
               card={card}
               setActiveCard={setActiveCard}
-              setSelectedManeuver={setSelectedManeuver}  // Pass to HandCard
+              setSelectedManeuver={setSelectedManeuver}  
             />
             <DropArea
               index={index}

@@ -166,7 +166,6 @@ export const deleteCharacter = async(auth, char, setCharacters)=> {
 };
 
 export const fetchCharDeck = async (auth, char, setDeck) => {
-    // First verify this character belongs to the logged-in user
     if (auth.id !== char.user_id) {
         console.error('Unauthorized access attempt');
         setDeck([]);
@@ -220,7 +219,7 @@ export const removeFromDeck = async (auth, char, setDeck, id, isTechnique) => {
         maneuver_id: isTechnique ? null : id,
         tech_id: isTechnique ? id : null,
         deck_id,
-        is_technique: isTechnique // Add this line to send the flag
+        is_technique: isTechnique
       }),
     });
 
@@ -254,7 +253,7 @@ export const addToHand = async (auth, char, setCards, id, position, isTechnique 
         authorization: window.localStorage.getItem('token'),
       },
       body: JSON.stringify({
-        id: id,  // Pass the actual ID
+        id: id,
         maneuver_id: isTechnique ? null : id,
         tech_id: isTechnique ? id : null,
         deck_id,
@@ -331,7 +330,6 @@ export const removeFromHand = async (auth, char, setCards, id, isTechnique = fal
 
 export const addToTechniques = async (auth, char, setDeck, technique) => {
   try {
-    // Create technique and add to deck in one request
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}/techniques`, {
       method: 'POST',
       headers: {
@@ -345,10 +343,8 @@ export const addToTechniques = async (auth, char, setDeck, technique) => {
       throw new Error('Failed to add technique');
     }
 
-    // Get the created technique data
     const createdTechnique = await response.json();
 
-    // Refresh the deck
     await fetchCharDeck(auth, char, setDeck);
     return true;
   } catch (error) {

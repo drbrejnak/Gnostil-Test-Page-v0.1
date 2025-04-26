@@ -12,8 +12,8 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
   const [filterYield, setFilterYield] = useState("");
   const [filterWeight, setFilterWeight] = useState("");
   const [filterParadigm, setFilterParadigm] = useState("");
-  const [showFilters, setShowFilters] = useState(false); // State to toggle filters
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: null }); // Sorting state
+  const [showFilters, setShowFilters] = useState(false);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
   const [isDragging, setIsDragging] = useState(false);
 
   const getManeuvers = async () => {
@@ -60,7 +60,6 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
       let aValue = a[sortConfig.key];
       let bValue = b[sortConfig.key];
 
-      // Handle numeric sorting for toll and yield
       if (sortConfig.key === 'toll' || sortConfig.key === 'yield') {
         aValue = aValue !== null ? Number(aValue) : -Infinity;
         bValue = bValue !== null ? Number(bValue) : -Infinity;
@@ -78,14 +77,13 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
   const handleSort = (key) => {
     setSortConfig((prevConfig) => {
       if (prevConfig.key === key) {
-        // Cycle through sorting states: ascending → descending → original
         if (prevConfig.direction === "ascending") {
           return { key, direction: "descending" };
         } else if (prevConfig.direction === "descending") {
-          return { key: null, direction: null }; // Original order
+          return { key: null, direction: null };
         }
       }
-      return { key, direction: "ascending" }; // Default to ascending
+      return { key, direction: "ascending" };
     });
   };
 
@@ -95,7 +93,7 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
       if (sortConfig.direction === "ascending") return " ▲";
       if (sortConfig.direction === "descending") return " ▼";
     }
-    return ""; // No arrow for original order
+    return "";
   };
 
   const handleRowClick = (maneuver) => {
@@ -108,7 +106,7 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
     left: 0,
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(255, 99, 71, 0.2)", // Semi-transparent red to indicate discard
+    backgroundColor: "rgba(255, 99, 71, 0.2)",
     display: isDragging ? "flex" : "none",
     justifyContent: "center",
     alignItems: "center",
@@ -122,7 +120,6 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
     <div
       style={tableStyles.container}
       onDragOver={(e) => {
-        // Only accept cards from deck or hand, but don't try to parse data yet
         if (e.dataTransfer.types.includes("application/x-card") ||
             e.dataTransfer.types.includes("application/x-maneuver")) {
           e.preventDefault();
@@ -141,7 +138,6 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
         setIsDragging(false);
 
         try {
-            // If from hand (x-card)
             if (e.dataTransfer.types.includes("application/x-card")) {
                 const card = JSON.parse(e.dataTransfer.getData("application/x-card"));
                 if (auth?.id && char?.id) {
@@ -156,11 +152,9 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
                     setLocalCards(prevCards => prevCards.filter(c => c.id !== card.id));
                 }
             }
-            // If from deck (x-maneuver)
             else if (e.dataTransfer.types.includes("application/x-maneuver")) {
                 const maneuver = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
                 if (auth?.id && char?.id) {
-                    // Remove from deck first
                     const success = await removeFromDeck(
                         auth,
                         char,
@@ -169,8 +163,6 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
                         maneuver.discipline === "Technique"
                     );
 
-                    // If it's a technique and was successfully removed from deck,
-                    // also check and remove from hand if present
                     if (success) {
                         const isInHand = cards.some(card => card.id === maneuver.id);
                         if (isInHand) {
@@ -284,8 +276,8 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
             >
               <option value="">All Tolls</option>
               {[...new Set(compendium.map((maneuver) => maneuver.toll))]
-                .filter(toll => toll !== null)  // Remove null values
-                .sort((a, b) => a - b)  // Numeric sort
+                .filter(toll => toll !== null)
+                .sort((a, b) => a - b)
                 .map((toll, index) => (
                   <option key={index} value={toll}>
                     {toll}
@@ -300,8 +292,8 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
             >
               <option value="">All Yields</option>
               {[...new Set(compendium.map((maneuver) => maneuver.yield))]
-                .filter(yieldValue => yieldValue !== null)  // Remove null values
-                .sort((a, b) => a - b)  // Numeric sort
+                .filter(yieldValue => yieldValue !== null)
+                .sort((a, b) => a - b)
                 .map((yieldValue, index) => (
                   <option key={index} value={yieldValue}>
                     {yieldValue}
@@ -316,8 +308,8 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
             >
               <option value="">All Weights</option>
               {[...new Set(compendium.map((maneuver) => maneuver.weight))]
-                .filter(yieldValue => yieldValue !== null)  // Remove null values
-                .sort((a, b) => Number(a) - Number(b))  // Numerical sort
+                .filter(yieldValue => yieldValue !== null)
+                .sort((a, b) => Number(a) - Number(b))  
                 .map((weight, index) => (
                   <option key={index} value={weight}>
                     {weight}

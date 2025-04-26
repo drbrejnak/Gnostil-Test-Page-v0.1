@@ -7,7 +7,7 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
   const cardStyle = {
     minWidth: "90px",
     maxWidth: "90px",
-    height: "calc(100% - 20px)", // Leave 10px padding top and bottom
+    height: "calc(100% - 20px)",
     backgroundColor: "#1a1a1a",
     overflow: "hidden",
     border: "1px solid #333",
@@ -30,20 +30,20 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
 
   const maneuverNameStyle = {
       fontSize: "16px",
-      fontWeight: "bold",         // Make text more readable
-      marginBottom: "2px",        // Reduced margin
+      fontWeight: "bold",
+      marginBottom: "2px",
       textAlign: "center",
-      color: "white",             // Match theme
+      color: "white",
       padding: "2px 4px",
       width: "100%",
       whiteSpace: "nowrap",
       overflow: "hidden",
-      textOverflow: "ellipsis",   // Handle long names gracefully
+      textOverflow: "ellipsis",
   };
 
   const svgContainerStyle = {
       width: "100%",
-      height: "calc(100% - 24px)", // Account for name height and padding
+      height: "calc(100% - 24px)",
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
@@ -51,7 +51,7 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
       backgroundColor: "black",
       borderRadius: "4px",
       position: "relative",
-      aspectRatio: "1 / 1",  // Force square container
+      aspectRatio: "1 / 1",
   };
 
     const renderCombatNarrativeSVG = () => {
@@ -69,7 +69,7 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
           case "Infamous":
             return <Infamous animate={0} />;
           default:
-            return null; // Return null if no matching type is found
+            return null;
         }
     };
 
@@ -94,14 +94,12 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
           case "Reaction":
             return <Reaction animate={0} />;
           default:
-            return null; // Return null if no matching type is found
+            return null;
         }
     };
 
     const renderDisciplineSVG = () => {
-        // If it's a technique, parse and render all original disciplines
         if (card.discipline === "Technique" && card.original_disciplines) {
-            // Parse the JSON string to get the array
             const disciplines = JSON.parse(card.original_disciplines);
 
             return disciplines.map(discipline => {
@@ -131,7 +129,6 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
             });
         }
 
-        // For regular maneuvers, use existing switch case
         switch (card.discipline) {
             case "Aiontropier":
                 return <Aiontropier animate={0} />;

@@ -1,31 +1,25 @@
 import React, { useState, useEffect } from "react";
 import "../src/App.css";
 
-// Import all SVG components
 import { Attack, Aura, Combat, Heavy, Honorable, Inciting, Infamous, Light, Modify, Narrative, Reaction, Rings } from "../Maneuver_Properties/PropertyIndex.js";
 import { Aiontropier, Elementalist, Euclidinst, FleethandJaeger, FleshShaper, Gloommantle, GeistCalled, Ironhanded, Metapsychiral, NoblesNail, ParagonPopuli, Shieldbearer, WildWhisperer, YieldlessGoliath } from '../Maneuver_Disciplines/DisciplineIndex.js';
 
-// Export the getActiveProperties function
 export const getActiveProperties = (hexagonStates) => {
   const properties = new Set();
   const maneuvers = Object.values(hexagonStates).filter(m => m !== null);
 
   if (maneuvers.length > 0) {
-    // Always add Combat type when maneuvers exist
     properties.add("Combat");
 
-    // Handle disciplines - add all of them
     maneuvers.forEach(maneuver => {
       if (maneuver.discipline) {
         properties.add(maneuver.discipline);
       }
     });
 
-    // Handle maneuver types based on hierarchy
     const typeHierarchy = ["Attack", "Inciting", "Aura", "Modify", "Reaction"];
     let highestPriorityType = null;
 
-    // Check each maneuver's type against the hierarchy
     maneuvers.forEach(maneuver => {
       if (maneuver.maneuver_type) {
         const currentIndex = typeHierarchy.indexOf(maneuver.maneuver_type);
@@ -37,12 +31,10 @@ export const getActiveProperties = (hexagonStates) => {
       }
     });
 
-    // Only add the highest priority type found
     if (highestPriorityType) {
       properties.add(highestPriorityType);
     }
 
-    // Handle weight - count occurrences
     const weightCounts = {
       Light: 0,
       Heavy: 0
@@ -59,7 +51,6 @@ export const getActiveProperties = (hexagonStates) => {
       properties.add("Light");
     }
 
-    // Handle paradigm - count occurrences
     const paradigmCounts = {
       Honorable: 0,
       Infamous: 0
@@ -132,104 +123,91 @@ const ExaminationArea = ({ setSelectedManeuver, hexagonStates }) => {
     { name: "Aiontropier", Component: Aiontropier },
   ];
 
-  // State for Group 1
   const [currentIndex1, setCurrentIndex1] = useState(0);
   const [fade1, setFade1] = useState(true);
 
-  // State for Group 2
   const [currentIndex2, setCurrentIndex2] = useState(0);
   const [fade2, setFade2] = useState(true);
 
-  // State for Group 3
   const [currentIndex3, setCurrentIndex3] = useState(0);
   const [fade3, setFade3] = useState(true);
 
-  // State for Group 4
   const [currentIndex4, setCurrentIndex4] = useState(0);
   const [fade4, setFade4] = useState(true);
 
-  // State for Group 5
   const [currentIndex5, setCurrentIndex5] = useState(0);
   const [fade5, setFade5] = useState(true);
 
   const [isDragging, setIsDragging] = useState(false);
 
-  // Cycle through Group 1 SVGs
   useEffect(() => {
     const interval1 = setInterval(() => {
-      setFade1(false); // Start fade-out
+      setFade1(false);
       setTimeout(() => {
-        setCurrentIndex1((prevIndex) => (prevIndex + 1) % svgGroup1.length); // Move to the next SVG
-        setFade1(true); // Start fade-in
-      }, 500); // Match the fade-out duration
-    }, 3000); // Change SVG every 3 seconds
+        setCurrentIndex1((prevIndex) => (prevIndex + 1) % svgGroup1.length);
+        setFade1(true);
+      }, 500);
+    }, 3000);
 
-    return () => clearInterval(interval1); // Clean up interval on unmount
+    return () => clearInterval(interval1);
   }, [svgGroup1.length]);
 
-  // Cycle through Group 2 SVGs
   useEffect(() => {
     const interval2 = setInterval(() => {
-      setFade2(false); // Start fade-out
+      setFade2(false);
       setTimeout(() => {
-        setCurrentIndex2((prevIndex) => (prevIndex + 1) % svgGroup2.length); // Move to the next SVG
-        setFade2(true); // Start fade-in
-      }, 500); // Match the fade-out duration
-    }, 5000); // Change SVG every 5 seconds
+        setCurrentIndex2((prevIndex) => (prevIndex + 1) % svgGroup2.length);
+        setFade2(true);
+      }, 500);
+    }, 5000);
 
-    return () => clearInterval(interval2); // Clean up interval on unmount
+    return () => clearInterval(interval2);
   }, [svgGroup2.length]);
 
-  // Cycle through Group 3 SVGs
   useEffect(() => {
     const interval3 = setInterval(() => {
-      setFade3(false); // Start fade-out
+      setFade3(false);
       setTimeout(() => {
-        setCurrentIndex3((prevIndex) => (prevIndex + 1) % svgGroup3.length); // Move to the next SVG
-        setFade3(true); // Start fade-in
-      }, 500); // Match the fade-out duration
-    }, 4000); // Change SVG every 4 seconds
+        setCurrentIndex3((prevIndex) => (prevIndex + 1) % svgGroup3.length);
+        setFade3(true);
+      }, 500);
+    }, 4000);
 
-    return () => clearInterval(interval3); // Clean up interval on unmount
+    return () => clearInterval(interval3);
   }, [svgGroup3.length]);
 
-  // Cycle through Group 4 SVGs
   useEffect(() => {
     const interval4 = setInterval(() => {
-      setFade4(false); // Start fade-out
+      setFade4(false);
       setTimeout(() => {
-        setCurrentIndex4((prevIndex) => (prevIndex + 1) % svgGroup4.length); // Move to the next SVG
-        setFade4(true); // Start fade-in
-      }, 500); // Match the fade-out duration
-    }, 6000); // Change SVG every 6 seconds
+        setCurrentIndex4((prevIndex) => (prevIndex + 1) % svgGroup4.length);
+        setFade4(true);
+      }, 500);
+    }, 6000);
 
-    return () => clearInterval(interval4); // Clean up interval on unmount
+    return () => clearInterval(interval4);
   }, [svgGroup4.length]);
 
-  // Cycle through Group 5 SVGs
   useEffect(() => {
     const interval5 = setInterval(() => {
-      setFade5(false); // Start fade-out
+      setFade5(false);
       setTimeout(() => {
-        setCurrentIndex5((prevIndex) => (prevIndex + 1) % svgGroup5.length); // Move to the next SVG
-        setFade5(true); // Start fade-in
-      }, 500); // Match the fade-out duration
-    }, 3000); // Change SVG every 3 seconds
+        setCurrentIndex5((prevIndex) => (prevIndex + 1) % svgGroup5.length);
+        setFade5(true);
+      }, 500);
+    }, 3000);
 
-    return () => clearInterval(interval5); // Clean up interval on unmount
+    return () => clearInterval(interval5);
   }, [svgGroup5.length]);
 
-  const { Component: SelectedSVG0 } = svgGroup0[0]; // Always show Rings
-  const { Component: SelectedSVG5 } = svgGroup5[currentIndex5]; // Get current discipline SVG
+  const { Component: SelectedSVG0 } = svgGroup0[0];
+  const { Component: SelectedSVG5 } = svgGroup5[currentIndex5];
 
-  // Determine if we should show cycling SVGs or filtered ones
   const hasManeuvers = Object.values(hexagonStates).some(state => state !== null);
   const activeProperties = hasManeuvers ? getActiveProperties(hexagonStates) : null;
 
-  // Modified render logic for each group
   const renderSVG = (group, currentIndex, fade) => {
     if (!hasManeuvers) {
-      // Original cycling behavior
       const { Component } = group[currentIndex];
       return Component && (
         <div style={{
@@ -240,7 +218,6 @@ const ExaminationArea = ({ setSelectedManeuver, hexagonStates }) => {
         </div>
       );
     } else {
-      // Show only SVGs that match active properties
       return group.map(({ name, Component }) => {
         if (activeProperties.has(name)) {
           return (

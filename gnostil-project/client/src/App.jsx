@@ -57,14 +57,13 @@ function App() {
 
   const handleConfirmTechnique = () => {
     const maneuvers = Object.values(hexagonStates).filter(m => m !== null);
-    const properties = getActiveProperties(hexagonStates); // Pass hexagonStates as argument
+    const properties = getActiveProperties(hexagonStates);
 
     setTechnique({
       activeProperties: properties,
       maneuvers: maneuvers
     });
 
-    // Reset hexagon states
     setHexagonStates({
       hex1: null,
       hex2: null,
@@ -344,7 +343,7 @@ function App() {
         bottom: 5,
         left: 0,
         right: 0,
-        height: '22.5%', // Fixed height for Hand component
+        height: '22.5%',
       }}>
         <Hand
           auth={auth}
@@ -358,7 +357,7 @@ function App() {
           localCards={localCards}
           setLocalCards={setLocalCards}
           setActiveCard={setActiveCard}
-          setSelectedManeuver={setSelectedManeuver} // Add this prop
+          setSelectedManeuver={setSelectedManeuver} 
         />
       </div>
     </>

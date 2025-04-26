@@ -47,7 +47,7 @@ export const Login = ({ setAuth, currentUser, setCurrentUser }) => {
 
   const handleSubmitRegister = async (ev) => {
     ev.preventDefault();
-    setError(''); // Clear any existing errors
+    setError('');
 
     // Password validation
     if (!validatePassword(password)) {
@@ -62,7 +62,6 @@ export const Login = ({ setAuth, currentUser, setCurrentUser }) => {
 
     const result = await register(setAuth, { username, password });
     if (result.success) {
-      // After successful registration, attempt login
       const loginSuccess = await login(setAuth, { username, password });
       if (loginSuccess) {
         setCurrentUser(username);

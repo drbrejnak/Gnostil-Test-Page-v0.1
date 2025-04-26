@@ -2,7 +2,6 @@ import React from 'react';
 import '../src/App.css';
 import { cardStyles } from './Styles/CardStyles';
 
-// Update Hexagon component
 const Hexagon = () => (
   <div style={{
     flex: '0 0 16px',
@@ -38,8 +37,8 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
         flexDirection: 'column'
       }),
       ...(maneuver?.description && {
-        flex: '1 1 50%', // Take up equal space when description exists
-        minHeight: 0 // Allow container to shrink
+        flex: '1 1 50%',
+        minHeight: 0
       })
     };
 
@@ -175,15 +174,15 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
-        gap: '5px' // Add spacing between sections
+        gap: '5px'
       }}>
         {renderAbility()}
 
         {maneuver?.description && (
           <div style={{
             ...cardStyles.wording,
-            flex: '1 1 50%', // Take up equal space with ability section
-            minHeight: 0, // Allow container to shrink
+            flex: '1 1 50%', 
+            minHeight: 0,
             display: 'flex',
             flexDirection: 'column'
           }}>

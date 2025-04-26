@@ -1,20 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { loginStyles } from './Styles/LoginStyles';
-import Cookies from 'js-cookie';  // You'll need to npm install js-cookie
+import Cookies from 'js-cookie';
 
 const Tutorial = ({ onClose }) => {
   const [currentStep, setCurrentStep] = useState(0);
 
-  // Check for skip preference only on initial mount
   useEffect(() => {
-    // Only check cookie if this is the initial page load
     if (!localStorage.getItem('tutorialManuallyOpened')) {
       const hasSkipped = Cookies.get('skipTutorial');
       if (hasSkipped === 'true') {
         onClose();
       }
     }
-    // Clear the flag when tutorial closes
     return () => localStorage.removeItem('tutorialManuallyOpened');
   }, [onClose]);
 
@@ -85,7 +82,7 @@ const Tutorial = ({ onClose }) => {
         horizontal: 'rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0) 100%',
         vertical: 'rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 80px, rgba(0, 0, 0, 1) 80px, rgba(0, 0, 0, 1) 100%'
       },
-      7: null // Full blur
+      7: null 
     };
 
     const maskConfig = maskConfigs[currentStep];

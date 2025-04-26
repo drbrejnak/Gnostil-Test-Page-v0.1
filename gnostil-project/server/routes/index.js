@@ -167,7 +167,6 @@ router.get('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, async(r
       error.status = 401;
       throw error;
     }
-    // Pass both deck_id and user_id to fetchDeck
     res.send(await fetchDeckManeuvers(await fetchDeck(req.params.deckId, req.params.userId)))
   } catch(err) {
     next(err);
@@ -200,7 +199,6 @@ router.delete('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, asyn
       throw error;
     }
 
-    // Remove from deck and potentially from techniques
     const result = await removeFromDeck({
       maneuver_id: req.body.maneuver_id,
       tech_id: req.body.tech_id,
@@ -285,7 +283,6 @@ router.delete('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isL
   }
 });
 
-// Create new route specifically for adding techniques
 router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId/techniques', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
@@ -294,7 +291,6 @@ router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId/techniq
       throw error;
     }
 
-    // First create the technique
     const technique = await addToTechniques({
       hand_id: req.params.handId,
       deck_id: req.params.deckId,
@@ -312,7 +308,6 @@ router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId/techniq
       og_disciplines: req.body.original_disciplines
     });
 
-    // Then add it to the deck
     await addToDeck({
       tech_id: technique.tech_id,
       deck_id: req.params.deckId

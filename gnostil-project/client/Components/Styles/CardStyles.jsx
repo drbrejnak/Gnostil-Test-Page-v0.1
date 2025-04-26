@@ -1,6 +1,6 @@
 export const cardStyles = {
     container: {
-        position: 'relative', // Change from absolute to relative
+        position: 'relative',
         backgroundColor: '#1a1a1a',
         borderRadius: '15px',
         color: 'white',
@@ -8,10 +8,10 @@ export const cardStyles = {
         padding: '15px',
         overflow: 'hidden',
         display: 'grid',
-        gridTemplateRows: 'auto auto 1fr 1fr', // Header, Properties, Description, Ability
+        gridTemplateRows: 'auto auto 1fr 1fr',
         gap: '5px',
-        height: '100%', // Take full height of parent container
-        width: '100%', // Take full width of parent container
+        height: '100%',
+        width: '100%',
         boxSizing: 'border-box',
     },
     header: {
@@ -19,47 +19,47 @@ export const cardStyles = {
         paddingBottom: '10px',
     },
     title: {
-        fontSize: '1.2rem', // Use rem instead of vw
+        fontSize: '1.2rem',
         fontWeight: 'bold',
         marginBottom: '5px',
     },
     subtitle: {
-        fontSize: '1rem', // Use rem instead of vw
+        fontSize: '1rem',
         color: '#888',
     },
     propertyGrid: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)', // Changed from 2 to 4 columns
+        gridTemplateColumns: 'repeat(4, 1fr)',
         gap: '8px',
-        padding: '8px 12px', // Reduced vertical padding
+        padding: '8px 12px',
         backgroundColor: '#252525',
         borderRadius: '8px',
         fontSize: '0.9rem',
         alignSelf: 'stretch',
-        minHeight: 'fit-content', // Ensure it only takes needed space
+        minHeight: 'fit-content',
     },
     property: {
         display: 'flex',
         flexDirection: 'column',
-        gap: '2px', // Reduced gap
-        alignItems: 'center', // Center align content
-        textAlign: 'center', // Center align text
+        gap: '2px',
+        alignItems: 'center',
+        textAlign: 'center',
     },
     propertyLabel: {
-        fontSize: '0.75rem', // Slightly smaller font
+        fontSize: '0.75rem',
         color: '#888',
-        textTransform: 'capitalize', // Capitalize property names
+        textTransform: 'capitalize',
     },
     propertyValue: {
-        fontSize: '0.85rem', // Slightly smaller font
+        fontSize: '0.85rem',
         color: '#fff',
-        fontWeight: '500', // Medium weight for better readability
+        fontWeight: '500',
     },
     wording: {
         padding: '12px',
         backgroundColor: '#252525',
         borderRadius: '8px',
-        fontSize: '0.8rem', // Use rem instead of vw
+        fontSize: '0.8rem', 
         overflow: 'auto',
         display: 'flex',
         flexDirection: 'column',

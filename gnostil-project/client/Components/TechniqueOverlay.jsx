@@ -8,7 +8,7 @@ const TechniqueOverlay = ({ selectedManeuver, hexagonStates, setHexagonStates, s
   const Hexagon = ({ style, hexId }) => {
     const [isDragOver, setIsDragOver] = useState(false);
     const hasManeuver = hexagonStates[hexId] !== null;
-    const canAcceptDrop = !auth.id || (auth.id && char.id); // Allow drops if not logged in or if char is selected
+    const canAcceptDrop = !auth.id || (auth.id && char.id);
 
     const handleDragOver = (e) => {
       e.preventDefault();
@@ -25,22 +25,18 @@ const TechniqueOverlay = ({ selectedManeuver, hexagonStates, setHexagonStates, s
       e.preventDefault();
       setIsDragOver(false);
 
-      // If hexagon has maneuver or user is logged in without character, do nothing
       if (hasManeuver || (auth.id && !char.id)) return;
 
-      // Try both data transfer types
       const maneuverData = e.dataTransfer.getData('application/x-maneuver') ||
                            e.dataTransfer.getData('application/x-card');
 
-      if (!maneuverData) return; // Exit if no valid data found
+      if (!maneuverData) return;
 
       try {
         const parsedData = JSON.parse(maneuverData);
 
-        // Check if the maneuver is a Technique
         if (parsedData.discipline === "Technique") return;
 
-        // Check if maneuver already exists in any hexagon
         const isManeuverUsed = Object.values(hexagonStates).some(
           state => state && state.id === parsedData.id
         );

@@ -4,11 +4,11 @@ import {motion} from "framer-motion"
 const ParagonPopuli = (props) => (
   <motion.svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 2000" preserveAspectRatio="xMinYMax meet" {...props}
   style={{
-    width: "100%", // Scale to fit the container width
-    height: "100%", // Scale to fit the container height
-    margin: 0, // Remove any default margins
-    padding: 0, // Remove any default padding
-    ...props.style, // Allow additional styles to be passed via props
+    width: "100%",
+    height: "100%",
+    margin: 0,
+    padding: 0,
+    ...props.style,
   }}>
     <motion.g>
       <title>{"Expression 1"}</title>

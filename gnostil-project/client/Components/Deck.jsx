@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { fetchCharDeck, removeFromDeck, addToDeck, addToHand, removeFromHand } from ".";
 import { tableStyles } from "./Styles/TableStyles";
 
-export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, setCards, localDeck, setLocalDeck, localCards, setLocalCards }) {; // Local deck state for unauthenticated users
+export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, setCards, localDeck, setLocalDeck, localCards, setLocalCards }) {;
   const [searchQuery, setSearchQuery] = useState("");
   const [filterDiscipline, setFilterDiscipline] = useState("");
   const [filterType, setFilterType] = useState("");
@@ -11,19 +11,17 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
   const [filterYield, setFilterYield] = useState("");
   const [filterWeight, setFilterWeight] = useState("");
   const [filterParadigm, setFilterParadigm] = useState("");
-  const [showFilters, setShowFilters] = useState(false); // State to toggle filters
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: null }); // Sorting state
-  const [isDragging, setIsDragging] = useState(false); // State to track if a card is being dragged over the deck area
+  const [showFilters, setShowFilters] = useState(false);
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: null });
+  const [isDragging, setIsDragging] = useState(false);
   const [checkedManeuvers, setCheckedManeuvers] = useState(new Set());
 
-  const deckToRender = auth.id ? deck : localDeck; // Use the appropriate deck based on authentication
+  const deckToRender = auth.id ? deck : localDeck;
 
   useEffect(() => {
     if (auth.id && char.id) {
-      // Fetch the deck from the database for authenticated users
       fetchCharDeck(auth, char, setDeck);
     } else {
-      // Clear the database-backed deck for unauthenticated users
       setDeck([]);
     }
   }, [auth, char]);
@@ -32,13 +30,11 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
     e.preventDefault();
     setIsDragging(false);
 
-    // Don't accept drops if logged in without character
     if (auth.id && !char.id) return;
 
     const data = JSON.parse(e.dataTransfer.getData("application/x-maneuver"));
 
     if (auth.id) {
-      // Only add to deck via DB
       await addToDeck(auth, char, setDeck, data.id);
     } else {
       setLocalDeck((prevDeck) => {
@@ -53,7 +49,6 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
   const handleRemove = async (maneuverId, maneuver) => {
     if (auth.id) {
         const isTechnique = maneuver.discipline === "Technique";
-        // Pass both the ID and whether it's a technique
         const success = await removeFromDeck(
             auth,
             char,
@@ -62,7 +57,6 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
             isTechnique
         );
         if (success) {
-            // Also remove from hand if present, passing technique flag
             await removeFromHand(
                 auth,
                 char,
@@ -72,7 +66,6 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
             );
         }
     } else {
-        // Local storage logic remains the same
         setLocalDeck((prevDeck) => prevDeck.filter((card) => card.id !== maneuverId));
         setLocalCards((prevCards) => prevCards.filter((card) => card.id !== maneuverId));
     }
@@ -92,7 +85,6 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
 
   const handleDeleteSelected = async () => {
     for (const maneuverId of checkedManeuvers) {
-        // Find the maneuver in the deck
         const maneuver = deckToRender.find(m => m.id === maneuverId);
         const isTechnique = maneuver?.discipline === "Technique";
 
@@ -122,7 +114,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
             );
         }
     }
-    setCheckedManeuvers(new Set()); // Clear selections after deletion
+    setCheckedManeuvers(new Set());
   };
 
   // Filtered and searched data
@@ -155,7 +147,6 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
       let aValue = a[sortConfig.key];
       let bValue = b[sortConfig.key];
 
-      // Handle numeric sorting for toll and yield
       if (sortConfig.key === 'toll' || sortConfig.key === 'yield') {
         aValue = aValue !== null ? Number(aValue) : -Infinity;
         bValue = bValue !== null ? Number(bValue) : -Infinity;
@@ -173,14 +164,13 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
   const handleSort = (key) => {
     setSortConfig((prevConfig) => {
       if (prevConfig.key === key) {
-        // Cycle through sorting states: ascending → descending → original
         if (prevConfig.direction === "ascending") {
           return { key, direction: "descending" };
         } else if (prevConfig.direction === "descending") {
-          return { key: null, direction: null }; // Original order
+          return { key: null, direction: null };
         }
       }
-      return { key, direction: "ascending" }; // Default to ascending
+      return { key, direction: "ascending" };
     });
   };
 
@@ -188,21 +178,20 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
     setSelectedManeuver(maneuver);
   };
 
-  // Get the arrow icon for the current sort state
   const getSortArrow = (key) => {
     if (sortConfig.key === key) {
       if (sortConfig.direction === "ascending") return " ▲";
       if (sortConfig.direction === "descending") return " ▼";
     }
-    return ""; // No arrow for original order
+    return "";
   };
 
   const dropAreaStyle = {
     position: 'absolute',
     top: 0,
     left: 0,
-    right: 0, // Use right instead of width
-    bottom: 0, // Use bottom instead of height
+    right: 0,
+    bottom: 0,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     display: isDragging ? "flex" : "none",
     justifyContent: "center",
@@ -220,7 +209,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
         cursor: auth.id && !char.id ? 'not-allowed' : 'default'
       }}
       onDragOver={(e) => {
-        if (auth.id && !char.id) return; // Prevent drag over if no character
+        if (auth.id && !char.id) return;
         if (e.dataTransfer.types.includes("application/x-maneuver")) {
           e.preventDefault();
           e.stopPropagation();
@@ -228,7 +217,6 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
         }
       }}
       onDragLeave={(e) => {
-        // Only trigger if leaving the main container
         if (!e.currentTarget.contains(e.relatedTarget)) {
           setIsDragging(false);
         }
@@ -339,7 +327,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
               <option value="">All Tolls</option>
               {[...new Set(filteredDeck.map((maneuver) => maneuver.toll))]
                 .filter(toll => toll !== null)
-                .sort((a, b) => a - b)  // Numeric sort
+                .sort((a, b) => a - b)
                 .map((toll, index) => (
                   <option key={index} value={toll}>
                     {toll}
@@ -356,7 +344,7 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
               <option value="">All Yields</option>
               {[...new Set(filteredDeck.map((maneuver) => maneuver.yield))]
                 .filter(yieldValue => yieldValue !== null)
-                .sort((a, b) => a - b)  // Numeric sort
+                .sort((a, b) => a - b)
                 .map((yieldValue, index) => (
                   <option key={index} value={yieldValue}>
                     {yieldValue}
@@ -372,8 +360,8 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
             >
               <option value="">All Weights</option>
               {[...new Set(filteredDeck.map((maneuver) => maneuver.weight))]
-                .filter(yieldValue => yieldValue !== null)  // Remove null values
-                .sort((a, b) => Number(a) - Number(b))  // Numerical sort
+                .filter(yieldValue => yieldValue !== null)
+                .sort((a, b) => Number(a) - Number(b))  
                 .map((weight, index) => (
                   <option key={index} value={weight}>
                     {weight}

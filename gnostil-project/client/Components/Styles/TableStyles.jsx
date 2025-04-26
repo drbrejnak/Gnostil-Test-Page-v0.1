@@ -15,7 +15,7 @@ export const tableStyles = {
       padding: "8px",
       borderBottom: "2px solid #333",
       fontSize: "13px",
-      whiteSpace: "nowrap", // Prevent header text wrapping
+      whiteSpace: "nowrap",
     },
     headerButton: {
       background: "none",
@@ -39,10 +39,10 @@ export const tableStyles = {
       padding: "6px 8px",
       borderBottom: "1px solid #333",
       fontSize: "12px",
-      whiteSpace: "nowrap", // Prevent cell content wrapping
+      whiteSpace: "nowrap",
     },
     container: {
-      position: "relative", // Add this to make it the positioning context
+      position: "relative",
       backgroundColor: "#1a1a1a",
       borderRadius: "5px",
       boxShadow: "0 4px 8px rgba(0,0,0,0.5)",
@@ -51,8 +51,8 @@ export const tableStyles = {
       flexDirection: "column",
       height: "100%",
       width: "100%",
-      minWidth: 0, // Allow container to shrink
-      maxWidth: "100%", // Prevent container from exceeding parent width
+      minWidth: 0,
+      maxWidth: "100%",
       pointerEvents: "auto",
     },
     tableContainer: {
@@ -61,8 +61,8 @@ export const tableStyles = {
       scrollbarColor: "#333 #1a1a1a",
       flex: 1,
       width: "100%",
-      minWidth: 0, // Allow container to shrink
-      maxWidth: "100%", // Prevent container from exceeding parent width
+      minWidth: 0,
+      maxWidth: "100%",
       "&::-webkit-scrollbar": {
         width: "8px",
         height: "8px",
@@ -110,22 +110,22 @@ export const tableStyles = {
       color: "white",
       border: "1px solid #333",
       borderRadius: "4px",
-      padding: "8px", // Standardize padding
+      padding: "8px",
       width: "calc(100% - 12px)",
       fontSize: "12px",
       boxSizing: "border-box",
-      height: "32px", // Explicit height
+      height: "32px",
     },
     button: {
       backgroundColor: "#333",
       color: "white",
       border: "none",
       borderRadius: "4px",
-      padding: "8px 12px", // Standardize padding
+      padding: "8px 12px",
       cursor: "pointer",
       transition: "background-color 0.2s ease",
       fontSize: "12px",
-      height: "32px", // Match input height
+      height: "32px", 
       "&:hover": {
         backgroundColor: "#444",
       },

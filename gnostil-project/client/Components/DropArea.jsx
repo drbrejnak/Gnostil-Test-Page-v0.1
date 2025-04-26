@@ -6,7 +6,7 @@ const DropArea = ({onDrop, index}) => {
 
     const areaStyle = {
         width: "100px",
-        height: "calc(100% - 20px)", // Match HandCard height
+        height: "calc(100% - 20px)", 
         margin: "0 5px",
         overflow: "auto",
         border: "1px solid rgba(255, 255, 255, 0.2)",
@@ -22,7 +22,7 @@ const DropArea = ({onDrop, index}) => {
     const hideDrop = {
         margin: "0 5px",
         width: "10px",
-        height: "calc(100% - 20px)", // Match HandCard height
+        height: "calc(100% - 20px)", 
         opacity: 0
     }
 

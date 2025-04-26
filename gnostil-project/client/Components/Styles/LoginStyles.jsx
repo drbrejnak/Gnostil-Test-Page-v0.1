@@ -5,30 +5,30 @@ export const loginStyles = {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.3)",     // More transparent background
-        backdropFilter: "blur(12px)",              // Increased blur for glassmorphism
-        WebkitBackdropFilter: "blur(12px)",        // Safari support
+        backgroundColor: "rgba(0, 0, 0, 0.3)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         zIndex: 1000,
     },
     loginContainer: {
-        backgroundColor: "rgba(26, 26, 26, 0.7)",  // More transparent container
-        borderRadius: "12px",                      // Smoother corners
+        backgroundColor: "rgba(26, 26, 26, 0.7)",
+        borderRadius: "12px",
         boxShadow: `
             0 4px 24px -1px rgba(0, 0, 0, 0.3),
             0 0 1px 0 rgba(255, 255, 255, 0.1) inset,
             0 0 8px 0 rgba(255, 255, 255, 0.05)
-        `,                                         // Multi-layered shadow for depth
+        `,
         padding: "30px",
         width: "300px",
         display: "flex",
         flexDirection: "column",
         gap: "20px",
-        backdropFilter: "blur(8px)",              // Container blur
-        WebkitBackdropFilter: "blur(8px)",        // Safari support
-        border: "1px solid rgba(255, 255, 255, 0.1)", // Subtle border
+        backdropFilter: "blur(8px)",
+        WebkitBackdropFilter: "blur(8px)",
+        border: "1px solid rgba(255, 255, 255, 0.1)",
     },
     loginForm: {
         display: "flex",
@@ -36,7 +36,7 @@ export const loginStyles = {
         gap: "10px",
     },
     loginInput: {
-        backgroundColor: "rgba(37, 37, 37, 0.7)", // More transparent inputs
+        backgroundColor: "rgba(37, 37, 37, 0.7)",
         color: "white",
         border: "1px solid rgba(255, 255, 255, 0.1)",
         borderRadius: "6px",
@@ -44,8 +44,8 @@ export const loginStyles = {
         fontSize: "14px",
         width: "100%",
         boxSizing: "border-box",
-        backdropFilter: "blur(4px)",             // Input field blur
-        WebkitBackdropFilter: "blur(4px)",       // Safari support
+        backdropFilter: "blur(4px)",
+        WebkitBackdropFilter: "blur(4px)",
         transition: "all 0.2s ease",
         "&:focus": {
             outline: "none",
@@ -85,9 +85,9 @@ export const loginStyles = {
         right: '20px',
         zIndex: 1000,
         display: 'flex',
-        flexDirection: 'row', // Changed from column
-        alignItems: 'center', // Changed from flex-end
-        gap: '10px', // Added gap for spacing
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: '10px', 
     },
     logoutButton: {
         backgroundColor: "rgba(255, 255, 255, 0.9)",

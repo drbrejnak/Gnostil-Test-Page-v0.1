@@ -31,31 +31,30 @@ const CharSelect = ({auth, char, setChar, currentUser}) => {
     if (newCharName.trim()) {
       const result = await createCharacter(auth, newCharName.trim(), setCharacters);
       if (result.success) {
-        setChar(result.character);  // Set the newly created character as selected
+        setChar(result.character);
         setNewCharName('');
         setIsCreating(false);
         refreshCharacterList();
       } else {
         setError(result.error);
-        setNewCharName(''); // Clear input to show error message
+        setNewCharName('');
       }
     }
   };
 
   const handleEditCharacter = async (e) => {
     e.preventDefault();
-    setError(''); // Clear any existing error
+    setError('');
     if (newCharName.trim()) {
       const result = await editCharName(auth, char, newCharName.trim(), setCharacters);
       if (result.success) {
-        // Update the selected character with the new name
         setChar({ ...char, char_name: newCharName.trim() });
         setNewCharName('');
         setIsEditing(false);
         refreshCharacterList();
       } else {
         setError(result.error);
-        setNewCharName(''); // Clear input to show error message
+        setNewCharName('');
       };
     };
   };
@@ -69,7 +68,7 @@ const CharSelect = ({auth, char, setChar, currentUser}) => {
 
   const handleInputChange = (e) => {
     setNewCharName(e.target.value);
-    if (error) setError(''); // Clear error when user starts typing
+    if (error) setError('');
   };
 
   const handleCancel = () => {
@@ -82,7 +81,6 @@ const CharSelect = ({auth, char, setChar, currentUser}) => {
     return null;
   }
 
-  // Create a common button style object
   const actionButtonStyle = {
     ...tableStyles.button,
     minWidth: '36px',

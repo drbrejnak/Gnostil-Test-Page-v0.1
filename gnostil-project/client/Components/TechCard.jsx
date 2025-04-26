@@ -9,18 +9,15 @@ const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, lo
   const [name, setName] = useState(techniqueName || '');
   const [description, setDescription] = useState('');
 
-  // Calculate combined stats
   const totalToll = maneuvers.reduce((sum, m) => sum + (m.toll || 0), 0);
   const totalYield = maneuvers.reduce((sum, m) => sum + (m.yield || 0), 0);
 
   const handleAddToDeck = () => {
-    // Validate required name field
     if (!name.trim()) {
       alert('Please enter a technique name.');
       return;
     }
 
-    // Check for duplicate names in the appropriate deck
     const deckToCheck = auth?.id ? deck : localDeck;
     const isDuplicate = deckToCheck.some(card => card.maneuver_name.toLowerCase() === name.trim().toLowerCase());
 
@@ -29,15 +26,14 @@ const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, lo
       return;
     }
 
-    // Create technique object
     const technique = {
       id: Math.floor(10000 + Math.random() * 90000),
       maneuver_name: name,
       description: description,
-      discipline: "Technique", // Display discipline
+      discipline: "Technique",
       original_disciplines: JSON.stringify(
         maneuvers.map(m => m.discipline)
-      ), // Store original disciplines
+      ),
       maneuver_type: Array.from(activeProperties).find(prop =>
         ["Attack", "Inciting", "Aura", "Modify", "Reaction"].includes(prop)
       ),
@@ -56,16 +52,12 @@ const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, lo
       )
     };
 
-    // Add to appropriate deck based on auth status
     if (auth?.id) {
-      // Add to server Techniques database
       addToTechniques(auth, char, setDeck, technique);
     } else {
-      // Add to local deck
       setLocalDeck(prev => [...prev, technique]);
     }
 
-    // Close the TechCard
     setTechnique(null);
   };
 

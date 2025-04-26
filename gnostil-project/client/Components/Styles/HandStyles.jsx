@@ -6,13 +6,13 @@ export const handStyles = {
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    width: "calc(100% - 40px)", // Full width minus margins
+    width: "calc(100% - 40px)",
     height: "100%",
     borderRadius: "15px",
     boxShadow: "0 4px 8px rgba(0,0,0,0.5)",
     boxSizing: "border-box",
     padding: "0 20px",
-    margin: "0 20px", // Keep 20px margin on sides
+    margin: "0 20px",
   },
   dropArea: {
     position: "absolute",
@@ -51,7 +51,7 @@ export const handStyles = {
     alignItems: "center",
     justifyContent: "center",
     height: "100%",
-    width: "100%", // Take full width of container
+    width: "100%", 
     overflowX: "auto",
     overflowY: "hidden",
     boxSizing: "border-box",
