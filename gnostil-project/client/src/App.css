@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&display=swap');
+
+.container {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 25vw;
+  width: 25vw;
+  transform: translate(-50%, -50%);
+}
+
+svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.thumbnail {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.thumbnail svg {
+  position: absolute;
+  top: -15%;
+  margin: auto;
+  width: min(100%, 7vh);    /* Responsive size that won't overflow */
+  height: min(100%, 7vh);   /* Maintain aspect ratio */
+}
+
+@keyframes spinClockwise {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinCounterClockwise {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.iris {
+  background: black;
+  animation: iris 3s infinite;
+  height: 200px;
+  width: 200px;
+}
+
+.iris-once {
+  animation: iris 3s forwards;
+}
+
+@keyframes iris {
+  0% { clip-path: circle(0%); }
+  100% { clip-path: circle(29.15%); }
+}
