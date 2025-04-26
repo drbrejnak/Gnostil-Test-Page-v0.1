@@ -52,8 +52,8 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
             flex: 1,
             overflowY: 'auto',
             overflowX: 'hidden',
-            paddingRight: '8px',
-            wordBreak: 'break-word'
+            wordBreak: 'break-word',
+            margin: '8px',
           }}>
             {abilities.map((ability, index) => (
               <div key={index} style={{ marginBottom: '8px' }}>
@@ -75,7 +75,6 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
           flex: 1,
           overflowY: 'auto',
           overflowX: 'hidden',
-          paddingRight: '8px',
           wordBreak: 'break-word'
         }}>
           {maneuver?.ability || 'Ability description goes here...'}
@@ -193,7 +192,6 @@ const Card = ({ maneuver, setSelectedManeuver }) => {
               flex: 1,
               overflowY: 'auto',
               overflowX: 'hidden',
-              paddingRight: '8px',
               wordBreak: 'break-word'
             }}>
               {maneuver.description}
