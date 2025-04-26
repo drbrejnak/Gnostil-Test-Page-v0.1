@@ -110,21 +110,22 @@ export const tableStyles = {
       color: "white",
       border: "1px solid #333",
       borderRadius: "4px",
-      padding: "6px",
+      padding: "8px", // Standardize padding
       width: "calc(100% - 12px)",
       fontSize: "12px",
       boxSizing: "border-box",
-      marginBottom: "8px",
+      height: "32px", // Explicit height
     },
     button: {
       backgroundColor: "#333",
       color: "white",
       border: "none",
       borderRadius: "4px",
-      padding: "6px 10px",
+      padding: "8px 12px", // Standardize padding
       cursor: "pointer",
       transition: "background-color 0.2s ease",
       fontSize: "12px",
+      height: "32px", // Match input height
       "&:hover": {
         backgroundColor: "#444",
       },

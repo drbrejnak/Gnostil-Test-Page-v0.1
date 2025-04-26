@@ -210,24 +210,41 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
         Compendium
       </h2>
 
-      <div style={{...tableStyles.filters, paddingTop: '2em'}}>
-        <input
-          type="text"
-          placeholder="Search by name..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          style={tableStyles.searchInput}
-        />
+      <div style={{
+        ...tableStyles.filters,
+        paddingTop: '2em',
+        display: 'flex',
+        gap: '10px',
+        flexWrap: 'wrap'
+      }}>
+        <div style={{
+          display: 'flex',
+          gap: '10px',
+          flex: '1 1 auto',
+          minWidth: '200px'
+        }}>
+          <input
+            type="text"
+            placeholder="Search by name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              ...tableStyles.searchInput,
+              flex: '1 1 auto'
+            }}
+          />
+          <button
+            onClick={() => setShowFilters(!showFilters)}
+            style={{
+              ...tableStyles.button,
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {showFilters ? "Hide Filters" : "Show Filters"}
+          </button>
+        </div>
 
-        {/* Toggle Filters Button */}
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          style={tableStyles.button}
-        >
-          {showFilters ? "Hide Filters" : "Show Filters"}
-        </button>
-
-        {/* Filters */}
+        {/* Filters container remains unchanged */}
         {showFilters && (
           <div style={tableStyles.filterContainer}>
             <select
