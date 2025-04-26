@@ -1,4 +1,4 @@
-const host = "http://localhost:3000"
+const host = import.meta.env.VITE_API_URL;
 
 export const register = async(setAuth, credentials)=> {
     try {

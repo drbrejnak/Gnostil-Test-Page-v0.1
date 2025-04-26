@@ -32,7 +32,7 @@ client.connect();
 router.use(cors());
 
 const path = require('path');
-router.get('/', (req, res)=> res.sendFile(path.join(__dirname, '../server/dist/index.html')));
+router.get('/', (req, res)=> res.sendFile(path.join(__dirname, '../dist/index.html')));
 router.use('/assets', express.static(path.join(__dirname, '../dist/assets')));
 
 const isLoggedIn = async(req, res, next)=> {
