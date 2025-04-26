@@ -12,6 +12,7 @@ import TechCard from "../Components/TechCard";
 import { techniqueMessageStyles } from '../Components/Styles/TechOverlayStyles';
 import { getActiveProperties } from '../Components/ExaminationArea';
 import Tutorial from "../Components/Tutorial";
+import { loginStyles } from '../Components/Styles/LoginStyles';
 
 function App() {
   const [auth, setAuth] = useState({});
@@ -197,7 +198,7 @@ function App() {
               Confirm
             </button>
             <button
-              style={techniqueMessageStyles.button}
+              style={loginStyles.logoutButton}
               onClick={handleCancelTechnique}
             >
               Clear
@@ -259,6 +260,7 @@ function App() {
           {!technique && (
             <TechniqueOverlay
               selectedManeuver={selectedManeuver}
+              setSelectedManeuver={setSelectedManeuver}
               hexagonStates={hexagonStates}
               setHexagonStates={setHexagonStates}
             />

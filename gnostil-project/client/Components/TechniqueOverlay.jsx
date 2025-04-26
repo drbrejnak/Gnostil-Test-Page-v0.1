@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { techOverlayStyles } from './Styles/TechOverlayStyles';
 
-const TechniqueOverlay = ({ selectedManeuver, hexagonStates, setHexagonStates }) => {
+const TechniqueOverlay = ({ selectedManeuver, hexagonStates, setHexagonStates, setSelectedManeuver }) => {
   if (selectedManeuver) return null;
 
   const Hexagon = ({ style, hexId }) => {
@@ -58,9 +58,20 @@ const TechniqueOverlay = ({ selectedManeuver, hexagonStates, setHexagonStates })
       }
     };
 
+    const handleClick = () => {
+      if (hasManeuver) {
+        setSelectedManeuver(hexagonStates[hexId]);
+      }
+    };
+
     return (
       <div
-        style={{...style, pointerEvents: 'auto'}}
+        style={{
+          ...style,
+          pointerEvents: 'auto',
+          cursor: hasManeuver ? 'pointer' : 'default'
+        }}
+        onClick={handleClick}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
