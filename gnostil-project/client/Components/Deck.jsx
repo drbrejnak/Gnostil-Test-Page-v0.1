@@ -243,8 +243,23 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
     >
       {/* Drop Area Overlay */}
       <div style={dropAreaStyle} />
+
+      {/* Add Title */}
+      <h2 style={{
+        position: 'absolute',
+        right: '0.5em',
+        color: 'white',
+        margin: '5px 5px',
+        padding: 0,
+        fontSize: '1.1em',
+        fontWeight: 'normal',
+        textAlign: 'right',
+      }}>
+        {auth.id && char?.char_name ? `${char.char_name}'s Deck` : 'Character Deck'}
+      </h2>
+
       {/* Search Bar */}
-      <div style={tableStyles.filters}>
+      <div style={{...tableStyles.filters, paddingTop: '2em'}}>
         <input
           type="text"
           placeholder="Search by name..."

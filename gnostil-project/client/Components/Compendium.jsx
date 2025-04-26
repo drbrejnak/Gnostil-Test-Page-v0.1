@@ -196,7 +196,21 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
       {/* Drop Area Overlay */}
       <div style={dropAreaStyle} />
 
-      <div style={tableStyles.filters}>
+      {/* Add Title */}
+      <h2 style={{
+        position: 'absolute',
+        left: '0.5em',
+        color: 'white',
+        margin: '5px 5px',
+        padding: 0,
+        fontSize: '1.1em',
+        fontWeight: 'normal',
+        textAlign: 'right',
+      }}>
+        Compendium
+      </h2>
+
+      <div style={{...tableStyles.filters, paddingTop: '2em'}}>
         <input
           type="text"
           placeholder="Search by name..."

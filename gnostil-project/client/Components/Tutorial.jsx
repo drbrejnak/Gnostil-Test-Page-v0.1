@@ -145,6 +145,9 @@ const Tutorial = ({ onClose }) => {
                 <br />
                 <br />
                 You may drag and drop Maneuvers from the Compendium into the Deck area to add them to your character's Deck.
+                <br />
+                <br />
+                You may also drag and drop Maneuvers from your Deck or Hand into the Compendium to remove them (Maneuvers removed from the Deck will also remove them from the Hand, but not vice versa).
             </>
         ),
         position: "center"
