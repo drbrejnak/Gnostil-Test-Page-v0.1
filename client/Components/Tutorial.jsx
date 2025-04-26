@@ -82,7 +82,7 @@ const Tutorial = ({ onClose }) => {
         horizontal: 'rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 75%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0) 100%',
         vertical: 'rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0) 80px, rgba(0, 0, 0, 1) 80px, rgba(0, 0, 0, 1) 100%'
       },
-      7: null 
+      7: null
     };
 
     const maskConfig = maskConfigs[currentStep];
@@ -263,10 +263,6 @@ return (
             } : currentStep === 5 ? {
                 top: '40%',
                 left: '50%',
-                transform: 'translate(-50%, -50%)'
-            } : currentStep === 6 ? {
-                top: '40%',
-                left: '85%',
                 transform: 'translate(-50%, -50%)'
             } : {
                 top: '50%',
