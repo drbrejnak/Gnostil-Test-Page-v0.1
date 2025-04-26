@@ -166,6 +166,13 @@ export const deleteCharacter = async(auth, char, setCharacters)=> {
 };
 
 export const fetchCharDeck = async (auth, char, setDeck) => {
+    // First verify this character belongs to the logged-in user
+    if (auth.id !== char.user_id) {
+        console.error('Unauthorized access attempt');
+        setDeck([]);
+        return;
+    }
+
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}`, {
         headers: {
             authorization: window.localStorage.getItem('token')
@@ -174,6 +181,8 @@ export const fetchCharDeck = async (auth, char, setDeck) => {
     const json = await response.json();
     if (response.ok) {
         setDeck(json);
+    } else {
+        setDeck([]);
     }
 };
 

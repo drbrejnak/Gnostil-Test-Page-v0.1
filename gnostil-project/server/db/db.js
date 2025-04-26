@@ -22,13 +22,27 @@ const fetchManeuver = async(id)=> {
   return response.rows;
 };
 
-const fetchDeck = async(id)=> {
+const fetchDeck = async(deck_id, user_id)=> {
+  // First verify character ownership
+  const ownershipSQL = `
+    SELECT 1 FROM characters
+    WHERE deck_id = $1 AND user_id = $2
+  `;
+  const ownerCheck = await client.query(ownershipSQL, [deck_id, user_id]);
+
+  if (ownerCheck.rows.length === 0) {
+    const error = new Error('Unauthorized access to deck');
+    error.status = 403;
+    throw error;
+  }
+
+  // If ownership verified, proceed with fetch
   const SQL = `
     SELECT maneuver_id, tech_id
     FROM character_deck
     WHERE deck_id = $1
   `;
-  const response = await client.query(SQL, [id]);
+  const response = await client.query(SQL, [deck_id]);
   return {
     maneuverIds: response.rows.filter(row => row.maneuver_id).map(row => row.maneuver_id),
     techIds: response.rows.filter(row => row.tech_id).map(row => row.tech_id)

@@ -167,7 +167,8 @@ router.get('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, async(r
       error.status = 401;
       throw error;
     }
-    res.send(await fetchDeckManeuvers(await fetchDeck(req.params.deckId)))
+    // Pass both deck_id and user_id to fetchDeck
+    res.send(await fetchDeckManeuvers(await fetchDeck(req.params.deckId, req.params.userId)))
   } catch(err) {
     next(err);
   }

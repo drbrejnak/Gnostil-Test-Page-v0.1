@@ -73,11 +73,43 @@ function App() {
   };
 
   useEffect(() => {
-    // Clear token on page load/refresh
+    // Clear everything on page load/refresh
     localStorage.clear();
     setAuth({});
     setChar({});
+    setDeck([]);
+    setCards([]);
+    setActiveCard(null);
+    setSelectedManeuver(null);
+    setHexagonStates({
+      hex1: null,
+      hex2: null,
+      hex3: null,
+      hex4: null,
+      hex5: null,
+      hex6: null
+    });
+    setTechnique(null);
   }, []);
+
+  useEffect(() => {
+    if (!auth.id) {
+      setChar({});
+      setDeck([]);
+      setCards([]);
+      setActiveCard(null);
+      setSelectedManeuver(null);
+      setHexagonStates({
+        hex1: null,
+        hex2: null,
+        hex3: null,
+        hex4: null,
+        hex5: null,
+        hex6: null
+      });
+      setTechnique(null);
+    }
+  }, [auth]);
 
   useEffect(() => {
     if (!auth.id) {
