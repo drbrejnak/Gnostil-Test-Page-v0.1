@@ -42,15 +42,16 @@ const HandCard = ({ index, card, setActiveCard, setSelectedManeuver }) => {
   };
 
   const svgContainerStyle = {
-      width: "100%",              // Fill available space
-      height: "calc(100% - 20px)", // Account for name height
+      width: "100%",
+      height: "calc(100% - 24px)", // Account for name height and padding
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
       overflow: "hidden",
       backgroundColor: "black",
-      borderRadius: "4px",        // Slightly rounded corners
-      position: "relative",       // For stacking SVGs
+      borderRadius: "4px",
+      position: "relative",
+      aspectRatio: "1 / 1",  // Force square container
   };
 
     const renderCombatNarrativeSVG = () => {
