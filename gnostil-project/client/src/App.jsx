@@ -33,6 +33,7 @@ function App() {
   const [technique, setTechnique] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [showTutorial, setShowTutorial] = useState(true);
+  console.log(localDeck)
 
   const hasAnyManeuvers = Object.values(hexagonStates).some(state => state !== null);
 

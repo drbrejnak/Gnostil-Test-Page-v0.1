@@ -36,6 +36,9 @@ const TechniqueOverlay = ({ selectedManeuver, hexagonStates, setHexagonStates })
       try {
         const parsedData = JSON.parse(maneuverData);
 
+        // Check if the maneuver is a Technique
+        if (parsedData.discipline === "Technique") return;
+
         // Check if maneuver already exists in any hexagon
         const isManeuverUsed = Object.values(hexagonStates).some(
           state => state && state.id === parsedData.id
