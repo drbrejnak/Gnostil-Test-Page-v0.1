@@ -314,13 +314,13 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
         {/* Toll filter */}
         <select
           value={filterToll}
-          onChange={(e) => setFilterToll(e.target.value)}
+          onChange={(e) => setFilterToll(Number(e.target.value) || "")}
           style={tableStyles.select}
         >
           <option value="">All Tolls</option>
           {[...new Set(filteredDeck.map((maneuver) => maneuver.toll))]
             .filter(toll => toll !== null)
-            .sort((a, b) => Number(a) - Number(b))
+            .sort((a, b) => a - b)  // Numeric sort
             .map((toll, index) => (
               <option key={index} value={toll}>
                 {toll}
@@ -331,13 +331,13 @@ export default function Deck({ auth, char, deck, setDeck, setSelectedManeuver, s
         {/* Yield filter */}
         <select
           value={filterYield}
-          onChange={(e) => setFilterYield(e.target.value)}
+          onChange={(e) => setFilterYield(Number(e.target.value) || "")}
           style={tableStyles.select}
         >
           <option value="">All Yields</option>
           {[...new Set(filteredDeck.map((maneuver) => maneuver.yield))]
             .filter(yieldValue => yieldValue !== null)
-            .sort((a, b) => Number(a) - Number(b))
+            .sort((a, b) => a - b)  // Numeric sort
             .map((yieldValue, index) => (
               <option key={index} value={yieldValue}>
                 {yieldValue}

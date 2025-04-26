@@ -262,13 +262,13 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
 
             <select
               value={filterToll}
-              onChange={(e) => setFilterToll(e.target.value)}
+              onChange={(e) => setFilterToll(Number(e.target.value) || "")}
               style={tableStyles.select}
             >
               <option value="">All Tolls</option>
               {[...new Set(compendium.map((maneuver) => maneuver.toll))]
                 .filter(toll => toll !== null)  // Remove null values
-                .sort((a, b) => Number(a) - Number(b))  // Numerical sort
+                .sort((a, b) => a - b)  // Numeric sort
                 .map((toll, index) => (
                   <option key={index} value={toll}>
                     {toll}
@@ -278,13 +278,13 @@ export default function Compendium({ setSelectedManeuver, auth, char, setCards, 
 
             <select
               value={filterYield}
-              onChange={(e) => setFilterYield(e.target.value)}
+              onChange={(e) => setFilterYield(Number(e.target.value) || "")}
               style={tableStyles.select}
             >
               <option value="">All Yields</option>
               {[...new Set(compendium.map((maneuver) => maneuver.yield))]
                 .filter(yieldValue => yieldValue !== null)  // Remove null values
-                .sort((a, b) => Number(a) - Number(b))  // Numerical sort
+                .sort((a, b) => a - b)  // Numeric sort
                 .map((yieldValue, index) => (
                   <option key={index} value={yieldValue}>
                     {yieldValue}
