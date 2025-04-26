@@ -55,7 +55,6 @@ const TechCard = ({ techniqueName, activeProperties, maneuvers, setTechnique, lo
         }))
       )
     };
-    console.log(technique)
 
     // Add to appropriate deck based on auth status
     if (auth?.id) {

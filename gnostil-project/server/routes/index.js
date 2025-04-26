@@ -98,7 +98,6 @@ router.get('/maneuvers', async(req, res, next)=> {
 router.get('/users/:userId/characters', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.userId}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
@@ -112,7 +111,6 @@ router.get('/users/:userId/characters', isLoggedIn, async(req, res, next)=> {
 router.post('/users/:userId/characters', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.userId}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
@@ -150,7 +148,6 @@ router.put('/users/:userId/characters/:charId', isLoggedIn, async(req, res, next
 router.delete('/users/:userId/characters/:charId', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
@@ -166,7 +163,6 @@ router.delete('/users/:userId/characters/:charId', isLoggedIn, async(req, res, n
 router.get('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
@@ -220,7 +216,6 @@ router.delete('/users/:userId/characters/:charId/deck/:deckId', isLoggedIn, asyn
 router.get('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
@@ -257,12 +252,10 @@ router.post('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLog
 router.put('/users/:userId/characters/:charId/deck/:deckId/hand/:handId', isLoggedIn, async(req, res, next)=> {
   try {
     if(req.params.userId !== req.user.id){
-      console.log(`params ${req.params.id}`, `user ${req.user.id}`);
       const error = Error('not authorized');
       error.status = 401;
       throw error;
     }
-    console.log(req.body);
     res.send(await updateCardsInHand({hand_id: req.params.handId, cards: req.body}));
   } catch(err) {
     next(err);

@@ -287,14 +287,6 @@ export const updateCardsInHand = async (auth, char, cards, setCards) => {
 
 export const removeFromHand = async (auth, char, setCards, id, isTechnique = false) => {
   try {
-    console.log('RemoveFromHand params:', {
-      authId: auth?.id,
-      charId: char?.id,
-      deckId: char?.deck_id,
-      handId: char?.hand_id,
-      id,
-      isTechnique
-    });
 
     if (!auth?.id || !char?.id || !char?.deck_id || !char?.hand_id || !id) {
       throw new Error('Missing required parameters');
@@ -314,7 +306,6 @@ export const removeFromHand = async (auth, char, setCards, id, isTechnique = fal
     });
 
     const data = await response.json().catch(() => null);
-    console.log('Server response:', { status: response.status, data });
 
     if (!response.ok) {
       throw new Error(`Failed to remove card: ${data?.error || response.statusText}`);
@@ -331,7 +322,6 @@ export const removeFromHand = async (auth, char, setCards, id, isTechnique = fal
 
 export const addToTechniques = async (auth, char, setDeck, technique) => {
   try {
-    console.log(technique)
     // Create technique and add to deck in one request
     const response = await fetch(`${host}/users/${auth.id}/characters/${char.id}/deck/${char.deck_id}/hand/${char.hand_id}/techniques`, {
       method: 'POST',
@@ -348,7 +338,6 @@ export const addToTechniques = async (auth, char, setDeck, technique) => {
 
     // Get the created technique data
     const createdTechnique = await response.json();
-    console.log(createdTechnique);
 
     // Refresh the deck
     await fetchCharDeck(auth, char, setDeck);
