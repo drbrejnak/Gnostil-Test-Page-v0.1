@@ -13,6 +13,7 @@ import { techniqueMessageStyles } from '../Components/Styles/TechOverlayStyles';
 import { getActiveProperties } from '../Components/ExaminationArea';
 import Tutorial from "../Components/Tutorial";
 import { loginStyles } from '../Components/Styles/LoginStyles';
+import OrientationWarning from "../Components/OrientationWarning";
 
 function App() {
   const [auth, setAuth] = useState({});
@@ -34,6 +35,7 @@ function App() {
   const [technique, setTechnique] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [showTutorial, setShowTutorial] = useState(true);
+  const [isPortrait, setIsPortrait] = useState(false);
   console.log(localDeck)
 
   const hasAnyManeuvers = Object.values(hexagonStates).some(state => state !== null);
@@ -137,6 +139,31 @@ function App() {
       localStorage.setItem("localDeck", JSON.stringify(localDeck));
     }
   }, [localDeck]);
+
+  useEffect(() => {
+    const checkOrientation = () => {
+      // Check if device is mobile
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (isMobile) {
+        setIsPortrait(window.innerHeight > window.innerWidth);
+      } else {
+        setIsPortrait(false);
+      }
+    };
+
+    checkOrientation();
+    window.addEventListener('resize', checkOrientation);
+    window.addEventListener('orientationchange', checkOrientation);
+
+    return () => {
+      window.removeEventListener('resize', checkOrientation);
+      window.removeEventListener('orientationchange', checkOrientation);
+    };
+  }, []);
+
+  if (isPortrait) {
+    return <OrientationWarning />;
+  }
 
   return (
     <>
