@@ -35,26 +35,28 @@ export const techOverlayStyles = {
   },
   hexagonPositions: {
     firstColumn: {
-      top: "calc(50% - 3.5vh)"
+      top: "calc(50% - 3.5vh)",
+      right: "40%"
     },
     secondTop: {
-      top: "5%",
+      top: "10%",
       right: "100%"
     },
     secondBottom: {
-      bottom: "calc(7vh + 5%)",
+      bottom: "calc(7vh + 10%)",
       right: "100%"
     },
     thirdTop: {
-      top: "5%",
+      top: "10%",
       left: "100%"
     },
     thirdBottom: {
-      bottom: "calc(7vh + 5%)",
+      bottom: "calc(7vh + 10%)",
       left: "100%"
     },
     thirdColumn: {
-      top: "calc(50% - 3.5vh)"
+      top: "calc(50% - 3.5vh)",
+      left: "40%"
     }
   }
 };

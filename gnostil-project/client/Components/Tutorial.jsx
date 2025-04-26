@@ -152,7 +152,10 @@ const Tutorial = ({ onClose }) => {
                 You may drag and drop Maneuvers from the Compendium into the Deck area to add them to your character's Deck.
                 <br />
                 <br />
-                You may also drag and drop Maneuvers from your Deck or Hand into the Compendium to remove them (Maneuvers removed from the Deck will also remove them from the Hand, but not vice versa).
+                To remove a Maneuver, drag and drop it from the Deck or Hand over the Compendium area. To remove multiple maneuvers at once, check the ones you wish to remove, then press the Delete button in the table header.
+                <br />
+                <br />
+                Maneuvers removed from the Deck will also be removed from the Hand.
             </>
         ),
         position: "center"
@@ -182,7 +185,7 @@ const Tutorial = ({ onClose }) => {
                 A <strong>Technique</strong> is a special type of Maneuver that combines the attributes and abilities of individual Maneuvers to create powerful new skills unique to your character and playstyle.
                 <br />
                 <br />
-                To create a <strong>Technique</strong>, simply drag and drop two ore more Maneuvers into the hexagonal Inputs surrouding the Examination Area.
+                To create a <strong>Technique</strong>, simply drag and drop two ore more Maneuvers into the <strong>Hexagonal Inputs</strong>.
             </>
         ),
         position: "center"
@@ -253,17 +256,21 @@ return (
             ...loginStyles.loginContainer,
             position: 'fixed',
             ...(currentStep === 2 ? {
-                top: '40%',
-                left: '9%',
-                transform: 'translate(-15%, -50%)'
-            } : currentStep === 4 ? {
+                top: '25%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)'
+            } : currentStep === 3 ? {
                 top: '40%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)'
             } : currentStep === 5 ? {
-                top: '45%',
-                left: '9%',
-                transform: 'translate(-15%, -50%)'
+                top: '40%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)'
+            } : currentStep === 6 ? {
+                top: '40%',
+                left: '85%',
+                transform: 'translate(-50%, -50%)'
             } : {
                 top: '50%',
                 left: '50%',
@@ -271,13 +278,26 @@ return (
             }),
             maxWidth: '400px',
             padding: '20px',
-            zIndex: 1001
+            zIndex: 1001,
+            WebkitFontSmoothing: 'antialiased',
+            MozOsxFontSmoothing: 'grayscale'
         }}>
             {/* Content */}
-            <h2 style={{ color: 'white', margin: "0" }}>
+            <h2 style={{
+                color: 'white',
+                margin: "0",
+                textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+                letterSpacing: '0.3px'
+            }}>
                 {tutorialSteps[currentStep].title}
             </h2>
-            <p style={{ color: 'white', margin: "0" }}>
+            <p style={{
+                color: 'white',
+                margin: "0",
+                textShadow: '0 1px 1px rgba(0,0,0,0.2)',
+                letterSpacing: '0.2px',
+                lineHeight: '1.5'
+            }}>
                 {tutorialSteps[currentStep].content}
             </p>
 
